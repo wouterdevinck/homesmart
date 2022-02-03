@@ -13,6 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Print the version number
+      run: ./build.sh version
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: ./build.sh build

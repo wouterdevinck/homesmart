@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Home.Automations\Home.Automations.csproj" />
+    <ProjectReference Include="..\Home.Core\Home.Core.csproj" />
+    <ProjectReference Include="..\Home.Devices.Logo\Home.Devices.Logo.csproj" />
+    <ProjectReference Include="..\Home.Devices.Zigbee\Home.Devices.Zigbee.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
