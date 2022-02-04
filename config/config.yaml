@@ -1,0 +1,37 @@
+deviceProviders:
+  zigbee:
+    ip: 192.168.1.180
+    baseTopic: zigbee2mqtt
+  logo:
+    ip: 192.168.1.200
+    port: 510
+    pollingInterval: 60000
+    outputsAddress: 8192
+    switchReturnTime: 100
+    devices:
+      - name: Lights hallway
+        switchAddress: 8256
+        outputNumber: 1
+      - name: Lights garage
+        switchAddress: 8257
+        outputNumber: 2
+devices:
+  - deviceId: ZIGBEE-0x00158d0006d0ba73
+    friendlyId: button-hallway
+  - deviceId: ZIGBEE-0xb4e3f9fffe67d474
+    friendlyId: button-garage
+  - deviceId: LOGO-LIGHT-8256-1
+    friendlyId: lights-hallway
+  - deviceId: LOGO-LIGHT-8257-2
+    friendlyId: lights-garage
+automations:
+  - pushOnOff:
+      description: Pushbutton hallway
+      configuration:
+        pushButtonId: button-hallway
+        onOffDeviceId: lights-hallway
+  - pushOnOff:
+      description: Pushbutton garage
+      configuration:
+        pushButtonId: button-garage
+        onOffDeviceId: lights-garage

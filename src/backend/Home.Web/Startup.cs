@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Home.Automations;
 using Home.Core;
@@ -16,7 +17,9 @@ namespace Home.Web {
 
     public class Startup {
 
-        private readonly ConfigurationReader _config = new("config.yaml", new List<ProviderDescription> {
+        private static readonly string _configFilePath = Environment.GetEnvironmentVariable("HOME_CONFIG") ?? "config.yaml";
+
+        private readonly ConfigurationReader _config = new(_configFilePath, new List<ProviderDescription> {
             LogoDeviceProvider.Descriptor, 
             ZigbeeDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor
