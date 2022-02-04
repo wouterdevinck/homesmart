@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=build-backend /app/out ./
 EXPOSE 5000
 USER nobody
-ENTRYPOINT [ "dotnet", "web.dll", "--urls", "http://+:5000" ] 
+ENTRYPOINT [ "dotnet", "Home.Web.dll", "--urls", "http://+:5000" ] 
