@@ -26,6 +26,18 @@ namespace Home.Web {
         });
 
         public void ConfigureServices(IServiceCollection services) {
+            services.AddCors(options => {
+                options.AddDefaultPolicy(builder => {
+                    builder.WithOrigins(
+                                "http://localhost:4200",
+                                "http://localhost:3000",
+                                "http://localhost:5000"
+                            )
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+            });
             services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton(_config);
             services.AddSingleton<IDeviceProvider, DeviceProviderCollection>();
@@ -37,9 +49,13 @@ namespace Home.Web {
                 app.UseDeveloperExceptionPage();
             }
             app.UseRequestLogger();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToFile("index.html");
             });
         }
 
