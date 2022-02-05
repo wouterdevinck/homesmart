@@ -7,6 +7,7 @@ using Home.Core.Interfaces;
 using Home.Core.Logging;
 using Home.Devices.Logo;
 using Home.Devices.Zigbee;
+using Home.Web.Notifications;
 using Home.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,11 +29,7 @@ namespace Home.Web {
         public void ConfigureServices(IServiceCollection services) {
             services.AddCors(options => {
                 options.AddDefaultPolicy(builder => {
-                    builder.WithOrigins(
-                                "http://localhost:4200",
-                                "http://localhost:3000",
-                                "http://localhost:5000"
-                            )
+                    builder.WithOrigins("http://localhost:3000")
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowCredentials();
@@ -41,6 +38,8 @@ namespace Home.Web {
             services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton(_config);
             services.AddSingleton<IDeviceProvider, DeviceProviderCollection>();
+            services.AddSignalR();
+            services.AddHostedService<NotificationService>();
             services.AddHostedService<ConnectionService>();
         }
 
@@ -55,6 +54,7 @@ namespace Home.Web {
             app.UseCors();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+                endpoints.MapHub<NotificationHub>("/api/v1");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

@@ -4,12 +4,14 @@
       <tr>
         <th>Type</th>
         <th>Description</th>
+        <th>Started</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="automation in automations" :key="automation">
         <td>{{ automation.type }}</td>
         <td>{{ automation.description }}</td>
+        <td>{{ automation.started }}</td>
       </tr>
     </tbody>
   </table>

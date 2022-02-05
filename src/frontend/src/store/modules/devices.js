@@ -24,9 +24,9 @@ const actions = {
       api.getDevices(devices => {
         commit('UPDATE_DEVICES', devices)
       })
-      // api.subscribeTwinUpdates(device => {
-      //   commit('UPDATE_DEVICE', device)
-      // })
+      api.subscribeTwinUpdates(device => {
+        commit('UPDATE_DEVICE', device)
+      })
     }
   }
 }

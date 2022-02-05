@@ -2,6 +2,7 @@ import axios from 'axios'
 import * as signalR from '@microsoft/signalr'
 
 // const url = "http://192.168.1.180:5000"
+// const url = "https://localhost:44370"
 const url = ""
 
 export default {
@@ -33,8 +34,8 @@ export default {
       }
     }
     connection.onclose(start)
-    connection.on("twinupdates", device => {
-      console.log(`Device ${device.deviceId} twin update recieved`)
+    connection.on("deviceupdates", device => {
+      console.log(`Device ${device.deviceId} update recieved`)
       cb(device)
     })
     start()
