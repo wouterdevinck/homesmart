@@ -1,9 +1,6 @@
 import axios from 'axios'
 import * as signalR from '@microsoft/signalr'
-
-// const url = "http://192.168.1.180:5000"
-// const url = "https://localhost:44370"
-const url = ""
+const url = import.meta.env.VITE_API_URL
 
 export default {
 
