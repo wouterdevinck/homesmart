@@ -7,6 +7,7 @@ using Home.Core.Interfaces;
 using Home.Core.Logging;
 using Home.Devices.Logo;
 using Home.Devices.Zigbee;
+using Home.Web.Notifications;
 using Home.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,9 +27,19 @@ namespace Home.Web {
         });
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddCors(options => {
+                options.AddDefaultPolicy(builder => {
+                    builder.WithOrigins("http://localhost:3000", "http://localhost:5000")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+            });
             services.AddSingleton(_config);
             services.AddSingleton<IDeviceProvider, DeviceProviderCollection>();
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddSignalR().AddNewtonsoftJsonProtocol(); ;
+            services.AddHostedService<NotificationService>();
             services.AddHostedService<ConnectionService>();
         }
 
@@ -37,9 +48,14 @@ namespace Home.Web {
                 app.UseDeveloperExceptionPage();
             }
             app.UseRequestLogger();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+                endpoints.MapHub<NotificationHub>("/api/v1");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
 

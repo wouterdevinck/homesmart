@@ -7,7 +7,7 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public partial class ZigbeePlugDevice : ZigbeeDevice {
+    public class ZigbeePlugDevice : ZigbeeDevice {
 
         public bool On { get; protected set; }
 

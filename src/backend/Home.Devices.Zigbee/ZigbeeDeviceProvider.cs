@@ -20,7 +20,7 @@ namespace Home.Devices.Zigbee {
     public class ZigbeeDeviceProvider : AbstractDeviceProvider {
 
         // TODO Add more logs
-        // TODO Reconnect working?
+        // TODO Reconnect working? - make all device unreachable when disconnected
         // TODO Try/catch everywhere?
 
         public static ProviderDescription Descriptor = new("zigbee", ProviderDescriptionType.DeviceProvider, typeof(ZigbeeDeviceProvider), typeof(ZigbeeConfiguration));
@@ -45,7 +45,7 @@ namespace Home.Devices.Zigbee {
                 //"046677552343" => new ZigbeePlugDevice(_models, model, _mqtt, _configuration),
                 "WXKG11LM" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
                 "E1812" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
-                //"WSDCGQ11LM" => new ZigbeeTemperatureDevice(_models, model, _mqtt, _configuration),
+                "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_models, model, _mqtt, _configuration),
                 //"SJCGQ11LM" => new ZigbeeLeakDevice(_models, model, _mqtt, _configuration),
                 _ => null
             };

@@ -47,6 +47,9 @@ namespace Home.Devices.Logo {
         }
 
         private async Task TryConnectAsync() {
+            foreach (var device in _devices) {
+                device.UpdateAvailability(false);
+            }
             _logger.LogInformation($"Connecting to {_configuration.Ip}:{_configuration.Port}");
             try {
                 _modbusClient.Connect(new IPEndPoint(IPAddress.Parse(_configuration.Ip), _configuration.Port));
@@ -56,6 +59,9 @@ namespace Home.Devices.Logo {
             }
             _devices.Clear();
             _devices.AddRange(await GetAllDevicesAsync());
+            foreach (var device in _devices) {
+                device.UpdateAvailability(true);
+            }
             NotifyObservers(_devices);
         }
 

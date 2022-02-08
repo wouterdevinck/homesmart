@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Home.Core.Interfaces {
 
@@ -13,6 +15,8 @@ namespace Home.Core.Interfaces {
         string Type { get; }
 
         bool HasId(string id);
+
+        Task InvokeCommand(string command, Dictionary<string, object> args = null);
 
     }
 

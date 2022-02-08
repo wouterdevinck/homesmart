@@ -39,7 +39,7 @@ case $1 in
 "run")
 
   # Run the amd64 variant locally
-  docker run --rm -it -p 5000:5000 $TAG-amd64
+  docker run --rm -it -p 5000:5000 -e HOME_CONFIG=/config/config-local.yaml -v $(pwd)/config:/config $TAG-amd64
 
   ;;
 

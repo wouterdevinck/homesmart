@@ -1,0 +1,15 @@
+.card {
+  display: inline-block;
+  width: 100%;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+  background-color: #fafafa;
+}
+p.name {
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+.unreachable {
+  color: silver;
+}

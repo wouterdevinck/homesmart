@@ -11,12 +11,13 @@ using Newtonsoft.Json;
 
 namespace Home.Devices.Logo {
 
-    public partial class LogoLightDevice : AbstractDevice, IOnOffDevice {
+    public class LogoLightDevice : AbstractDevice, IOnOffDevice {
 
         [JsonIgnore]
         public int OutputNumber { get; private set; }
 
-        public bool On { get; protected set; }
+        public bool On { get; private set; }
+        public bool Reachable { get; private set; }
 
         private readonly ILogger _logger;
         private readonly ModbusTcpClient _modbusClient;
@@ -76,6 +77,14 @@ namespace Home.Devices.Logo {
                 _logger.LogInformation($"Device {DeviceId} is now {(on ? "on" : "off")}");
                 On = on;
                 NotifyObservers(nameof(On), On);
+            }
+        }
+
+        public void UpdateAvailability(bool reachable) {
+            if (Reachable != reachable) {
+                _logger.LogInformation($"Device {DeviceId} is now {(reachable ? "reachable" : "unreachable")}");
+                Reachable = reachable;
+                NotifyObservers(nameof(Reachable), Reachable);
             }
         }
 

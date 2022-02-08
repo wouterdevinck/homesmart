@@ -35,26 +35,28 @@ namespace Home.Core {
             }
 
             // Automations
-            foreach(var automation in config.ConfigurationModel.Automations) {
-                var tag = automation.Keys.SingleOrDefault();
-                var model = automation.SingleOrDefault().Value;
-                if (tag == null || model == null) {
-                    _logger.LogError("Failed to add automation: tag or model could not be read");
-                    continue;
+            if (config.ConfigurationModel.Automations != null) {
+                foreach (var automation in config.ConfigurationModel.Automations) {
+                    var tag = automation.Keys.SingleOrDefault();
+                    var model = automation.SingleOrDefault().Value;
+                    if (tag == null || model == null) {
+                        _logger.LogError("Failed to add automation: tag or model could not be read");
+                        continue;
+                    }
+                    var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == ProviderDescriptionType.Automation).ProviderType;
+                    if (implType == null) {
+                        _logger.LogError("Failed to add automation: type not found");
+                        continue;
+                    }
+                    var logger = loggerFactory.CreateLogger(implType);
+                    var impl = Activator.CreateInstance(implType, logger, model.Configuration) as IAutomation;
+                    if (impl == null) {
+                        _logger.LogError("Failed to add automation: implementation could not be constructed");
+                        continue;
+                    }
+                    _logger.LogInformation($"Adding automation: {tag} - {model.Description}");
+                    InstallAutomation(model.Description, impl);
                 }
-                var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == ProviderDescriptionType.Automation).ProviderType;
-                if (implType == null) {
-                    _logger.LogError("Failed to add automation: type not found");
-                    continue;
-                }
-                var logger = loggerFactory.CreateLogger(implType);
-                var impl = Activator.CreateInstance(implType, logger, model.Configuration) as IAutomation;
-                if (impl == null) {
-                    _logger.LogError("Failed to add automation: implementation could not be constructed");
-                    continue;
-                }
-                _logger.LogInformation($"Adding automation: {tag} - {model.Description}");
-                InstallAutomation(model.Description, impl);
             }
 
         }
