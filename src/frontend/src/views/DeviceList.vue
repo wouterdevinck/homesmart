@@ -18,7 +18,7 @@
           {{ device.name }}
         </td>
         <td>{{ device.manufacturer }}</td>
-        <td>{{ device.model }}</td>
+        <td>{{ device.model ?? "n/a" }}</td>
         <td>{{ device.version ?? "n/a" }}</td>
         <td>
           <span :class="device.reachable ? 'online' : 'offline'" v-if="device.reachable != undefined">

@@ -33,6 +33,7 @@ export default {
     connection.onclose(start)
     connection.on("deviceupdates", device => {
       console.log(`Device ${device.deviceId} update recieved`)
+      console.log(device)
       cb(device)
     })
     start()

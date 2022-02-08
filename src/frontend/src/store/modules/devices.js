@@ -10,7 +10,7 @@ const mutations = {
     state.all = devices
   },
   UPDATE_DEVICE (state, device) {
-    state.all.filter(x => x.deviceId == device.deviceId)[0] = device
+    Object.assign(state.all.filter(x => x.deviceId == device.deviceId)[0], device)
   },
   SET_RUNNING (state, running) {
     state.running = running

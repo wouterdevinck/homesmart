@@ -6,7 +6,7 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public partial class ZigbeeTemperatureDevice : ZigbeeDevice {
+    public class ZigbeeTemperatureDevice : ZigbeeDevice {
 
         public double Battery { get; private set; }
         public double Humidity { get; private set; }

@@ -35,10 +35,10 @@ namespace Home.Web {
                            .AllowCredentials();
                 });
             });
-            services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton(_config);
             services.AddSingleton<IDeviceProvider, DeviceProviderCollection>();
-            services.AddSignalR();
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddSignalR().AddNewtonsoftJsonProtocol(); ;
             services.AddHostedService<NotificationService>();
             services.AddHostedService<ConnectionService>();
         }

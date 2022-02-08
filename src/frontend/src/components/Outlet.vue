@@ -24,9 +24,9 @@ export default {
   methods: {
     updateOnOff: function () {
       if (this.device.on) {
-        api.sendDeviceCommand(this.device.deviceId, "off")
+        api.sendDeviceCommand(this.device.deviceId, "turnOff")
       } else {
-        api.sendDeviceCommand(this.device.deviceId, "on")
+        api.sendDeviceCommand(this.device.deviceId, "turnOn")
       }
     }
   }

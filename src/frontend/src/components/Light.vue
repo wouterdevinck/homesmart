@@ -11,7 +11,7 @@
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff" :disabled="!device.reachable">
         </div>
-        {{ device.on ? Math.round((device.brightness * 100) / 255) : 0 }}%
+        <!--{{ device.on ? Math.round((device.brightness * 100) / 255) : 0 }}%-->
       </div>
     </div>
   </div>
@@ -24,9 +24,9 @@ export default {
   methods: {
     updateOnOff: function () {
       if (this.device.on) {
-        api.sendDeviceCommand(this.device.deviceId, "off")
+        api.sendDeviceCommand(this.device.deviceId, "turnOff")
       } else {
-        api.sendDeviceCommand(this.device.deviceId, "on")
+        api.sendDeviceCommand(this.device.deviceId, "turnOn")
       }
     }
   }
