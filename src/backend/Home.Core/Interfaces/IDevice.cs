@@ -13,6 +13,9 @@ namespace Home.Core.Interfaces {
         string DeviceId { get; }
         string FriendlyId { get; }
         string Type { get; }
+        string Model { get; }
+        string Version { get; }
+        bool Reachable { get; }
 
         bool HasId(string id);
 

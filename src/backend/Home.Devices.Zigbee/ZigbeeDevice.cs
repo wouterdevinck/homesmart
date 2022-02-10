@@ -11,10 +11,7 @@ namespace Home.Devices.Zigbee {
 
         protected IManagedMqttClient Mqtt;
 
-        public string Version { get; protected set; }
-        public string Model { get; protected set; }
         public string PowerSource { get; protected set; }
-        public bool Reachable { get; protected set; }
         public DateTime LastSeen { get; protected set; }
 
         protected ZigbeeConfiguration _configuration;

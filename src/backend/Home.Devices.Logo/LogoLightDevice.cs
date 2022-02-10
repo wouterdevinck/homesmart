@@ -17,7 +17,6 @@ namespace Home.Devices.Logo {
         public int OutputNumber { get; private set; }
 
         public bool On { get; private set; }
-        public bool Reachable { get; private set; }
 
         private readonly ILogger _logger;
         private readonly ModbusTcpClient _modbusClient;
@@ -30,6 +29,8 @@ namespace Home.Devices.Logo {
           int switchAddress, int outputNumber, int switchReturnTime, bool on) {
             Name = name;
             Manufacturer = "Siemens";
+            Version = "1.83.01";
+            Model = "LOGO! 230 RCE"; // 6ED1052-1FB08-0BA1
             DeviceId = $"LOGO-LIGHT-{switchAddress}-{outputNumber}";
             FriendlyId = Helpers.GetFriendlyId(models, DeviceId);
             Type = Helpers.GetTypeString(Helpers.DeviceType.Light);

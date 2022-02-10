@@ -1,0 +1,52 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Home.Core;
+using Home.Core.Devices;
+using Q42.HueApi;
+
+namespace Home.Devices.Hue.Common {
+
+    public abstract class HueOnOffDevice : HueDevice, IOnOffDevice {
+
+        protected HueOnOffDevice(HueClient hue, Light light) : base(hue, light.Id) {
+            DeviceId = $"HUE-LIGHT-{light.UniqueId}";
+            Name = light.Name;
+            if (light.State.IsReachable != null) Reachable = light.State.IsReachable.Value;
+            On = light.State.On && light.State.IsReachable == true;
+            Manufacturer = light.ManufacturerName.HarmonizeManufacturer();
+            Model = light.ModelId.HarmonizeModel();
+            Version = light.SoftwareVersion;
+        }
+
+        public bool On { get; protected set; }
+
+        public async Task TurnOnAsync() {
+            var command = new LightCommand { On = true };
+            var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });
+            if (result[0].Error is null) {
+                On = true;
+                NotifyObservers(nameof(On), On);
+            }
+            // TODO Return result?
+        }
+
+        public async Task TurnOffAsync() {
+            var command = new LightCommand { On = false };
+            var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });
+            if (result[0].Error is null) {
+                On = false;
+                NotifyObservers(nameof(On), On);
+            }
+            // TODO Return result?
+        }
+
+        public Task ToggleOnOffAsync() {
+            if (On) { 
+                return TurnOffAsync();
+            }
+            return TurnOnAsync();
+        }
+
+    }
+
+}
