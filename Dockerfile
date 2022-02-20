@@ -10,10 +10,20 @@ WORKDIR /app
 COPY src/backend ./
 RUN dotnet publish -c Release -o out /p:UseAppHost=false Home.Web
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.1-bullseye-slim-${ARCH}
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.1-bullseye-slim-${ARCH} AS runtime
+RUN apt-get update && \ 
+    apt-get install -y --no-install-recommends \
+      curl && \
+    apt-get autoremove -yqq && \
+    apt-get autoclean -yqq && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt
+
+FROM runtime
 WORKDIR /app
 COPY --from=build-backend /app/out ./
 COPY --from=build-frontend /app/dist ./wwwroot
 EXPOSE 5000
 USER nobody
+HEALTHCHECK --interval=60s --timeout=30s --start-period=60s --retries=3 \
+  CMD curl --fail http://localhost:5000/status/live || exit 1
 ENTRYPOINT [ "dotnet", "Home.Web.dll", "--urls", "http://+:5000" ] 
