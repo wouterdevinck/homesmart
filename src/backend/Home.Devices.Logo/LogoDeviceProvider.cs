@@ -32,6 +32,10 @@ namespace Home.Devices.Logo {
             _models = models;
             _logger = logger;
             _configuration = configuration as LogoConfiguration;
+            _timer = new Timer(_configuration.PollingInterval);
+            _timer.Elapsed += OnUpdate;
+            _timer.AutoReset = true;
+            _timer.Enabled = false;
         }
 
         public override async Task ConnectAsync() {
@@ -40,13 +44,10 @@ namespace Home.Devices.Logo {
             }
             _modbusClient = new ModbusTcpClient();
             await TryConnectAsync();
-            _timer = new Timer(_configuration.PollingInterval);
-            _timer.Elapsed += OnUpdate;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
         }
 
         private async Task TryConnectAsync() {
+            _timer.Enabled = false;
             foreach (var device in _devices) {
                 device.UpdateAvailability(false);
             }
@@ -62,6 +63,7 @@ namespace Home.Devices.Logo {
             foreach (var device in _devices) {
                 device.UpdateAvailability(true);
             }
+            _timer.Enabled = true;
             NotifyObservers(_devices);
         }
 
