@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Home.Core.Devices;
 using Home.Devices.Hue.Common;
 using Q42.HueApi;
 
 namespace Home.Devices.Hue.Devices {
 
-    public partial class HueColorTemperatureLightDevice : HueLightDevice {
+    public partial class HueColorTemperatureLightDevice : HueLightDevice, IColorTemperatureLight {
         
         public HueColorTemperatureLightDevice(Light light, HueClient hue) : base(light, hue) {
             if (light.State.ColorTemperature != null) ColorTemperature = light.State.ColorTemperature.Value;

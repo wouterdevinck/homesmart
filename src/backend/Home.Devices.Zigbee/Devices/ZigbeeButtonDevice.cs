@@ -8,7 +8,7 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeeButtonDevice : ZigbeeDevice, IPushButton {
+    public class ZigbeeButtonDevice : ZigbeeDevice, IPushButton, IBatteryDevice {
 
         public event EventHandler SinglePress;
 
