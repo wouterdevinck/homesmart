@@ -15,6 +15,13 @@ deviceProviders:
       - name: Lights garage
         switchAddress: 8257
         outputNumber: 2
+  hue:
+    apiKey: xxx
+    polling:
+      minPollInterval: 1000
+      maxPollInterval: 60000
+      backOffInterval: 120000
+      backOffFactor: 2
 devices:
   - deviceId: ZIGBEE-0x00158d0006d0ba73
     friendlyId: button-hallway
