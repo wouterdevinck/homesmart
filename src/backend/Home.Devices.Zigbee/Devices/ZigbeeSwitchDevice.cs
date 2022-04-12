@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using Home.Core;
 using Home.Core.Configuration.Models;
+using Home.Core.Devices;
 using Home.Devices.Zigbee.Models;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeeSwitchDevice : ZigbeeDevice {
+    public class ZigbeeSwitchDevice : ZigbeeDevice, IBatteryDevice {
 
         public double Battery { get; private set; }
         public string Action { get; private set; }

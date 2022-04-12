@@ -5,6 +5,7 @@ using Home.Core;
 using Home.Core.Configuration;
 using Home.Core.Interfaces;
 using Home.Core.Logging;
+using Home.Devices.Hue;
 using Home.Devices.Logo;
 using Home.Devices.Zigbee;
 using Home.Web.Notifications;
@@ -21,6 +22,7 @@ namespace Home.Web {
         private static readonly string _configFilePath = Environment.GetEnvironmentVariable("HOME_CONFIG") ?? "config.yaml";
 
         private readonly ConfigurationReader _config = new(_configFilePath, new List<ProviderDescription> {
+            HueDeviceProvider.Descriptor,
             LogoDeviceProvider.Descriptor, 
             ZigbeeDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor

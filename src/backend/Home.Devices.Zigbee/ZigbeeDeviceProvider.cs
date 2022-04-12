@@ -41,12 +41,12 @@ namespace Home.Devices.Zigbee {
 
         private IDevice DeviceFactory(DeviceModel model) {
             return model.Definition.Model switch {
-                //"324131092621" => new ZigbeeSwitchDevice(_models, model, _mqtt, _configuration),
-                //"046677552343" => new ZigbeePlugDevice(_models, model, _mqtt, _configuration),
+                "324131092621" => new ZigbeeSwitchDevice(_models, model, _mqtt, _configuration),
+                "046677552343" => new ZigbeePlugDevice(_models, model, _mqtt, _configuration),
                 "WXKG11LM" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
                 "E1812" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
                 "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_models, model, _mqtt, _configuration),
-                //"SJCGQ11LM" => new ZigbeeLeakDevice(_models, model, _mqtt, _configuration),
+                "SJCGQ11LM" => new ZigbeeLeakDevice(_models, model, _mqtt, _configuration),
                 _ => null
             };
         }
@@ -63,6 +63,10 @@ namespace Home.Devices.Zigbee {
 
             _mqtt = new MqttFactory().CreateManagedMqttClient();
 
+            //await _mqtt.SubscribeAsync(
+            //    new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/#").Build()
+            //);
+
             await _mqtt.SubscribeAsync(
                 new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/bridge/devices").Build()
             );
@@ -72,7 +76,7 @@ namespace Home.Devices.Zigbee {
                 var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
                 // Debug - log all messages
-                // Console.WriteLine($"Topic = {topic} - Payload = {payload}");
+                _logger.LogInformation($"Topic = {topic} - Payload = {payload}");
 
                 if (topic == $"{_configuration.BaseTopic}/bridge/devices") {
                     // Console.WriteLine(payload);
@@ -105,6 +109,10 @@ namespace Home.Devices.Zigbee {
 
             _mqtt.UseConnectedHandler(e => {
                 _logger.LogInformation("Connected");
+            });
+
+            _mqtt.UseDisconnectedHandler(e => {
+                _logger.LogInformation("Disconnected");
             });
 
             await _mqtt.StartAsync(options);

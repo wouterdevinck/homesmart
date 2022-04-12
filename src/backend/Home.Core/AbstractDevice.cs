@@ -12,8 +12,11 @@ namespace Home.Core {
         public string Manufacturer { get; protected init; }
         public string DeviceId { get; protected init; }
         public string FriendlyId { get; protected init; } 
-        public string Type { get; protected init; } 
-  
+        public string Type { get; protected init; }
+        public string Model { get; protected init; }
+        public string Version { get; protected init; }
+        public bool Reachable { get; protected set; }
+
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;
 
         protected void NotifyObservers(string property, object value) {

@@ -5,9 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Q42.HueApi" Version="3.19.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Home.Core\Home.Core.csproj" />
-    <PackageReference Include="MQTTnet" Version="3.0.15" />
-    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.15" />
   </ItemGroup>
 
 </Project>

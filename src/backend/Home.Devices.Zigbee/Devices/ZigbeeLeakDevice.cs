@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using Home.Core;
 using Home.Core.Configuration.Models;
+using Home.Core.Devices;
 using Home.Devices.Zigbee.Models;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeeLeakDevice : ZigbeeDevice {
+    public class ZigbeeLeakDevice : ZigbeeDevice, IBatteryDevice, IWaterLeakSensor {
 
         public double Battery { get; private set; }
         public bool Leak { get; private set; }
