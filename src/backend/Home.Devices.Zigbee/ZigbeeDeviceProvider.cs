@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Configuration;
@@ -11,8 +11,9 @@ using Home.Devices.Zigbee.Devices;
 using Home.Devices.Zigbee.Models;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Client.Options;
+using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
+using MQTTnet.Packets;
 using Newtonsoft.Json;
 
 namespace Home.Devices.Zigbee {
@@ -54,24 +55,19 @@ namespace Home.Devices.Zigbee {
         public override async Task ConnectAsync() {
             _logger.LogInformation($"Connecting to {_configuration.Ip}");
 
-            var options = new ManagedMqttClientOptionsBuilder()
-               .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))
-               .WithClientOptions(new MqttClientOptionsBuilder()
-                   .WithTcpServer(_configuration.Ip)
-                   .Build())
-               .Build();
+            var mqttFactory = new MqttFactory();
 
-            _mqtt = new MqttFactory().CreateManagedMqttClient();
+            _mqtt = mqttFactory.CreateManagedMqttClient();
 
-            //await _mqtt.SubscribeAsync(
-            //    new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/#").Build()
-            //);
+            var mqttClientOptions = new MqttClientOptionsBuilder()
+                .WithTcpServer(_configuration.Ip)
+                .Build();
 
-            await _mqtt.SubscribeAsync(
-                new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/bridge/devices").Build()
-            );
+            var managedMqttClientOptions = new ManagedMqttClientOptionsBuilder()
+                .WithClientOptions(mqttClientOptions)
+                .Build();
 
-            _mqtt.UseApplicationMessageReceivedHandler(async e => {
+            _mqtt.ApplicationMessageReceivedAsync += async e => {
                 var topic = e.ApplicationMessage.Topic;
                 var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
@@ -87,10 +83,10 @@ namespace Home.Devices.Zigbee {
                         x.InterviewCompleted
                     ).Select(x => DeviceFactory(x)).Where(x => x != null).ToList());
                     NotifyObservers(_devices);
-                    await _mqtt.SubscribeAsync(
+                    await _mqtt.SubscribeAsync(new List<MqttTopicFilter> {
                         new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/+").Build(),
                         new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/+/availability").Build()
-                    );
+                    });
                 } else {
                     var topicParts = topic.Split('/');
                     if (_devices.SingleOrDefault(x => x.Name == topicParts[1]) is ZigbeeDevice device) {
@@ -104,18 +100,23 @@ namespace Home.Devices.Zigbee {
                         }
                     }
                 }
+            };
 
-            });
-
-            _mqtt.UseConnectedHandler(e => {
+            _mqtt.ConnectedAsync += e => {
                 _logger.LogInformation("Connected");
-            });
+                return Task.CompletedTask;
+            };
 
-            _mqtt.UseDisconnectedHandler(e => {
+            _mqtt.DisconnectedAsync += e => {
                 _logger.LogInformation("Disconnected");
-            });
+                return Task.CompletedTask;
+            };
 
-            await _mqtt.StartAsync(options);
+            await _mqtt.StartAsync(managedMqttClientOptions);
+
+            await _mqtt.SubscribeAsync(new List<MqttTopicFilter> {
+                new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/bridge/devices").Build()
+            });
 
         }
 
