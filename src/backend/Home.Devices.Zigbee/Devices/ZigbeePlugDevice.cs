@@ -13,7 +13,7 @@ namespace Home.Devices.Zigbee.Devices {
         public bool On { get; protected set; }
 
         public async Task TurnOnAsync() {
-            await Mqtt.PublishAsync($"{_configuration.BaseTopic}/{Name}/set", "{\"state\":\"ON\"}");
+            await Mqtt.EnqueueAsync($"{_configuration.BaseTopic}/{Name}/set", "{\"state\":\"ON\"}");
             On = true;
             NotifyObservers("on", On);
             // TODO Use model for JSON payload
@@ -22,7 +22,7 @@ namespace Home.Devices.Zigbee.Devices {
         }
 
         public async Task TurnOffAsync() {
-            await Mqtt.PublishAsync($"{_configuration.BaseTopic}/{Name}/set", "{\"state\":\"OFF\"}");
+            await Mqtt.EnqueueAsync($"{_configuration.BaseTopic}/{Name}/set", "{\"state\":\"OFF\"}");
             On = false;
             NotifyObservers("on", On);
             // TODO Use model for JSON payload
