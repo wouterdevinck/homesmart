@@ -116,7 +116,7 @@ namespace Home.Devices.Hue {
             var devices = _devices.ToList();
             var newDevices = allDevices.Where(x => devices.All(y => y.DeviceId != x.DeviceId)).ToList();
             var existingDevices = allDevices.Where(x => devices.Any(y => y.DeviceId == x.DeviceId)).ToList();
-            var updatedDevices = existingDevices.Where(x => !x.Equals(devices.Single(y => y.DeviceId == x.DeviceId))).ToList();
+            var updatedDevices = existingDevices.Where(x => !x.Equals(devices.Single(y => y.DeviceId == x.DeviceId))).ToList(); // TODO depends on equals impl
 
             // Update the repository
             _devices.AddRange(newDevices);

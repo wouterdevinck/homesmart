@@ -75,18 +75,31 @@ namespace Home.Devices.Zigbee {
                 _logger.LogInformation($"Topic = {topic} - Payload = {payload}");
 
                 if (topic == $"{_configuration.BaseTopic}/bridge/devices") {
-                    // Console.WriteLine(payload);
-                    var devices = JsonConvert.DeserializeObject<List<DeviceModel>>(payload);
-                    _devices.Clear();
-                    _devices.AddRange(devices.Where(x =>
-                        x.Type != "Coordinator" &&
-                        x.InterviewCompleted
-                    ).Select(x => DeviceFactory(x)).Where(x => x != null).ToList());
-                    NotifyObservers(_devices);
-                    await _mqtt.SubscribeAsync(new List<MqttTopicFilter> {
-                        new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/+").Build(),
-                        new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/+/availability").Build()
-                    });
+                    
+                    var firstTime = !_devices.Any();
+
+                    var devices = JsonConvert.DeserializeObject<List<DeviceModel>>(payload).Where(x =>
+                        x.Type != "Coordinator" && x.InterviewCompleted).ToList();
+
+                    var newDevices = devices
+                        .Where(x => _devices.All(y => y.DeviceId != x.Id))
+                        .Select(DeviceFactory)
+                        .Where(x => x != null)
+                        .ToList();
+
+                    // var existingDevices = devices.Where(x => _devices.Any(y => y.DeviceId == x.Id)).ToList();
+                    // TODO Update existing devices? Do any changes come this way?
+
+                    _devices.AddRange(newDevices);
+                    NotifyObservers(newDevices);
+
+                    if (firstTime) {
+                        await _mqtt.SubscribeAsync(new List<MqttTopicFilter> {
+                            new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/+").Build(),
+                            new MqttTopicFilterBuilder().WithTopic($"{_configuration.BaseTopic}/+/availability").Build()
+                        });
+                    }
+
                 } else {
                     var topicParts = topic.Split('/');
                     if (_devices.SingleOrDefault(x => x.Name == topicParts[1]) is ZigbeeDevice device) {
