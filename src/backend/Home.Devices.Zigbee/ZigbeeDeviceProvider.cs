@@ -78,13 +78,14 @@ namespace Home.Devices.Zigbee {
                     
                     var firstTime = !_devices.Any();
 
-                    var devices = JsonConvert.DeserializeObject<List<DeviceModel>>(payload).Where(x =>
-                        x.Type != "Coordinator" && x.InterviewCompleted).ToList();
-
-                    var newDevices = devices
-                        .Where(x => _devices.All(y => y.DeviceId != x.Id))
+                    var devices = JsonConvert.DeserializeObject<List<DeviceModel>>(payload)
+                        .Where(x => x.Type != "Coordinator" && x.InterviewCompleted)
                         .Select(DeviceFactory)
                         .Where(x => x != null)
+                        .ToList();
+
+                    var newDevices = devices
+                        .Where(x => _devices.All(y => y.DeviceId != x.DeviceId))
                         .ToList();
 
                     _logger.LogInformation($"Device list: first time = {firstTime}, {devices.Count()} devices, {newDevices.Count()} new devices");
