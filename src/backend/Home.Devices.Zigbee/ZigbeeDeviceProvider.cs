@@ -87,6 +87,8 @@ namespace Home.Devices.Zigbee {
                         .Where(x => x != null)
                         .ToList();
 
+                    _logger.LogInformation($"Device list: first time = {firstTime}, {devices.Count()} devices, {newDevices.Count()} new devices");
+
                     // var existingDevices = devices.Where(x => _devices.Any(y => y.DeviceId == x.Id)).ToList();
                     // TODO Update existing devices? Do any changes come this way?
 
