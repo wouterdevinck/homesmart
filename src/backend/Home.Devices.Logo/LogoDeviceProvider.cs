@@ -57,8 +57,9 @@ namespace Home.Devices.Logo {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");
                 return;
             }
-            _devices.Clear();
-            _devices.AddRange(await GetAllDevicesAsync());
+            var devices = await GetAllDevicesAsync();
+            var newDevices = devices.Where(x => _devices.All(y => y.DeviceId != x.DeviceId)).ToList();
+            _devices.AddRange(newDevices);
             foreach (var device in _devices) {
                 device.UpdateAvailability(true);
             }
