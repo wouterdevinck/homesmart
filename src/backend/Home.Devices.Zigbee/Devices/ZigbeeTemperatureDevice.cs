@@ -11,7 +11,7 @@ namespace Home.Devices.Zigbee.Devices {
 
         public double Battery { get; private set; }
         public double Humidity { get; private set; }
-        public int Pressure { get; private set; }
+        public double Pressure { get; private set; }
         public double Temperature { get; private set; }
 
         public ZigbeeTemperatureDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(models, model, mqtt, configuration) {

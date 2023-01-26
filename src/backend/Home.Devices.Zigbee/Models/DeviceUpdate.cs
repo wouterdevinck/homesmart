@@ -24,7 +24,7 @@ namespace Home.Devices.Zigbee.Models {
         public double Humidity { get; set; }
 
         [JsonProperty("pressure")]
-        public int Pressure { get; set; }
+        public double Pressure { get; set; }
 
         [JsonProperty("temperature")]
         public double Temperature { get; set; }
