@@ -1,13 +1,18 @@
 export default {
   methods: {
     getAgo: function(time) {
-      return timeAgo(Date.parse(time))
+      if(time) {
+        return timeAgo(Date.parse(time))
+      } else {
+        return ''
+      }
     }
   }
 }
 
 
 // https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
+// + bugfix for "just now"
 
 const epochs = [
   ['year', 31536000],
@@ -32,6 +37,9 @@ const getDuration = (timeAgoInSeconds) => {
 
 const timeAgo = (date) => {
   const timeAgoInSeconds = Math.floor((new Date() - new Date(date)) / 1000)
+  if (timeAgoInSeconds == 0) {
+    return 'just now'
+  }
   const {interval, epoch} = getDuration(timeAgoInSeconds)
   const suffix = interval === 1 ? '' : 's'
   return `${interval} ${epoch}${suffix} ago`
