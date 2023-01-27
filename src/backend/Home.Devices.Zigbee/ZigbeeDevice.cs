@@ -1,17 +1,22 @@
 using System;
 using System.Collections.Generic;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Devices.Zigbee.Models;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee {
 
-    public abstract class ZigbeeDevice : AbstractDevice {
+    [Device]
+    public abstract partial class ZigbeeDevice : AbstractDevice {
 
         protected IManagedMqttClient Mqtt;
 
+        [DeviceProperty]
         public string PowerSource { get; protected set; }
+
+        [DeviceProperty]
         public DateTime LastSeen { get; protected set; }
 
         protected ZigbeeConfiguration _configuration;

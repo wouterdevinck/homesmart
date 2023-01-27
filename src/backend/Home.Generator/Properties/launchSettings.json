@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Logo": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Home.Core\\Home.Core.csproj"
+    }
+  }
+}

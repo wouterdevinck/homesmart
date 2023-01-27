@@ -1,0 +1,42 @@
+using System;
+using Home.Core.Interfaces;
+
+namespace {{ Namespace }} {
+
+    partial class {{ Classname }} {
+
+        public void Update(IDevice device) {
+            var other = device as {{ Classname }};
+            if (other is null) throw new Exception("Type mismatch!");
+            if (DeviceId != other.DeviceId) throw new Exception("ID mismatch!");
+            {{- if Device.IsAbstract == false }}base.Update(device);{{ end }}
+            {{~ for property in Device.Properties ~}}
+            if ({{ property.FieldName }} != other.{{ property.FieldName }}) {
+                {{ property.FieldName }} = other.{{ property.FieldName }};
+                NotifyObservers(nameof({{ property.FieldName }}), {{ property.FieldName }});
+            }
+            {{~ end ~}}
+        }
+
+        private bool Equals({{ Classname }} other) {
+            return base.Equals(other){{if Device.Properties | array.size > 0}} &&{{ end }}
+            {{~ for property in Device.Properties ~}}
+                {{ property.FieldName }} == other.{{ property.FieldName }}
+                {{- if !for.last }} &&{{ end }}
+            {{~ end ~}}
+            ;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals(({{ Classname }})obj);
+        }
+
+        public override int GetHashCode() {
+            return HashCode.Combine(DeviceId);
+        }
+
+    }
+
+}

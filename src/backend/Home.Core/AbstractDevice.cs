@@ -2,19 +2,36 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Home.Core.Attributes;
 using Home.Core.Interfaces;
 
 namespace Home.Core {
 
-    public abstract class AbstractDevice : IDevice {
+    [Device]
+    public  abstract partial class AbstractDevice : IDevice {
 
-        public string Name { get; protected init; }
-        public string Manufacturer { get; protected init; }
-        public string DeviceId { get; protected init; }
-        public string FriendlyId { get; protected init; } 
-        public string Type { get; protected init; }
-        public string Model { get; protected init; }
-        public string Version { get; protected init; }
+        [DeviceProperty]
+        public string Name { get; protected set; }
+
+        [DeviceProperty]
+        public string Manufacturer { get; protected set; }
+
+        [DeviceProperty]
+        public string DeviceId { get; protected set; }
+
+        [DeviceProperty]
+        public string FriendlyId { get; protected set; }
+
+        [DeviceProperty]
+        public string Type { get; protected set; }
+
+        [DeviceProperty]
+        public string Model { get; protected set; }
+
+        [DeviceProperty]
+        public string Version { get; protected set; }
+
+        [DeviceProperty]
         public bool Reachable { get; protected set; }
 
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;

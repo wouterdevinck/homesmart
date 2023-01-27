@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Devices;
 using Q42.HueApi;
 
 namespace Home.Devices.Hue.Common {
 
-    public abstract class HueOnOffDevice : HueDevice, IOnOffDevice {
+    [Device]
+    public abstract partial class HueOnOffDevice : HueDevice, IOnOffDevice {
 
         protected HueOnOffDevice(HueClient hue, Light light) : base(hue, light.Id) {
             DeviceId = $"HUE-LIGHT-{light.UniqueId}";
@@ -18,6 +20,7 @@ namespace Home.Devices.Hue.Common {
             Version = light.SoftwareVersion;
         }
 
+        [DeviceProperty]
         public bool On { get; protected set; }
 
         public async Task TurnOnAsync() {

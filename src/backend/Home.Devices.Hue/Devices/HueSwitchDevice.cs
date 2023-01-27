@@ -1,5 +1,6 @@
 using System;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Devices;
 using Home.Devices.Hue.Common;
 using Q42.HueApi;
@@ -7,11 +8,16 @@ using Q42.HueApi.Models;
 
 namespace Home.Devices.Hue.Devices {
 
+    [Device]
     public partial class HueSwitchDevice : HueDevice, IBatteryDevice {
-        
+
+        [DeviceProperty]
         public double Battery { get; private set; }
+
+        [DeviceProperty]
         public int ButtonEvent { get; private set; }
-        
+
+        [DeviceProperty]
         public DateTime SensorUpdate { get; private set; }
 
         public HueSwitchDevice(Sensor sensor, HueClient hue) : base(hue, sensor.Id) {

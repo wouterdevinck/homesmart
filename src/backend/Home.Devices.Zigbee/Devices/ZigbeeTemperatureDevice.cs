@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Devices.Zigbee.Models;
@@ -7,11 +8,19 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeeTemperatureDevice : ZigbeeDevice, IBatteryDevice, ITemperatureSensor, IHumiditySensor, IPressureSensor {
+    [Device]
+    public partial class ZigbeeTemperatureDevice : ZigbeeDevice, IBatteryDevice, ITemperatureSensor, IHumiditySensor, IPressureSensor {
 
+        [DeviceProperty]
         public double Battery { get; private set; }
+
+        [DeviceProperty]
         public double Humidity { get; private set; }
+
+        [DeviceProperty]
         public double Pressure { get; private set; }
+
+        [DeviceProperty]
         public double Temperature { get; private set; }
 
         public ZigbeeTemperatureDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(models, model, mqtt, configuration) {

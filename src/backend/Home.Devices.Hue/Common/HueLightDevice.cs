@@ -1,18 +1,21 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Devices;
 using Q42.HueApi;
 
 namespace Home.Devices.Hue.Common {
 
-    public abstract class HueLightDevice : HueOnOffDevice, IDimmableLight {
+    [Device]
+    public abstract partial class HueLightDevice : HueOnOffDevice, IDimmableLight {
 
         public HueLightDevice(Light light, HueClient hue) : base(hue, light) {
             Brightness = light.State.Brightness;
             Type = Helpers.GetTypeString(Helpers.DeviceType.Light);
         }
-        
+
+        [DeviceProperty]
         public byte Brightness { get; protected set; }
 
         public async Task SetBrightnessAsync(byte bri) {

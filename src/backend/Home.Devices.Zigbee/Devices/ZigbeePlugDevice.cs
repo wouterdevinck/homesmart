@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Devices.Zigbee.Models;
@@ -8,8 +9,10 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeePlugDevice : ZigbeeDevice, IOnOffDevice {
+    [Device]
+    public partial class ZigbeePlugDevice : ZigbeeDevice, IOnOffDevice {
 
+        [DeviceProperty]
         public bool On { get; protected set; }
 
         public async Task TurnOnAsync() {
