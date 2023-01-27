@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentModbus;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Microsoft.Extensions.Logging;
@@ -11,11 +12,13 @@ using Newtonsoft.Json;
 
 namespace Home.Devices.Logo {
 
-    public class LogoLightDevice : AbstractDevice, IOnOffDevice {
+    [Device]
+    public partial class LogoLightDevice : AbstractDevice, IOnOffDevice {
 
         [JsonIgnore]
         public int OutputNumber { get; private set; }
 
+        [DeviceProperty]
         public bool On { get; private set; }
 
         private readonly ILogger _logger;

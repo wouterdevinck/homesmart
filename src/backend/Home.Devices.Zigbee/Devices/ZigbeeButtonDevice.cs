@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Devices.Zigbee.Models;
@@ -8,11 +9,15 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeeButtonDevice : ZigbeeDevice, IPushButton, IBatteryDevice {
+    [Device]
+    public partial class ZigbeeButtonDevice : ZigbeeDevice, IPushButton, IBatteryDevice {
 
         public event EventHandler SinglePress;
 
+        [DeviceProperty]
         public double Battery { get; private set; }
+
+        [DeviceProperty]
         public string Action { get; private set; }
 
         public ZigbeeButtonDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : 

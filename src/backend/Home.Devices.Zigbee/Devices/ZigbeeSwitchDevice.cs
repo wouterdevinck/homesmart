@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Home.Core;
+using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Devices.Zigbee.Models;
@@ -7,10 +8,16 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Home.Devices.Zigbee.Devices {
 
-    public class ZigbeeSwitchDevice : ZigbeeDevice, IBatteryDevice {
+    [Device]
+    public partial class ZigbeeSwitchDevice : ZigbeeDevice, IBatteryDevice {
 
+        [DeviceProperty]
         public double Battery { get; private set; }
+
+        [DeviceProperty]
         public string Action { get; private set; }
+
+        [DeviceProperty]
         public byte Brightness { get; private set; }
         
         public ZigbeeSwitchDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(models, model, mqtt, configuration) {
