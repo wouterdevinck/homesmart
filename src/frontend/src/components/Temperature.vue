@@ -19,7 +19,13 @@
 
 <script>
 export default {
-  props: ['device']
+  props: ['device'],
+  created () {
+    var self = this;
+    setInterval(function() {
+      self.$forceUpdate()
+    }, 1000);
+  }
 }
 </script>
 
