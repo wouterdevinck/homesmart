@@ -108,8 +108,15 @@ namespace Home.Devices.Zigbee {
                     if (_devices.SingleOrDefault(x => x.Name == topicParts[1]) is ZigbeeDevice device) {
                         if (topicParts.Length == 2) {
                             // Console.WriteLine($"Message {topicParts[1]}");
-                            var update = JsonConvert.DeserializeObject<DeviceUpdate>(payload);
-                            device.ProcessZigbeeUpdate(update);
+                            DeviceUpdate update = null;
+                            try {
+                                update = JsonConvert.DeserializeObject<DeviceUpdate>(payload);
+                            } catch (JsonException ex) {
+                                _logger.LogError($"Error parsing DeviceUpdate: {ex.Message}");
+                            }
+                            if (update != null) {
+                                device.ProcessZigbeeUpdate(update);
+                            }
                         } else if (topicParts.Length == 3 && topicParts[2] == "availability") {
                             // Console.WriteLine($"Availability {topicParts[1]}");
                             device.UpdateAvailability(payload == "online");
