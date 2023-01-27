@@ -9,7 +9,7 @@ namespace {{ Namespace }} {
             var other = device as {{ Classname }};
             if (other is null) throw new Exception("Type mismatch!");
             if (DeviceId != other.DeviceId) throw new Exception("ID mismatch!");
-            {{- if Device.IsAbstract == false }}base.Update(device);{{ end }}
+            {{ if Classname != "AbstractDevice" }}base.Update(device);{{ end }}
             {{~ for property in Device.Properties ~}}
             if ({{ property.FieldName }} != other.{{ property.FieldName }}) {
                 {{ property.FieldName }} = other.{{ property.FieldName }};
