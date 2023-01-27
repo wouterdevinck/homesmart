@@ -21,6 +21,8 @@ namespace Home.Core.Interfaces {
 
         Task InvokeCommand(string command, Dictionary<string, object> args = null);
 
+        void Update(IDevice device);
+
     }
 
 }

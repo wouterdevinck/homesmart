@@ -116,12 +116,12 @@ namespace Home.Devices.Hue {
             var devices = _devices.ToList();
             var newDevices = allDevices.Where(x => devices.All(y => y.DeviceId != x.DeviceId)).ToList();
             var existingDevices = allDevices.Where(x => devices.Any(y => y.DeviceId == x.DeviceId)).ToList();
-            var updatedDevices = existingDevices.Where(x => !x.Equals(devices.Single(y => y.DeviceId == x.DeviceId))).ToList(); // TODO depends on equals impl
+            var updatedDevices = existingDevices.Where(x => !x.Equals(devices.Single(y => y.DeviceId == x.DeviceId))).ToList();
 
             // Update the repository
             _devices.AddRange(newDevices);
             foreach (var device in updatedDevices) {
-                // _devices.Single(x => x.DeviceId == device.DeviceId).Update(device);  // TODO !!!!!!!!!!!
+                _devices.Single(x => x.DeviceId == device.DeviceId).Update(device);
             }
 
             // Notify for new devices
