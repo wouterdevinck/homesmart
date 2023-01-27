@@ -60,7 +60,6 @@ namespace Home.Generator {
 
             // Return a model
             return new DeviceClassModel {
-                IsAbstract = symbol.IsAbstract,
                 Classname = classSyntax.Identifier.Text,
                 Namespace = symbol.ContainingNamespace.ToDisplayString(),
                 Device = new DeviceModel(properties)

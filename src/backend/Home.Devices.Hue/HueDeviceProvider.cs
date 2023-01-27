@@ -133,9 +133,9 @@ namespace Home.Devices.Hue {
             }
 
             // Log some info
-            // Console.WriteLine($"Polled Hue bridge at {DateTime.Now}. " +
-            //                   $"Total of {allDevices.Count} devices, {newDevices.Count} new and {updatedDevices.Count} updated. " +
-            //                   $"Next poll in {_timer.Interval}ms. ");
+            _logger.LogInformation($"Polled Hue bridge at {DateTime.Now}. " +
+                $"Total of {allDevices.Count} devices, {newDevices.Count} new and {updatedDevices.Count} updated. " +
+                $"Next poll in {_timer.Interval}ms. ");
 
         }
 
