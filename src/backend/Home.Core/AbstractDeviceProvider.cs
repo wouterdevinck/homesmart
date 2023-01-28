@@ -31,6 +31,10 @@ namespace Home.Core {
             automation.Install(this);
         }
 
+        public void InstallTelemetry(ITelemetry telemetry) {
+            telemetry.Install(this);
+        }
+
         public IEnumerable<IAutomation> GetAutomations() {
             return _automations;
         }

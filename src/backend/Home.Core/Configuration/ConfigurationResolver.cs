@@ -19,28 +19,34 @@ namespace Home.Core.Configuration {
         }
 
         public bool Resolve(NodeEvent nodeEvent, ref Type currentType) {
+            Type type = null;
             if (currentType == typeof(IDeviceProviderConfiguration)) {
                 var tag = (_previousNodeEvent as Scalar)?.Value;
-                if (!string.IsNullOrEmpty(tag)) {
-                    var providerDescriptor = _providerDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == ProviderDescriptionType.DeviceProvider);
-                    if (providerDescriptor != null) {
-                        currentType = providerDescriptor.ConfigurationType;
-                        return true;
-                    }
-                }
+                type = GetConfigurationTypeByTagAndType(tag, ProviderDescriptionType.DeviceProvider);
             } else if (currentType == typeof(AutomationConfigurationModel)) {
                 _currentAutomationType = (_previousNodeEvent as Scalar)?.Value;
             } else if (currentType == typeof(IAutomationConfiguration)) {
-                if (!string.IsNullOrEmpty(_currentAutomationType)) {
-                    var providerDescriptor = _providerDescriptors.SingleOrDefault(x => x.Tag == _currentAutomationType && x.Type == ProviderDescriptionType.Automation);
-                    if (providerDescriptor != null) {
-                        currentType = providerDescriptor.ConfigurationType;
-                        return true;
-                    }
-                }
-            } 
+                type = GetConfigurationTypeByTagAndType(_currentAutomationType, ProviderDescriptionType.Automation);
+            } else if (currentType == typeof(ITelemetryConfiguration)) {
+                var tag = (_previousNodeEvent as Scalar)?.Value;
+                type = GetConfigurationTypeByTagAndType(tag, ProviderDescriptionType.Telemetry);
+            }
+            if (type != null) {
+                currentType = type;
+                return true;
+            }
             _previousNodeEvent = nodeEvent;
             return false;
+        }
+
+        private Type GetConfigurationTypeByTagAndType(string tag, ProviderDescriptionType type) {
+            if (!string.IsNullOrEmpty(tag)) {
+                var providerDescriptor = _providerDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == type);
+                if (providerDescriptor != null) {
+                    return providerDescriptor.ConfigurationType;
+                }
+            }
+            return null;
         }
 
     }

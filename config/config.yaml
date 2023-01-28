@@ -31,6 +31,8 @@ devices:
     friendlyId: lights-hallway
   - deviceId: LOGO-LIGHT-8257-2
     friendlyId: lights-garage
+  - deviceId: ZIGBEE-0x00158d0006c6e6e6
+    friendlyId: sensor-living
 automations:
   - pushOnOff:
       description: Pushbutton hallway
@@ -42,3 +44,10 @@ automations:
       configuration:
         pushButtonId: button-garage
         onOffDeviceId: lights-garage
+telemetry:
+  influxdb:
+    url: http://192.168.1.180:8086
+    token: xxx
+    points:
+      - deviceId: sensor-living
+        parameters: [ 'temperature', 'humidity', 'pressure' ]

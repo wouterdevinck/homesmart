@@ -8,6 +8,7 @@ using Home.Core.Logging;
 using Home.Devices.Hue;
 using Home.Devices.Logo;
 using Home.Devices.Zigbee;
+using Home.Telemetry;
 using Home.Web.Notifications;
 using Home.Web.Services;
 using Microsoft.AspNetCore.Builder;
@@ -25,7 +26,8 @@ namespace Home.Web {
             HueDeviceProvider.Descriptor,
             LogoDeviceProvider.Descriptor, 
             ZigbeeDeviceProvider.Descriptor,
-            PushOnOffAutomation.Descriptor
+            PushOnOffAutomation.Descriptor,
+            InfluxDbTelemetry.Descriptor
         });
 
         public void ConfigureServices(IServiceCollection services) {
