@@ -28,6 +28,7 @@ namespace Home.Devices.Hue {
         private const string TypePlug = "On/Off plug-in unit";
         private const string TypeDimmable = "Dimmable light";
         private const string TypeColorTemperature = "Color temperature light";
+        private const string TypeExtendedColor = "Extended color light";
 
         public HueDeviceProvider(List<DeviceConfigurationModel> models, ILogger logger, IDeviceProviderConfiguration configuration) {
             _models = models;
@@ -92,6 +93,7 @@ namespace Home.Devices.Hue {
                 TypePlug => new HuePlugDevice(x, _hue),
                 TypeDimmable => new HueDimmableLightDevice(x, _hue),
                 TypeColorTemperature => new HueColorTemperatureLightDevice(x, _hue),
+                TypeExtendedColor => new HueExtendedColorLightDevice(x, _hue),
                 _ => null
             })).Where(x => x is not null));
 
