@@ -15,13 +15,15 @@ namespace Home.Core {
                 "IKEA of Sweden" => "IKEA",
                 "Philips" => "Philips",
                 Signify => "Philips",
+                "_TZ3210_ttkgurpb" => "Miboxer",
                 _ => manufacturer
             };
         }
 
         public static string HarmonizeModel(this string model) {
             return model switch {
-                "TRADFRI bulb E14 W op/ch 400lm" => "LED1649C5",
+                "TRADFRI bulb E14 W op/ch 400lm" => "LED1649C5", // IKEA LED1649C5
+                "TS0504B" => "FUT038Z", // Miboxer FUT038Z
                 _ => model
             };
         }
