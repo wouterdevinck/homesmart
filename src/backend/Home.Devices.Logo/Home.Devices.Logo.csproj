@@ -11,5 +11,4 @@
     <PackageReference Include="FluentModbus" Version="5.0.2" />
   </ItemGroup>
 
-
 </Project>

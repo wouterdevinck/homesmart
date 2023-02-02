@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Home.Devices.Hue\Home.Devices.Hue.csproj" />
     <ProjectReference Include="..\Home.Devices.Logo\Home.Devices.Logo.csproj" />
     <ProjectReference Include="..\Home.Devices.Zigbee\Home.Devices.Zigbee.csproj" />
+    <ProjectReference Include="..\Home.Telemetry\Home.Telemetry.csproj" />
   </ItemGroup>
 
   <ItemGroup>

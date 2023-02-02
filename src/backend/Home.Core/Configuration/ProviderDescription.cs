@@ -4,7 +4,8 @@ namespace Home.Core.Configuration {
 
     public enum ProviderDescriptionType {
         DeviceProvider,
-        Automation
+        Automation,
+        Telemetry
     }
 
     public class ProviderDescription {

@@ -12,6 +12,7 @@ namespace Home.Core.Interfaces {
         Task DisconnectAsync();
 
         void InstallAutomation(string description, IAutomation automation);
+        void InstallTelemetry(ITelemetry automation);
 
         IEnumerable<IDevice> GetDevices();
         IEnumerable<IAutomation> GetAutomations();
