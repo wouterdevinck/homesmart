@@ -41,7 +41,7 @@ namespace Home.Core {
         }
 
         public bool HasId(string id) {
-            return FriendlyId.Equals(id) || DeviceId.Equals(id);
+            return (!string.IsNullOrEmpty(FriendlyId) && FriendlyId.Equals(id)) || DeviceId.Equals(id);
         }
 
         // TODO Support arguments, look into implementing this using a generator again? See v3
