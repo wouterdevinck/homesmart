@@ -1,6 +1,6 @@
 namespace Home.Core.Interfaces {
 
-    public interface IAutomation {
+    public interface IDeviceConsumer {
 
         string Description { get; set; }
         string Type { get; }

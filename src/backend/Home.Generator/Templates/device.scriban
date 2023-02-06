@@ -5,7 +5,7 @@ namespace {{ Namespace }} {
 
     partial class {{ Classname }} {
 
-        public void Update(IDevice device) {
+        public {{ if Classname != "AbstractDevice" }}new{{ end }} void Update(IDevice device) {
             var other = device as {{ Classname }};
             if (other is null) throw new Exception("Type mismatch!");
             if (DeviceId != other.DeviceId) throw new Exception("ID mismatch!");

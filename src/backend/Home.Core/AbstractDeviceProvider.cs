@@ -9,7 +9,7 @@ namespace Home.Core {
 
         public event EventHandler<IDevice> DeviceDiscovered;
 
-        private readonly List<IAutomation> _automations = new();
+        private readonly List<IDeviceConsumer> _automations = new();
 
         public abstract IEnumerable<IDevice> GetDevices();
         public abstract Task ConnectAsync();
@@ -25,17 +25,13 @@ namespace Home.Core {
             DeviceDiscovered?.Invoke(this, device);
         }
 
-        public void InstallAutomation(string description, IAutomation automation) {
+        public void InstallDeviceConsumer(string description, IDeviceConsumer automation) {
             automation.Description = description;
             _automations.Add(automation);
             automation.Install(this);
         }
 
-        public void InstallTelemetry(ITelemetry telemetry) {
-            telemetry.Install(this);
-        }
-
-        public IEnumerable<IAutomation> GetAutomations() {
+        public IEnumerable<IDeviceConsumer> GetDeviceConsumers() {
             return _automations;
         }
 

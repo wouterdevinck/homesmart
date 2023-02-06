@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Configuration;
+using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 using Home.Devices.Zigbee.Devices;
@@ -24,7 +24,7 @@ namespace Home.Devices.Zigbee {
         // TODO Reconnect working? - make all device unreachable when disconnected
         // TODO Try/catch everywhere?
 
-        public static ProviderDescription Descriptor = new("zigbee", ProviderDescriptionType.DeviceProvider, typeof(ZigbeeDeviceProvider), typeof(ZigbeeConfiguration));
+        public static Descriptor Descriptor = new("zigbee", typeof(ZigbeeDeviceProvider), typeof(ZigbeeConfiguration), DescriptorType.DeviceProvider);
 
         private readonly List<DeviceConfigurationModel> _models;
         private readonly ILogger _logger;
@@ -48,6 +48,7 @@ namespace Home.Devices.Zigbee {
                 "E1812" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
                 "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_models, model, _mqtt, _configuration),
                 "SJCGQ11LM" => new ZigbeeLeakDevice(_models, model, _mqtt, _configuration),
+                // TODO Repeater device
                 _ => null
             };
         }

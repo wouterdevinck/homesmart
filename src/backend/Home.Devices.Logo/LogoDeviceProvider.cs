@@ -7,6 +7,7 @@ using System.Timers;
 using FluentModbus;
 using Home.Core;
 using Home.Core.Configuration;
+using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace Home.Devices.Logo {
 
     public class LogoDeviceProvider : AbstractDeviceProvider {
 
-        public static ProviderDescription Descriptor = new("logo", ProviderDescriptionType.DeviceProvider, typeof(LogoDeviceProvider), typeof(LogoConfiguration));
+        public static Descriptor Descriptor = new("logo", typeof(LogoDeviceProvider), typeof(LogoConfiguration), DescriptorType.DeviceProvider);
 
         private readonly List<LogoLightDevice> _devices;
         private readonly List<DeviceConfigurationModel> _models;

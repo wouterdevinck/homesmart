@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Home.Core;
 using Home.Core.Configuration;
+using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 using Home.Devices.Hue.Devices;
@@ -15,7 +16,7 @@ namespace Home.Devices.Hue {
 
     public class HueDeviceProvider : AbstractDeviceProvider {
 
-        public static ProviderDescription Descriptor = new("hue", ProviderDescriptionType.DeviceProvider, typeof(HueDeviceProvider), typeof(HueConfiguration));
+        public static Descriptor Descriptor = new("hue", typeof(HueDeviceProvider), typeof(HueConfiguration), DescriptorType.DeviceProvider);
 
         private readonly List<DeviceConfigurationModel> _models;
         private readonly ILogger _logger;

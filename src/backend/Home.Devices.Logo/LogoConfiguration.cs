@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Home.Core.Configuration;
+using Home.Core.Configuration.Interfaces;
 
 namespace Home.Devices.Logo {
 
