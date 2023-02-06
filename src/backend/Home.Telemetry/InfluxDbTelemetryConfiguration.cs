@@ -14,7 +14,7 @@ namespace Home.Telemetry {
     public class DataPoint {
 
         public string DeviceId { get; set; }
-        public List<string> Parameters { get; set; }
+        public List<string> Properties { get; set; }
 
     }
 

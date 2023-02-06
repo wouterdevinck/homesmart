@@ -60,20 +60,22 @@ namespace Home.Core {
             }
 
             // Telemetry
-            foreach (var telemetry in config.ConfigurationModel.Telemetry) {
-                var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == telemetry.Key && x.Type == ProviderDescriptionType.Telemetry).ProviderType;
-                if (implType == null) {
-                    _logger.LogError("Failed to add telemetry: type not found");
-                    continue;
+            if (config.ConfigurationModel.Telemetry != null) {
+                foreach (var telemetry in config.ConfigurationModel.Telemetry) {
+                    var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == telemetry.Key && x.Type == ProviderDescriptionType.Telemetry).ProviderType;
+                    if (implType == null) {
+                        _logger.LogError("Failed to add telemetry: type not found");
+                        continue;
+                    }
+                    var logger = loggerFactory.CreateLogger(implType);
+                    var impl = Activator.CreateInstance(implType, logger, telemetry.Value) as ITelemetry;
+                    if (impl == null) {
+                        _logger.LogError("Failed to add telemetry: implementation could not be constructed");
+                        continue;
+                    }
+                    _logger.LogInformation($"Adding telemetry: {telemetry.Key}");
+                    InstallTelemetry(impl);
                 }
-                var logger = loggerFactory.CreateLogger(implType);
-                var impl = Activator.CreateInstance(implType, logger, telemetry.Value) as ITelemetry;
-                if (impl == null) {
-                    _logger.LogError("Failed to add telemetry: implementation could not be constructed");
-                    continue;
-                }
-                _logger.LogInformation($"Adding telemetry: {telemetry.Key}");
-                InstallTelemetry(impl);
             }
 
         }

@@ -33,6 +33,8 @@ devices:
     friendlyId: lights-garage
   - deviceId: ZIGBEE-0x00158d0006c6e6e6
     friendlyId: sensor-living
+  - deviceId: ZIGBEE-0x00158d0006c4af92
+    friendlyId: leak-aquarium
 automations:
   - pushOnOff:
       description: Pushbutton hallway
@@ -44,10 +46,19 @@ automations:
       configuration:
         pushButtonId: button-garage
         onOffDeviceId: lights-garage
+  - opsgenieAlarm:
+      description: Aquarium leak alarm
+      configuration:
+        deviceId: leak-aquarium
+        property: leak
+        value: true
+        apiKey: xxx
+        responder: Wouter
+        message: "AQUARIUM LEAK"
 telemetry:
   influxdb:
     url: http://192.168.1.180:8086
     token: xxx
     points:
       - deviceId: sensor-living
-        parameters: [ 'temperature', 'humidity', 'pressure' ]
+        properties: [ 'temperature', 'humidity', 'pressure' ]
