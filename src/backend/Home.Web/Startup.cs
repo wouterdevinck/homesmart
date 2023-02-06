@@ -27,6 +27,7 @@ namespace Home.Web {
             LogoDeviceProvider.Descriptor, 
             ZigbeeDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
+            OpsgenieAlarmAutomation.Descriptor,
             InfluxDbTelemetry.Descriptor
         });
 

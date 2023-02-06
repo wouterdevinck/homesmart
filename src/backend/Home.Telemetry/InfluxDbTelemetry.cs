@@ -31,9 +31,9 @@ namespace Home.Telemetry {
         protected override void Start() {
             _logger.LogInformation("Telemetry starting");
             foreach(var device in Devices) {
-                var parameters = _configuration.Points.SingleOrDefault(x => x.DeviceId == device.Key).Parameters;
+                var properties = _configuration.Points.SingleOrDefault(x => x.DeviceId == device.Key).Properties;
                 device.Value.DeviceUpdate += (s, e) => {
-                    if (parameters.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase))) {
+                    if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase))) {
                         using var writeApi = _client.GetWriteApi();
                         var point = PointData.Measurement(e.Property)
                             .Tag("device", device.Key)
