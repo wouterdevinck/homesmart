@@ -10,12 +10,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Home.Telemetry {
 
-    public class InfluxDbTelemetry : AbstractTelemetry {
+    public class InfluxDbTelemetry : AbstractDeviceConsumer {
 
-        public static ProviderDescription Descriptor = new("influxdb", ProviderDescriptionType.Telemetry, typeof(InfluxDbTelemetry), typeof(InfluxDbTelemetryConfiguration));
+        public static Descriptor Descriptor = new("influxdbTelemetry", typeof(InfluxDbTelemetry), typeof(InfluxDbTelemetryConfiguration), DescriptorType.DeviceConsumer, DescriptorSubtype.Telemetry);
 
-        private const string Bucket = "homesmart";
-        private const string Org = "homesmart";
+        public override string Type => "InfluxDB Telemetry";
 
         private readonly ILogger _logger;
         private readonly InfluxDbTelemetryConfiguration _configuration;
@@ -39,7 +38,7 @@ namespace Home.Telemetry {
                             .Tag("device", device.Key)
                             .Field("value", e.Value)
                             .Timestamp(DateTime.UtcNow, WritePrecision.Ms);
-                        writeApi.WritePoint(point, Bucket, Org);
+                        writeApi.WritePoint(point, _configuration.Bucket, _configuration.Organization);
                     }
                 };
             }

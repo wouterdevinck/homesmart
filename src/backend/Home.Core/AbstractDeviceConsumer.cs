@@ -4,7 +4,10 @@ using Home.Core.Interfaces;
 
 namespace Home.Core {
 
-    public abstract class MultiDeviceConsumer {
+    public abstract class AbstractDeviceConsumer : IDeviceConsumer {
+
+        public string Description { get; set; }
+        public abstract string Type { get; }
 
         private readonly List<string> _deviceIds;
         private IDeviceProvider _provider;
@@ -13,7 +16,7 @@ namespace Home.Core {
 
         public bool Started { get; private set; }
 
-        public MultiDeviceConsumer(List<string> deviceIds) {
+        public AbstractDeviceConsumer(List<string> deviceIds) {
             _deviceIds = deviceIds;
             Devices = new Dictionary<string, IDevice>();
             Started = false;

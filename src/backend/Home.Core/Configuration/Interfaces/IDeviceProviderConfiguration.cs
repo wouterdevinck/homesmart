@@ -1,4 +1,4 @@
-namespace Home.Core.Configuration {
+namespace Home.Core.Configuration.Interfaces {
 
     public interface IDeviceProviderConfiguration {
 

@@ -8,7 +8,7 @@ using Home.Core.Interfaces;
 namespace Home.Core {
 
     [Device]
-    public  abstract partial class AbstractDevice : IDevice {
+    public abstract partial class AbstractDevice : IDevice {
 
         [DeviceProperty]
         public string Name { get; protected set; }

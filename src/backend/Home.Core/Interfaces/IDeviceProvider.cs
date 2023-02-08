@@ -11,11 +11,10 @@ namespace Home.Core.Interfaces {
         Task ConnectAsync();
         Task DisconnectAsync();
 
-        void InstallAutomation(string description, IAutomation automation);
-        void InstallTelemetry(ITelemetry automation);
+        void InstallDeviceConsumer(string description, IDeviceConsumer automation);
 
         IEnumerable<IDevice> GetDevices();
-        IEnumerable<IAutomation> GetAutomations();
+        IEnumerable<IDeviceConsumer> GetDeviceConsumers();
 
 
     }

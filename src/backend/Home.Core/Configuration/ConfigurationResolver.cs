@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -10,11 +11,11 @@ namespace Home.Core.Configuration {
     public class ConfigurationResolver : INodeTypeResolver {
 
         private NodeEvent _previousNodeEvent;
-        private string _currentAutomationType;
+        private string _currentDeviceConsumerType;
 
-        private List<ProviderDescription> _providerDescriptors;
+        private List<Descriptor> _providerDescriptors;
 
-        public ConfigurationResolver(List<ProviderDescription> providerDescriptors) {
+        public ConfigurationResolver(List<Descriptor> providerDescriptors) {
             _providerDescriptors = providerDescriptors;
         }
 
@@ -22,14 +23,11 @@ namespace Home.Core.Configuration {
             Type type = null;
             if (currentType == typeof(IDeviceProviderConfiguration)) {
                 var tag = (_previousNodeEvent as Scalar)?.Value;
-                type = GetConfigurationTypeByTagAndType(tag, ProviderDescriptionType.DeviceProvider);
-            } else if (currentType == typeof(AutomationConfigurationModel)) {
-                _currentAutomationType = (_previousNodeEvent as Scalar)?.Value;
-            } else if (currentType == typeof(IAutomationConfiguration)) {
-                type = GetConfigurationTypeByTagAndType(_currentAutomationType, ProviderDescriptionType.Automation);
-            } else if (currentType == typeof(ITelemetryConfiguration)) {
-                var tag = (_previousNodeEvent as Scalar)?.Value;
-                type = GetConfigurationTypeByTagAndType(tag, ProviderDescriptionType.Telemetry);
+                type = GetConfigurationTypeByTagAndType(tag, DescriptorType.DeviceProvider);
+            } else if (currentType == typeof(ConfigurationWithDescriptionModel<IDeviceConsumerConfiguration>)) {
+                _currentDeviceConsumerType = (_previousNodeEvent as Scalar)?.Value;
+            } else if (currentType == typeof(IDeviceConsumerConfiguration)) {
+                type = GetConfigurationTypeByTagAndType(_currentDeviceConsumerType, DescriptorType.DeviceConsumer);
             }
             if (type != null) {
                 currentType = type;
@@ -39,7 +37,7 @@ namespace Home.Core.Configuration {
             return false;
         }
 
-        private Type GetConfigurationTypeByTagAndType(string tag, ProviderDescriptionType type) {
+        private Type GetConfigurationTypeByTagAndType(string tag, DescriptorType type) {
             if (!string.IsNullOrEmpty(tag)) {
                 var providerDescriptor = _providerDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == type);
                 if (providerDescriptor != null) {

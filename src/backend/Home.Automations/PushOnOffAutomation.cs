@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using Home.Core;
 using Home.Core.Configuration;
+using Home.Core.Configuration.Interfaces;
 using Home.Core.Devices;
 using Microsoft.Extensions.Logging;
 
 namespace Home.Automations {
 
-    public class PushOnOffAutomation : AbstractAutomation {
+    public class PushOnOffAutomation : AbstractDeviceConsumer {
 
-        public static ProviderDescription Descriptor = new("pushOnOff", ProviderDescriptionType.Automation, typeof(PushOnOffAutomation), typeof(PushOnOffAutomationConfiguration));
+        public static Descriptor Descriptor = new("pushOnOff", typeof(PushOnOffAutomation), typeof(PushOnOffAutomationConfiguration), DescriptorType.DeviceConsumer, DescriptorSubtype.Automation);
+
+        public override string Type => "Toggle Button";
 
         private readonly ILogger _logger;
         private readonly PushOnOffAutomationConfiguration _configuration;
@@ -18,8 +21,6 @@ namespace Home.Automations {
             _logger = logger;
             _configuration = configuration;
         }
-
-        public override string Type => "ToggleButton";
 
         protected override void Start() {
             _logger.LogInformation("Automation starting");
@@ -37,7 +38,7 @@ namespace Home.Automations {
 
     }
 
-    public class PushOnOffAutomationConfiguration : IAutomationConfiguration {
+    public class PushOnOffAutomationConfiguration : IDeviceConsumerConfiguration {
 
         public string PushButtonId { get; set; }
         public string OnOffDeviceId { get; set; }

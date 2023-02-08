@@ -9,9 +9,9 @@ namespace Home.Core.Configuration {
     public class ConfigurationReader {
 
         public ConfigurationModel ConfigurationModel { get; private set; }
-        public List<ProviderDescription> ProviderDescriptors { get; private set; }
+        public List<Descriptor> ProviderDescriptors { get; private set; }
 
-        public ConfigurationReader(string configPath, List<ProviderDescription> providerDescriptors) {
+        public ConfigurationReader(string configPath, List<Descriptor> providerDescriptors) {
             var configYaml = File.ReadAllText(configPath);
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)

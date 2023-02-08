@@ -19,7 +19,7 @@ namespace Home.Core {
 
             // Device providers
             foreach (var provider in config.ConfigurationModel.DeviceProviders) {
-                var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == provider.Key && x.Type == ProviderDescriptionType.DeviceProvider).ProviderType;
+                var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == provider.Key && x.Type == DescriptorType.DeviceProvider).ProviderType;
                 if (implType == null) {
                     _logger.LogError("Failed to add device provider: type not found");
                     continue;
@@ -34,47 +34,28 @@ namespace Home.Core {
                 AddProvider(impl);
             }
 
-            // Automations
-            if (config.ConfigurationModel.Automations != null) {
-                foreach (var automation in config.ConfigurationModel.Automations) {
-                    var tag = automation.Keys.SingleOrDefault();
-                    var model = automation.SingleOrDefault().Value;
+            // Device consumers
+            if (config.ConfigurationModel.DeviceConsumers != null) {
+                foreach (var consumer in config.ConfigurationModel.DeviceConsumers) {
+                    var tag = consumer.Keys.SingleOrDefault();
+                    var model = consumer.SingleOrDefault().Value;
                     if (tag == null || model == null) {
-                        _logger.LogError("Failed to add automation: tag or model could not be read");
+                        _logger.LogError("Failed to add device consumer: tag or model could not be read");
                         continue;
                     }
-                    var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == ProviderDescriptionType.Automation).ProviderType;
+                    var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == tag && x.Type == DescriptorType.DeviceConsumer).ProviderType;
                     if (implType == null) {
-                        _logger.LogError("Failed to add automation: type not found");
+                        _logger.LogError("Failed to add device consumer: type not found");
                         continue;
                     }
                     var logger = loggerFactory.CreateLogger(implType);
-                    var impl = Activator.CreateInstance(implType, logger, model.Configuration) as IAutomation;
+                    var impl = Activator.CreateInstance(implType, logger, model.Configuration) as IDeviceConsumer;
                     if (impl == null) {
-                        _logger.LogError("Failed to add automation: implementation could not be constructed");
+                        _logger.LogError("Failed to add device consumer: implementation could not be constructed");
                         continue;
                     }
-                    _logger.LogInformation($"Adding automation: {tag} - {model.Description}");
-                    InstallAutomation(model.Description, impl);
-                }
-            }
-
-            // Telemetry
-            if (config.ConfigurationModel.Telemetry != null) {
-                foreach (var telemetry in config.ConfigurationModel.Telemetry) {
-                    var implType = config.ProviderDescriptors.SingleOrDefault(x => x.Tag == telemetry.Key && x.Type == ProviderDescriptionType.Telemetry).ProviderType;
-                    if (implType == null) {
-                        _logger.LogError("Failed to add telemetry: type not found");
-                        continue;
-                    }
-                    var logger = loggerFactory.CreateLogger(implType);
-                    var impl = Activator.CreateInstance(implType, logger, telemetry.Value) as ITelemetry;
-                    if (impl == null) {
-                        _logger.LogError("Failed to add telemetry: implementation could not be constructed");
-                        continue;
-                    }
-                    _logger.LogInformation($"Adding telemetry: {telemetry.Key}");
-                    InstallTelemetry(impl);
+                    _logger.LogInformation($"Adding device consumer: {tag} - {model.Description}");
+                    InstallDeviceConsumer(model.Description, impl);
                 }
             }
 

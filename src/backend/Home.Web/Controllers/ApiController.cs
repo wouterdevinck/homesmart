@@ -30,8 +30,8 @@ namespace Home.Web.Controllers {
 
         [HttpGet]
         [Route("automations")]
-        public IEnumerable<IAutomation> Automations() {
-            return _deviceProvider.GetAutomations().ToList();
+        public IEnumerable<IDeviceConsumer> Automations() {
+            return _deviceProvider.GetDeviceConsumers().ToList();
         }
 
     }

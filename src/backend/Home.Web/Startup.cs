@@ -22,7 +22,7 @@ namespace Home.Web {
 
         private static readonly string _configFilePath = Environment.GetEnvironmentVariable("HOME_CONFIG") ?? "config.yaml";
 
-        private readonly ConfigurationReader _config = new(_configFilePath, new List<ProviderDescription> {
+        private readonly ConfigurationReader _config = new(_configFilePath, new List<Descriptor> {
             HueDeviceProvider.Descriptor,
             LogoDeviceProvider.Descriptor, 
             ZigbeeDeviceProvider.Descriptor,
