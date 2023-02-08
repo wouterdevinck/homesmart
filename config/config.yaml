@@ -22,19 +22,74 @@ deviceProviders:
       maxPollInterval: 60000
       backOffInterval: 120000
       backOffFactor: 2
+rooms:
+  - id: livingroom
+    name: Living room
+  - id: kitchen
+    name: Kitchen
+  - id: kidsroom
+    name: Kids room
+  - id: office
+    name: Office
+  - id: hallway
+    name: Hallway
+  - id: garage
+    name: Garage
 devices:
   - deviceId: ZIGBEE-0x00158d0006d0ba73
     friendlyId: button-hallway
+    roomId: hallway
   - deviceId: ZIGBEE-0xb4e3f9fffe67d474
     friendlyId: button-garage
-  - deviceId: LOGO-LIGHT-8256-1
-    friendlyId: lights-hallway
-  - deviceId: LOGO-LIGHT-8257-2
-    friendlyId: lights-garage
+    roomId: garage
   - deviceId: ZIGBEE-0x00158d0006c6e6e6
     friendlyId: sensor-living
+    roomId: livingroom
   - deviceId: ZIGBEE-0x00158d0006c4af92
     friendlyId: leak-aquarium
+    roomId: livingroom
+  - deviceId: ZIGBEE-0x00178801085ff794
+    friendlyId: plug
+    roomId: livingroom
+  - deviceId: LOGO-LIGHT-8256-1
+    friendlyId: lights-hallway
+    roomId: hallway
+  - deviceId: LOGO-LIGHT-8257-2
+    friendlyId: lights-garage
+    roomId: garage
+  - deviceId: HUE-BRIDGE-001788FFFE744E54
+    friendlyId: hue-bridge
+    roomId: livingroom
+  - deviceId: HUE-LIGHT-00:17:88:01:02:fe:89:6d-0b
+    friendlyId: light-askel
+    roomId: kidsroom
+  - deviceId: HUE-LIGHT-00:0d:6f:ff:fe:fb:ee:31-01
+    friendlyId: light-kleintje
+    roomId: livingroom
+  - deviceId: HUE-LIGHT-00:17:88:01:06:26:73:c4-0b
+    friendlyId: light-ceiling-kidsroom
+    roomId: kidsroom
+  - deviceId: HUE-LIGHT-00:17:88:01:06:24:c0:ba-0b
+    friendlyId: light-ceiling-kitchen
+    roomId: kitchen
+  - deviceId: HUE-LIGHT-00:17:88:01:06:51:8d:4f-0b
+    friendlyId: light-ceiling-office
+    roomId: office
+  - deviceId: HUE-LIGHT-00:3c:84:ff:fe:bb:85:63-01
+    friendlyId: light-ledstrips-office
+    roomId: office
+  - deviceId: HUE-SENSOR-00:17:88:01:06:a7:01:de-02-fc00
+    friendlyId: dimmer-kidsroom
+    roomId: kidsroom
+  - deviceId: HUE-SENSOR-00:17:88:01:0c:c3:97:01-01-fc00
+    friendlyId: wallswitch-kidsroom
+    roomId: kidsroom
+  - deviceId: HUE-SENSOR-00:17:88:01:0c:c3:96:f7-01-fc00
+    friendlyId: wallswitch-office
+    roomId: office
+  - deviceId: HUE-SENSOR-00:17:88:01:0d:13:19:dc-01-fc00-0014
+    friendlyId: dimmer-office
+    roomId: office
 deviceConsumers:
   - pushOnOff:
       description: Pushbutton hallway
