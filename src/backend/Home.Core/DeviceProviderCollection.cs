@@ -25,7 +25,7 @@ namespace Home.Core {
                     continue;
                 }
                 var logger = loggerFactory.CreateLogger(implType);
-                var impl = Activator.CreateInstance(implType, config.ConfigurationModel.Devices, logger, provider.Value) as IDeviceProvider;
+                var impl = Activator.CreateInstance(implType, config.ConfigurationModel.Home, logger, provider.Value) as IDeviceProvider;
                 if (impl == null) {
                     _logger.LogError("Failed to add device provider: implementation could not be constructed");
                     continue;

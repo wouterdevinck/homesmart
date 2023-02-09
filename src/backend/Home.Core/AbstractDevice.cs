@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Home.Core.Attributes;
+using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 
 namespace Home.Core {
@@ -35,6 +36,11 @@ namespace Home.Core {
         public bool Reachable { get; protected set; }
 
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;
+
+        public AbstractDevice(HomeConfigurationModel home, string id) {
+            DeviceId = id;
+            FriendlyId = Helpers.GetFriendlyId(home.Devices, DeviceId);
+        }
 
         protected void NotifyObservers(string property, object value) {
             DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value));

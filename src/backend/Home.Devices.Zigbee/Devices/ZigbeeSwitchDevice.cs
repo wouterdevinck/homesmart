@@ -20,7 +20,7 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public byte Brightness { get; private set; }
         
-        public ZigbeeSwitchDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(models, model, mqtt, configuration) {
+        public ZigbeeSwitchDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, model, mqtt, configuration) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Switch);
         }
 

@@ -1,6 +1,7 @@
 using System;
 using Home.Core;
 using Home.Core.Attributes;
+using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Devices.Hue.Common;
 using Q42.HueApi;
@@ -20,8 +21,7 @@ namespace Home.Devices.Hue.Devices {
         [DeviceProperty]
         public DateTime SensorUpdate { get; private set; }
 
-        public HueSwitchDevice(Sensor sensor, HueClient hue) : base(hue, sensor.Id) {
-            DeviceId = $"HUE-SENSOR-{sensor.UniqueId}";
+        public HueSwitchDevice(Sensor sensor, HueClient hue, HomeConfigurationModel home) : base(hue, sensor.Id, home, $"HUE-SENSOR-{sensor.UniqueId}") {
             Name = sensor.Name;
             Manufacturer = sensor.ManufacturerName.HarmonizeManufacturer();
             Model = sensor.ModelId;
