@@ -28,7 +28,7 @@ namespace Home.Devices.Logo {
 
         private int _numberOfOutputs;
 
-        public LogoDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) {
+        public LogoDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
             _devices = new List<LogoLightDevice>();
             _home = home;
             _logger = logger;

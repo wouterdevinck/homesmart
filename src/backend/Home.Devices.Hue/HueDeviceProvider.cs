@@ -31,7 +31,7 @@ namespace Home.Devices.Hue {
         private const string TypeColorTemperature = "Color temperature light";
         private const string TypeExtendedColor = "Extended color light";
 
-        public HueDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) {
+        public HueDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
             _home = home;
             _logger = logger;
             _configuration = configuration as HueConfiguration;

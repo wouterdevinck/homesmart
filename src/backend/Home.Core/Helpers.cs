@@ -61,10 +61,6 @@ namespace Home.Core {
             };
         }
 
-        public static string GetFriendlyId(List<DeviceConfigurationModel> models, string deviceID) {
-            return models.SingleOrDefault(x => x.DeviceId == deviceID)?.FriendlyId ?? deviceID;
-        }
-
         // Adapted from https://stackoverflow.com/a/27073919
         public static string FirstCharToUpperCase(this string s) {
             if (string.IsNullOrEmpty(s)) return s;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Home.Core.Attributes;
@@ -24,6 +25,9 @@ namespace Home.Core {
         public string FriendlyId { get; protected set; }
 
         [DeviceProperty]
+        public string RoomId { get; protected set; }
+
+        [DeviceProperty]
         public string Type { get; protected set; }
 
         [DeviceProperty]
@@ -39,7 +43,9 @@ namespace Home.Core {
 
         public AbstractDevice(HomeConfigurationModel home, string id) {
             DeviceId = id;
-            FriendlyId = Helpers.GetFriendlyId(home.Devices, DeviceId);
+            var dm = home.Devices.SingleOrDefault(x => x.DeviceId == id);
+            FriendlyId = dm?.FriendlyId ?? id;
+            RoomId = dm?.RoomId;
         }
 
         protected void NotifyObservers(string property, object value) {

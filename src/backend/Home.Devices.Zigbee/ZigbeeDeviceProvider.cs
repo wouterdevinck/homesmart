@@ -33,7 +33,7 @@ namespace Home.Devices.Zigbee {
 
         private IManagedMqttClient _mqtt;
 
-        public ZigbeeDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) {
+        public ZigbeeDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
             _home = home;
             _logger = logger;
             _configuration = configuration as ZigbeeConfiguration;

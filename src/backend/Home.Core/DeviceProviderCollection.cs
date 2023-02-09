@@ -13,9 +13,14 @@ namespace Home.Core {
         private readonly List<IDeviceProvider> _providers;
         private readonly ILogger<DeviceProviderCollection> _logger;
 
-        public DeviceProviderCollection(ConfigurationReader config, ILoggerFactory loggerFactory) {
+        public DeviceProviderCollection(ConfigurationReader config, ILoggerFactory loggerFactory) : base(config.ConfigurationModel.Home) {
             _providers = new List<IDeviceProvider>();
             _logger = loggerFactory.CreateLogger<DeviceProviderCollection>();
+
+            // Consistency check
+            if (!config.ConfigurationModel.Home.CheckConsistency()) { 
+                throw new Exception("Config consistency error!");
+            }
 
             // Device providers
             foreach (var provider in config.ConfigurationModel.DeviceProviders) {
