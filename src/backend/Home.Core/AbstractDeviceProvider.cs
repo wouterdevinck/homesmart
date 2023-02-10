@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 
 namespace Home.Core {
@@ -10,10 +11,15 @@ namespace Home.Core {
         public event EventHandler<IDevice> DeviceDiscovered;
 
         private readonly List<IDeviceConsumer> _automations = new();
+        private readonly HomeConfigurationModel _home;
 
         public abstract IEnumerable<IDevice> GetDevices();
         public abstract Task ConnectAsync();
         public abstract Task DisconnectAsync();
+
+        public AbstractDeviceProvider(HomeConfigurationModel home) { 
+            _home = home;
+        }
 
         protected void NotifyObservers(IEnumerable<IDevice> devices) {
             foreach (var device in devices) {
@@ -33,6 +39,10 @@ namespace Home.Core {
 
         public IEnumerable<IDeviceConsumer> GetDeviceConsumers() {
             return _automations;
+        }
+
+        public IEnumerable<RoomConfigurationModel> GetRooms() {
+            return _home.Rooms;
         }
 
     }

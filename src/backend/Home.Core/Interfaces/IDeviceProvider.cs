@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Home.Core.Configuration.Models;
 
 namespace Home.Core.Interfaces {
 
@@ -15,6 +16,7 @@ namespace Home.Core.Interfaces {
 
         IEnumerable<IDevice> GetDevices();
         IEnumerable<IDeviceConsumer> GetDeviceConsumers();
+        IEnumerable<RoomConfigurationModel> GetRooms();
 
 
     }

@@ -26,15 +26,15 @@ namespace Home.Devices.Zigbee {
 
         public static Descriptor Descriptor = new("zigbee", typeof(ZigbeeDeviceProvider), typeof(ZigbeeConfiguration), DescriptorType.DeviceProvider);
 
-        private readonly List<DeviceConfigurationModel> _models;
+        private readonly HomeConfigurationModel _home;
         private readonly ILogger _logger;
         private readonly ZigbeeConfiguration _configuration; 
         private readonly List<IDevice> _devices;
 
         private IManagedMqttClient _mqtt;
 
-        public ZigbeeDeviceProvider(List<DeviceConfigurationModel> models, ILogger logger, IDeviceProviderConfiguration configuration) {
-            _models = models;
+        public ZigbeeDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+            _home = home;
             _logger = logger;
             _configuration = configuration as ZigbeeConfiguration;
             _devices = new List<IDevice>();
@@ -42,12 +42,12 @@ namespace Home.Devices.Zigbee {
 
         private IDevice DeviceFactory(DeviceModel model) {
             return model.Definition.Model switch {
-                "324131092621" => new ZigbeeSwitchDevice(_models, model, _mqtt, _configuration),
-                "046677552343" => new ZigbeePlugDevice(_models, model, _mqtt, _configuration),
-                "WXKG11LM" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
-                "E1812" => new ZigbeeButtonDevice(_models, model, _mqtt, _configuration),
-                "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_models, model, _mqtt, _configuration),
-                "SJCGQ11LM" => new ZigbeeLeakDevice(_models, model, _mqtt, _configuration),
+                "324131092621" => new ZigbeeSwitchDevice(_home, model, _mqtt, _configuration),
+                "046677552343" => new ZigbeePlugDevice(_home, model, _mqtt, _configuration),
+                "WXKG11LM" => new ZigbeeButtonDevice(_home, model, _mqtt, _configuration),
+                "E1812" => new ZigbeeButtonDevice(_home, model, _mqtt, _configuration),
+                "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_home, model, _mqtt, _configuration),
+                "SJCGQ11LM" => new ZigbeeLeakDevice(_home, model, _mqtt, _configuration),
                 // TODO Repeater device
                 _ => null
             };

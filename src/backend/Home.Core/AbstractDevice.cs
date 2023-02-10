@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Home.Core.Attributes;
+using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 
 namespace Home.Core {
@@ -23,6 +25,9 @@ namespace Home.Core {
         public string FriendlyId { get; protected set; }
 
         [DeviceProperty]
+        public string RoomId { get; protected set; }
+
+        [DeviceProperty]
         public string Type { get; protected set; }
 
         [DeviceProperty]
@@ -35,6 +40,13 @@ namespace Home.Core {
         public bool Reachable { get; protected set; }
 
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;
+
+        public AbstractDevice(HomeConfigurationModel home, string id) {
+            DeviceId = id;
+            var dm = home.Devices.SingleOrDefault(x => x.DeviceId == id);
+            FriendlyId = dm?.FriendlyId ?? id;
+            RoomId = dm?.RoomId;
+        }
 
         protected void NotifyObservers(string property, object value) {
             DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value));

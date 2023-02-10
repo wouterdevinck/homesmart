@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
@@ -21,11 +20,9 @@ namespace Home.Devices.Zigbee {
 
         protected ZigbeeConfiguration _configuration;
 
-        public ZigbeeDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) {
+        public ZigbeeDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, $"ZIGBEE-{model.Id}") {
             Mqtt = mqtt;
             Name = model.Name;
-            DeviceId = $"ZIGBEE-{model.Id}";
-            FriendlyId = Helpers.GetFriendlyId(models, DeviceId);
             Manufacturer = model.Definition.Manufacturer.HarmonizeManufacturer();
             Version = model.Version;
             Model = model.Model;

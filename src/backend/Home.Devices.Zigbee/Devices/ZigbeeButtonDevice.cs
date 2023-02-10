@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
@@ -20,8 +19,8 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public string Action { get; private set; }
 
-        public ZigbeeButtonDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : 
-            base(models, model, mqtt, configuration) {
+        public ZigbeeButtonDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : 
+            base(home, model, mqtt, configuration) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Switch);
         }
 

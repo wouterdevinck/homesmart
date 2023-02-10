@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,10 +29,29 @@ namespace Home.Web.Controllers {
             await device.InvokeCommand(command, args);
         }
 
+        [Obsolete]
         [HttpGet]
         [Route("automations")]
         public IEnumerable<IDeviceConsumer> Automations() {
             return _deviceProvider.GetDeviceConsumers().ToList();
+        }
+
+        [HttpGet]
+        [Route("consumers")]
+        public IEnumerable<IDeviceConsumer> Consumers() {
+            return _deviceProvider.GetDeviceConsumers().ToList();
+        }
+
+        [HttpGet]
+        [Route("rooms")]
+        public IEnumerable<IRoom> Rooms() {
+            return _deviceProvider.GetRooms().ToList();
+        }
+
+        [HttpGet]
+        [Route("rooms/{id}/devices")]
+        public IEnumerable<IDevice> RoomsDevices(string id) {
+            return _deviceProvider.GetDevices().Where(x => x.RoomId == id).ToList();
         }
 
     }

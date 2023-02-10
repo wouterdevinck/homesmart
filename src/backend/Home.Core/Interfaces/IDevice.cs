@@ -12,6 +12,7 @@ namespace Home.Core.Interfaces {
         string Manufacturer { get; }
         string DeviceId { get; }
         string FriendlyId { get; }
+        string RoomId { get; }
         string Type { get; }
         string Model { get; }
         string Version { get; }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Attributes;
+using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Q42.HueApi;
 
@@ -10,8 +11,7 @@ namespace Home.Devices.Hue.Common {
     [Device]
     public abstract partial class HueOnOffDevice : HueDevice, IOnOffDevice {
 
-        protected HueOnOffDevice(HueClient hue, Light light) : base(hue, light.Id) {
-            DeviceId = $"HUE-LIGHT-{light.UniqueId}";
+        protected HueOnOffDevice(HueClient hue, Light light, HomeConfigurationModel home) : base(hue, light.Id, home, $"HUE-LIGHT-{light.UniqueId}") {
             Name = light.Name;
             if (light.State.IsReachable != null) Reachable = light.State.IsReachable.Value;
             On = light.State.On && light.State.IsReachable == true;

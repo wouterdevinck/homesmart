@@ -19,7 +19,7 @@ namespace Home.Devices.Logo {
         public static Descriptor Descriptor = new("logo", typeof(LogoDeviceProvider), typeof(LogoConfiguration), DescriptorType.DeviceProvider);
 
         private readonly List<LogoLightDevice> _devices;
-        private readonly List<DeviceConfigurationModel> _models;
+        private readonly HomeConfigurationModel _home;
         private readonly ILogger _logger;
         private readonly LogoConfiguration _configuration;
 
@@ -28,9 +28,9 @@ namespace Home.Devices.Logo {
 
         private int _numberOfOutputs;
 
-        public LogoDeviceProvider(List<DeviceConfigurationModel> models, ILogger logger, IDeviceProviderConfiguration configuration) {
+        public LogoDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
             _devices = new List<LogoLightDevice>();
-            _models = models;
+            _home = home;
             _logger = logger;
             _configuration = configuration as LogoConfiguration;
         }
@@ -79,7 +79,7 @@ namespace Home.Devices.Logo {
             var outputs = await GetOutputs();
             var devices = new List<LogoLightDevice>();
             foreach (var device in _configuration.Devices) { 
-                devices.Add(new LogoLightDevice(_models, _logger, _modbusClient, device.Name, device.SwitchAddress, 
+                devices.Add(new LogoLightDevice(_home, _logger, _modbusClient, device.Name, device.SwitchAddress, 
                     device.OutputNumber, _configuration.SwitchReturnTime, outputs[device.OutputNumber - 1]));
             }
             return devices;

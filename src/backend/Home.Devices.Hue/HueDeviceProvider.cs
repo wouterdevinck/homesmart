@@ -18,7 +18,7 @@ namespace Home.Devices.Hue {
 
         public static Descriptor Descriptor = new("hue", typeof(HueDeviceProvider), typeof(HueConfiguration), DescriptorType.DeviceProvider);
 
-        private readonly List<DeviceConfigurationModel> _models;
+        private readonly HomeConfigurationModel _home;
         private readonly ILogger _logger;
         private readonly HueConfiguration _configuration; 
         private readonly List<IDevice> _devices;
@@ -31,8 +31,8 @@ namespace Home.Devices.Hue {
         private const string TypeColorTemperature = "Color temperature light";
         private const string TypeExtendedColor = "Extended color light";
 
-        public HueDeviceProvider(List<DeviceConfigurationModel> models, ILogger logger, IDeviceProviderConfiguration configuration) {
-            _models = models;
+        public HueDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+            _home = home;
             _logger = logger;
             _configuration = configuration as HueConfiguration;
             _devices = new List<IDevice>();
@@ -86,22 +86,22 @@ namespace Home.Devices.Hue {
 
             // Bridges
             var bridge = await _hue.GetBridgeAsync();
-            devices.Add(new HueBridgeDevice(bridge, _hue));
+            devices.Add(new HueBridgeDevice(bridge, _hue, _home));
 
             // Lights and plugs
             var lights = await _hue.GetLightsAsync();
             devices.AddRange(lights.Select(x => (IDevice)(x.Type switch {
-                TypePlug => new HuePlugDevice(x, _hue),
-                TypeDimmable => new HueDimmableLightDevice(x, _hue),
-                TypeColorTemperature => new HueColorTemperatureLightDevice(x, _hue),
-                TypeExtendedColor => new HueExtendedColorLightDevice(x, _hue),
+                TypePlug => new HuePlugDevice(x, _hue, _home),
+                TypeDimmable => new HueDimmableLightDevice(x, _hue, _home),
+                TypeColorTemperature => new HueColorTemperatureLightDevice(x, _hue, _home),
+                TypeExtendedColor => new HueExtendedColorLightDevice(x, _hue, _home),
                 _ => null
             })).Where(x => x is not null));
 
             // Switches
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             var sensors = (await _hue.GetSensorsAsync()).Where(x => x.Capabilities != null);
-            devices.AddRange(sensors.Select(x => new HueSwitchDevice(x, _hue) as IDevice));
+            devices.AddRange(sensors.Select(x => new HueSwitchDevice(x, _hue, _home) as IDevice));
 
             return devices;
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentModbus;
@@ -28,14 +27,12 @@ namespace Home.Devices.Logo {
 
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public LogoLightDevice(List<DeviceConfigurationModel> models, ILogger logger, ModbusTcpClient modbusClient, string name, 
-          int switchAddress, int outputNumber, int switchReturnTime, bool on) {
+        public LogoLightDevice(HomeConfigurationModel home, ILogger logger, ModbusTcpClient modbusClient, string name, 
+          int switchAddress, int outputNumber, int switchReturnTime, bool on) : base(home, $"LOGO-LIGHT-{switchAddress}-{outputNumber}") {
             Name = name;
             Manufacturer = "Siemens";
             Version = "1.83.01";
             Model = "LOGO! 230 RCE"; // 6ED1052-1FB08-0BA1
-            DeviceId = $"LOGO-LIGHT-{switchAddress}-{outputNumber}";
-            FriendlyId = Helpers.GetFriendlyId(models, DeviceId);
             Type = Helpers.GetTypeString(Helpers.DeviceType.Light);
             OutputNumber = outputNumber;
             On = on;

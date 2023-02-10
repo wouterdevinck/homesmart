@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
@@ -23,7 +22,7 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public double Temperature { get; private set; }
 
-        public ZigbeeTemperatureDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(models, model, mqtt, configuration) {
+        public ZigbeeTemperatureDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, model, mqtt, configuration) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Temperature);
         }
 

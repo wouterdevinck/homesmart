@@ -41,7 +41,7 @@ namespace Home.Devices.Zigbee.Devices {
             }
         }
 
-        public ZigbeePlugDevice(List<DeviceConfigurationModel> models, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(models, model, mqtt, configuration) {
+        public ZigbeePlugDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, model, mqtt, configuration) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Outlet);
         }
 
