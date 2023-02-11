@@ -25,17 +25,39 @@ deviceProviders:
 home:
   rooms:
     - id: livingroom
-      name: Living room
+      name: Living
     - id: kitchen
-      name: Kitchen
+      name: Keuken
     - id: kidsroom
-      name: Kids room
+      name: Kinderkamer
+    - id: bedroom
+      name: Slaapkamer
+    - id: tine
+      name: Tine's crib
     - id: office
-      name: Office
+      name: Bureau
     - id: hallway
-      name: Hallway
+      name: Hal
     - id: garage
       name: Garage
+    - id: laundry
+      name: Wasruimte
+    - id: basement
+      name: Kelder
+    - id: shaft
+      name: Koker
+    - id: toilet
+      name: WC
+    - id: bathroom
+      name: Badkamer
+    - id: attic
+      name: Zolder
+    - id: storage
+      name: Berging
+    - id: outside
+      name: Buiten
+    - id: shed
+      name: Tuinhuis
   devices:
     - deviceId: ZIGBEE-0x00158d0006d0ba73
       friendlyId: button-hallway
@@ -46,6 +68,57 @@ home:
     - deviceId: ZIGBEE-0x00158d0006c6e6e6
       friendlyId: sensor-living
       roomId: livingroom
+    - deviceId: ZIGBEE-0x00158d00091c2406
+      friendlyId: sensor-laundry
+      roomId: laundry
+    - deviceId: ZIGBEE-0x00158d00091a418c
+      friendlyId: sensor-basement
+      roomId: basement
+    - deviceId: ZIGBEE-0x00158d00091ad72f
+      friendlyId: sensor-kitchen
+      roomId: kitchen
+    - deviceId: ZIGBEE-0x00158d00091c22ea
+      friendlyId: sensor-shaft
+      roomId: shaft
+    - deviceId: ZIGBEE-0x00158d000941118d
+      friendlyId: sensor-hallway-downstairs
+      roomId: hallway
+    - deviceId: ZIGBEE-0x00158d00091adbf3
+      friendlyId: sensor-office
+      roomId: office
+    - deviceId: ZIGBEE-0x00158d00091c261d
+      friendlyId: sensor-toilet
+      roomId: toilet
+    - deviceId: ZIGBEE-0x00158d00091c8153
+      friendlyId: sensor-garage
+      roomId: garage
+    - deviceId: ZIGBEE-0x00158d00091a41f9
+      friendlyId: sensor-kidsroom
+      roomId: kidsroom
+    - deviceId: ZIGBEE-0x00158d00094111d7
+      friendlyId: sensor-bedroom
+      roomId: bedroom
+    - deviceId: ZIGBEE-0x00158d00091a41a4
+      friendlyId: sensor-bathroom
+      roomId: bathroom
+    - deviceId: ZIGBEE-0x00158d00091c247e
+      friendlyId: sensor-tine
+      roomId: tine
+    - deviceId: ZIGBEE-0x00158d00091c57e0
+      friendlyId: sensor-attic
+      roomId: attic
+    - deviceId: ZIGBEE-0x00158d00091a40da
+      friendlyId: sensor-storage
+      roomId: storage
+    - deviceId: ZIGBEE-0x00158d00091a4159
+      friendlyId: sensor-air-outlet-kitchen
+      roomId: kitchen
+    - deviceId: ZIGBEE-0x00158d00091a41c8
+      friendlyId: sensor-outside
+      roomId: outside
+    - deviceId: ZIGBEE-0x00158d00091c28de
+      friendlyId: sensor-shed
+      roomId: shed
     - deviceId: ZIGBEE-0x00158d0006c4af92
       friendlyId: leak-aquarium
       roomId: livingroom
@@ -120,4 +193,38 @@ deviceConsumers:
         organization: homesmart
         points:
           - deviceId: sensor-living
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-laundry
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-basement
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-kitchen
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-shaft
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-hallway-downstairs
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-office
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-toilet
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-garage
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-kidsroom
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-bedroom
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-bathroom
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-tine
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-attic
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-storage
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-air-outlet-kitchen
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-outside
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-shed
             properties: [ 'temperature', 'humidity', 'pressure' ]
