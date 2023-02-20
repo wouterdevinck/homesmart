@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Generator", "Home.Gene
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Telemetry", "Home.Telemetry\Home.Telemetry.csproj", "{9484FFFA-DD78-462E-A467-272D1A94D843}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Devices.SolarEdge", "Home.Devices.SolarEdge\Home.Devices.SolarEdge.csproj", "{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,18 @@ Global
 		{9484FFFA-DD78-462E-A467-272D1A94D843}.Release|x64.Build.0 = Release|Any CPU
 		{9484FFFA-DD78-462E-A467-272D1A94D843}.Release|x86.ActiveCfg = Release|Any CPU
 		{9484FFFA-DD78-462E-A467-272D1A94D843}.Release|x86.Build.0 = Release|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Debug|x64.Build.0 = Debug|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Debug|x86.Build.0 = Debug|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Release|x64.ActiveCfg = Release|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Release|x64.Build.0 = Release|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{08FB89A3-0F5B-4355-AFDE-C8E5C49EA9A2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

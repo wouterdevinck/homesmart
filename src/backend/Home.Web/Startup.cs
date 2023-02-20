@@ -8,6 +8,7 @@ using Home.Core.Logging;
 using Home.Devices.Hue;
 using Home.Devices.Logo;
 using Home.Devices.Zigbee;
+using Home.Devices.SolarEdge;
 using Home.Telemetry;
 using Home.Web.Notifications;
 using Home.Web.Services;
@@ -24,8 +25,9 @@ namespace Home.Web {
 
         private readonly ConfigurationReader _config = new(_configFilePath, new List<Descriptor> {
             HueDeviceProvider.Descriptor,
-            LogoDeviceProvider.Descriptor, 
+            LogoDeviceProvider.Descriptor,
             ZigbeeDeviceProvider.Descriptor,
+            SolarEdgeDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
             OpsgenieAlarmAutomation.Descriptor,
             InfluxDbTelemetry.Descriptor
