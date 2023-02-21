@@ -22,6 +22,9 @@ deviceProviders:
       maxPollInterval: 60000
       backOffInterval: 120000
       backOffFactor: 2
+  solaredge:
+    site: xxx
+    apiKey: xxx
 home:
   rooms:
     - id: livingroom
@@ -164,6 +167,9 @@ home:
     - deviceId: HUE-SENSOR-00:17:88:01:0d:13:19:dc-01-fc00-0014
       friendlyId: dimmer-office
       roomId: office
+    - deviceId: SOLAREDGE-7F165648-33
+      friendlyId: solar
+      roomId: garage
 deviceConsumers:
   - pushOnOff:
       description: Pushbutton hallway
@@ -228,3 +234,5 @@ deviceConsumers:
             properties: [ 'temperature', 'humidity', 'pressure' ]
           - deviceId: sensor-shed
             properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: solar
+            properties: [ 'lifeTimeEnergy', 'lastYearEnergy', 'lastMonthEnergy', 'lastDayEnergy', 'currentPower', 'previousQuarterEnergy', 'previousQuarterPower' ]

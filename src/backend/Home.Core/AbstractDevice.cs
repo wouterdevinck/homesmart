@@ -43,13 +43,17 @@ namespace Home.Core {
 
         public AbstractDevice(HomeConfigurationModel home, string id) {
             DeviceId = id;
-            var dm = home.Devices.SingleOrDefault(x => x.DeviceId == id);
+            var dm = home.Devices?.SingleOrDefault(x => x.DeviceId == id);
             FriendlyId = dm?.FriendlyId ?? id;
             RoomId = dm?.RoomId;
         }
 
+        protected void NotifyObservers(string property, object value, DateTime timestamp) {
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp));
+        }
+
         protected void NotifyObservers(string property, object value) {
-            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value));
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, DateTime.UtcNow));
         }
 
         public bool HasId(string id) {

@@ -9,6 +9,7 @@ namespace Home.Core.Configuration.Models {
         public List<DeviceConfigurationModel> Devices { get; set; }
 
         public bool CheckConsistency() {
+            if (Devices == null) return true;
             foreach (var device in Devices) {
                 if (!Rooms.Any(x => x.Id == device.RoomId)) {
                     return false;

@@ -18,7 +18,7 @@ namespace Home.Devices.Hue.Common {
             Manufacturer = light.ManufacturerName.HarmonizeManufacturer();
             Model = light.ModelId.HarmonizeModel();
             Version = light.SoftwareVersion;
-            if (string.IsNullOrEmpty(Version)) Version = "0.0.0";
+            if (string.IsNullOrEmpty(Version)) Version = Helpers.VersionNotAvailable;
         }
 
         [DeviceProperty]

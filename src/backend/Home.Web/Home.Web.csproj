@@ -11,12 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Home.Automations\Home.Automations.csproj" />
     <ProjectReference Include="..\Home.Core\Home.Core.csproj" />
     <ProjectReference Include="..\Home.Devices.Hue\Home.Devices.Hue.csproj" />
     <ProjectReference Include="..\Home.Devices.Logo\Home.Devices.Logo.csproj" />
     <ProjectReference Include="..\Home.Devices.Zigbee\Home.Devices.Zigbee.csproj" />
+    <ProjectReference Include="..\Home.Devices.SolarEdge\Home.Devices.SolarEdge.csproj" />
     <ProjectReference Include="..\Home.Telemetry\Home.Telemetry.csproj" />
+    <ProjectReference Include="..\Home.Automations\Home.Automations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

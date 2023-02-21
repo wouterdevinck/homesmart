@@ -37,7 +37,7 @@ namespace Home.Telemetry {
                         var point = PointData.Measurement(e.Property)
                             .Tag("device", device.Key)
                             .Field("value", e.Value)
-                            .Timestamp(DateTime.UtcNow, WritePrecision.Ms);
+                            .Timestamp(e.Timestamp.ToUniversalTime(), WritePrecision.Ms);
                         writeApi.WritePoint(point, _configuration.Bucket, _configuration.Organization);
                     }
                 };

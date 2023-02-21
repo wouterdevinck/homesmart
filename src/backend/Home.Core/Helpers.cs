@@ -9,6 +9,7 @@ namespace Home.Core {
         // TODO move into abstractdevice? with a base constructor?
 
         public const string Signify = "Signify Netherlands B.V.";
+        public const string VersionNotAvailable = "n/a";
 
         public static string HarmonizeManufacturer(this string manufacturer) {
             return manufacturer switch {
@@ -40,7 +41,8 @@ namespace Home.Core {
             Outlet,
             Temperature,
             Leak,
-            Hub
+            Hub,
+            Solar
         }
 
         public static string GetTypeString(DeviceType type) {
@@ -57,6 +59,7 @@ namespace Home.Core {
                 DeviceType.Temperature => "temperature",
                 DeviceType.Leak => "leak",
                 DeviceType.Hub => "hub",
+                DeviceType.Solar => "solar",
                 _ => "device"
             };
         }
