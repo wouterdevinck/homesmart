@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Home.Core.Interfaces;
+using Home.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Home.Web.Controllers {
@@ -27,6 +28,15 @@ namespace Home.Web.Controllers {
         public async Task Command(string id, string command, [FromBody] Dictionary<string, object> args) {
             var device = _deviceProvider.GetDevices().Single(x => x.DeviceId == id);
             await device.InvokeCommand(command, args);
+        }
+
+        [HttpGet]
+        [Route("devices/{id}/data/{point}")]
+        public async Task<IEnumerable<IDataPoint>> Data(string id, string point, [FromQuery] string since) {
+            // TODO Support additional time range parameters
+            if (string.IsNullOrEmpty(since)) since = "24h";
+            var range = new TimeRange(new RelativeTime(since));
+            return await (_deviceProvider as ITelemetryProvider)?.GetDataAsync(id, point, range);
         }
 
         [Obsolete]
