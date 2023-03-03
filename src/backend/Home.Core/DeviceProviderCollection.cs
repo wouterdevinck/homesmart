@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Home.Core.Configuration;
 using Home.Core.Interfaces;
+using Home.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Home.Core {
 
-    public class DeviceProviderCollection : AbstractDeviceProvider {
+    public class DeviceProviderCollection : AbstractDeviceProvider, ITelemetryProvider {
 
         private readonly List<IDeviceProvider> _providers;
         private readonly ILogger<DeviceProviderCollection> _logger;
@@ -85,6 +86,17 @@ namespace Home.Core {
         public override IEnumerable<IDevice> GetDevices() {
             return _providers.Aggregate(Enumerable.Empty<IDevice>(),
                 (current, provider) => current.Concat(provider.GetDevices()));
+        }
+
+        public async Task<IEnumerable<IDataPoint>> GetDataAsync(string device, string point, TimeRange range) {
+            var consumers = GetDeviceConsumers();
+            foreach (var consumer in consumers) {
+                var tp = consumer as ITelemetryProvider;
+                if (tp != null) {
+                    return await tp.GetDataAsync(device, point, range);
+                }
+            }
+            return null;
         }
 
     }

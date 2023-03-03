@@ -18,7 +18,6 @@ namespace Home.Core.Interfaces {
         IEnumerable<IDeviceConsumer> GetDeviceConsumers();
         IEnumerable<RoomConfigurationModel> GetRooms();
 
-
     }
 
 }

@@ -10,7 +10,7 @@ namespace Home.Core {
 
         public event EventHandler<IDevice> DeviceDiscovered;
 
-        private readonly List<IDeviceConsumer> _automations = new();
+        private readonly List<IDeviceConsumer> _consumers = new();
         private readonly HomeConfigurationModel _home;
 
         public abstract IEnumerable<IDevice> GetDevices();
@@ -33,12 +33,12 @@ namespace Home.Core {
 
         public void InstallDeviceConsumer(string description, IDeviceConsumer automation) {
             automation.Description = description;
-            _automations.Add(automation);
+            _consumers.Add(automation);
             automation.Install(this);
         }
 
         public IEnumerable<IDeviceConsumer> GetDeviceConsumers() {
-            return _automations;
+            return _consumers;
         }
 
         public IEnumerable<RoomConfigurationModel> GetRooms() {
