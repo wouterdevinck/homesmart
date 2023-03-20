@@ -26,6 +26,8 @@ export default {
           return "droplet"
         case "hub":
           return "hdd-network"
+        case "solar":
+          return "sun";
         default:
           return "hdd"
       }

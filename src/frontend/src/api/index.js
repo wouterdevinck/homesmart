@@ -41,6 +41,12 @@ export default {
 
   sendDeviceCommand(deviceId, command) {
     axios.post(`${url}/api/v1/devices/${deviceId}/commands/${command}`, {})
+  },
+
+  getData(cb, device, parameter, since = '24h') {
+    axios.get(`${url}/api/v1/devices/${device}/data/${parameter}?since=${since}`).then((response) => {
+      cb(response.data)
+    })
   }
 
 }

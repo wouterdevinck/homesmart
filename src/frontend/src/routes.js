@@ -15,5 +15,9 @@ export const routes = [
     path: '/battery',
     meta: { title: 'Battery' },
     component: () => import('./views/Battery.vue')
+  }, {
+    path: '/charts',
+    meta: { title: 'Charts' },
+    component: () => import('./views/Charts.vue')
   }
 ]

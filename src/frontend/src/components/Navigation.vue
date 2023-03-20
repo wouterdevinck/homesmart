@@ -25,6 +25,12 @@
           Battery
         </router-link>
       </li>
+      <li>
+        <router-link to="/charts" href="#" class="nav-link" active-class="active">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#graph"/></svg>
+          Charts
+        </router-link>
+      </li>
     </ul>
   </nav>
 </template>
