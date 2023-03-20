@@ -44,11 +44,12 @@ namespace Home.Devices.Zigbee {
             return model.Definition.Model switch {
                 "324131092621" => new ZigbeeSwitchDevice(_home, model, _mqtt, _configuration),
                 "046677552343" => new ZigbeePlugDevice(_home, model, _mqtt, _configuration),
+                "HG08673" => new ZigbeeEnergyPlugDevice(_home, model, _mqtt, _configuration),
                 "WXKG11LM" => new ZigbeeButtonDevice(_home, model, _mqtt, _configuration),
                 "E1812" => new ZigbeeButtonDevice(_home, model, _mqtt, _configuration),
                 "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_home, model, _mqtt, _configuration),
                 "SJCGQ11LM" => new ZigbeeLeakDevice(_home, model, _mqtt, _configuration),
-                // TODO Repeater device
+                "E1746" => null, // TODO Repeater device
                 _ => null
             };
         }
@@ -116,7 +117,7 @@ namespace Home.Devices.Zigbee {
                                 _logger.LogError($"Error parsing DeviceUpdate: {ex.Message}");
                             }
                             if (update != null) {
-                                device.ProcessZigbeeUpdate(update);
+                                device.ProcessZigbeeUpdate(update, e.ApplicationMessage.Retain);
                             }
                         } else if (topicParts.Length == 3 && topicParts[2] == "availability") {
                             // Console.WriteLine($"Availability {topicParts[1]}");

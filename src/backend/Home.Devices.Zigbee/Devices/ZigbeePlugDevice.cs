@@ -45,7 +45,7 @@ namespace Home.Devices.Zigbee.Devices {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Outlet);
         }
 
-        public override void ProcessZigbeeUpdate(DeviceUpdate update) {
+        public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
             var on = update.State == "ON" && Reachable;
             if (On != on) {
                 On = on;
