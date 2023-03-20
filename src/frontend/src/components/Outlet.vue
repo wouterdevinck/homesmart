@@ -9,7 +9,7 @@
           {{ device.name }}
         </p>
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff" :disabled="!device.reachable">
+          <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff" :disabled="!device.reachable || device.locked">
         </div>
         &nbsp;
       </div>
