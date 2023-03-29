@@ -24,14 +24,14 @@ namespace Home.Devices.Zigbee {
             Mqtt = mqtt;
             Name = model.Name;
             Manufacturer = model.Definition.Manufacturer.HarmonizeManufacturer();
-            Version = model.Version;
+            Version = string.IsNullOrEmpty(model.Version) ? Helpers.VersionNotAvailable : model.Version;
             Model = model.Model;
             PowerSource = model.PowerSource;
             Reachable = true;
             _configuration = configuration;
         }
 
-        public abstract void ProcessZigbeeUpdate(DeviceUpdate update);
+        public abstract void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate);
 
         public virtual void UpdateAvailability(bool available) {
             // TODO - Reachable should also update on/off

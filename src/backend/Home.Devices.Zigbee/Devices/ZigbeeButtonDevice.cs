@@ -24,7 +24,7 @@ namespace Home.Devices.Zigbee.Devices {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Switch);
         }
 
-        public override void ProcessZigbeeUpdate(DeviceUpdate update) {
+        public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
             if (Battery != update.Battery) {
                 Battery = update.Battery;
                 NotifyObservers(nameof(Battery), Battery);

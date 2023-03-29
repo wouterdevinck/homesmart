@@ -32,6 +32,26 @@ namespace Home.Devices.Zigbee.Models {
         [JsonProperty("water_leak")]
         public bool WaterLeak { get; set; }
 
+        [JsonProperty("child_lock")]
+        public string ChildLock { get; set; }
+
+        [JsonProperty("current")]
+        public double Current { get; set; }
+
+        [JsonProperty("power")]
+        public double Power { get; set; }
+
+        [JsonProperty("energy")]
+        public double Energy { get; set; }
+
+        [JsonProperty("voltage")]
+        public double Voltage { get; set; }
+
+        // Not implemented
+        //   "device_temperature"
+        //   "indicator_mode":"off"
+        //   "power_outage_memory":"on"
+
     }
 
 }

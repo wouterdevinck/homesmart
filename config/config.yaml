@@ -170,6 +170,24 @@ home:
     - deviceId: SOLAREDGE-7F165648-33
       friendlyId: solar
       roomId: garage
+    - deviceId: ZIGBEE-0xa4c138e1685ab45d
+      friendlyId: plug-fridge
+      roomId: kitchen
+    - deviceId: ZIGBEE-0xa4c138537bf1d92a
+      friendlyId: plug-washing-machine
+      roomId: laundry
+    - deviceId: ZIGBEE-0xa4c138b6d896ab35
+      friendlyId: plug-rack
+      roomId: attic
+    - deviceId: ZIGBEE-0xa4c13891401a35a5
+      friendlyId: plug-tv
+      roomId: livingroom
+    - deviceId: ZIGBEE-0xa4c1383dc2a0e3ea
+      friendlyId: plug-office
+      roomId: office
+    - deviceId: ZIGBEE-0xa4c1385567d073a9
+      friendlyId: plug-freezer
+      roomId: storage
 deviceConsumers:
   - pushOnOff:
       description: Pushbutton hallway
@@ -236,3 +254,15 @@ deviceConsumers:
             properties: [ 'temperature', 'humidity', 'pressure' ]
           - deviceId: solar
             properties: [ 'lifeTimeEnergy', 'lastYearEnergy', 'lastMonthEnergy', 'lastDayEnergy', 'currentPower', 'previousQuarterEnergy', 'previousQuarterPower' ]
+          - deviceId: plug-fridge
+            properties: [ 'voltage', 'current', 'power', 'energy' ]
+          - deviceId: plug-washing-machine
+            properties: [ 'voltage', 'current', 'power', 'energy' ]
+          - deviceId: plug-rack
+            properties: [ 'voltage', 'current', 'power', 'energy' ]
+          - deviceId: plug-tv
+            properties: [ 'voltage', 'current', 'power', 'energy' ]
+          - deviceId: plug-office
+            properties: [ 'voltage', 'current', 'power', 'energy' ]
+          - deviceId: plug-freezer
+            properties: [ 'voltage', 'current', 'power', 'energy' ]
