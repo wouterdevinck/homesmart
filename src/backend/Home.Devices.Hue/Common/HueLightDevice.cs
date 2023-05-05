@@ -19,6 +19,7 @@ namespace Home.Devices.Hue.Common {
         [DeviceProperty]
         public byte Brightness { get; protected set; }
 
+        [DeviceCommand]
         public async Task SetBrightnessAsync(byte bri) {
             var command = new LightCommand { Brightness = bri };
             var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });

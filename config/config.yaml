@@ -25,6 +25,28 @@ deviceProviders:
   solaredge:
     site: xxx
     apiKey: xxx
+  tuya:
+    devices:
+      - name: Verwarming bureau
+        type: fancoil
+        ip: 192.168.2.217
+        id: bfb5c321632e97e066ua7v
+        key: xxx
+      - name: Verwarming slaapkamer
+        type: fancoil
+        ip: 192.168.2.197
+        id: bfc25428abdae57f82kwdp
+        key: xxx
+      - name: Verwarming Tine's crib
+        type: fancoil
+        ip: 192.168.2.193
+        id: bfdaafe7a17a881374fwfd
+        key: xxx
+      - name: Verwarming kinderkamer
+        type: fancoil
+        ip: 192.168.2.77
+        id: bf5c398cf43a8c5cf5q2dm
+        key: xxx
 home:
   rooms:
     - id: livingroom
@@ -188,6 +210,18 @@ home:
     - deviceId: ZIGBEE-0xa4c1385567d073a9
       friendlyId: plug-freezer
       roomId: storage
+    - deviceId: TUYA-bfb5c321632e97e066ua7v
+      friendlyId: fancoil-office
+      roomId: office
+    - deviceId: TUYA-bf5c398cf43a8c5cf5q2dm
+      friendlyId: fancoil-kidsroom
+      roomId: kidsroom
+    - deviceId: TUYA-bfc25428abdae57f82kwdp
+      friendlyId: fancoil-bedroom
+      roomId: bedroom
+    - deviceId: TUYA-bfdaafe7a17a881374fwfd
+      friendlyId: fancoil-tine
+      roomId: tine
 deviceConsumers:
   - pushOnOff:
       description: Pushbutton hallway
@@ -266,3 +300,11 @@ deviceConsumers:
             properties: [ 'voltage', 'current', 'power', 'energy' ]
           - deviceId: plug-freezer
             properties: [ 'voltage', 'current', 'power', 'energy' ]
+          - deviceId: fancoil-office
+            properties: [ 'temperature', 'requestedTemperature' ]
+          - deviceId: fancoil-kidsroom
+            properties: [ 'temperature', 'requestedTemperature' ]
+          - deviceId: fancoil-bedroom
+            properties: [ 'temperature', 'requestedTemperature' ]
+          - deviceId: fancoil-tine
+            properties: [ 'temperature', 'requestedTemperature' ]

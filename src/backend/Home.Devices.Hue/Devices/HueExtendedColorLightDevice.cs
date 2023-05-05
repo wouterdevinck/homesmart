@@ -23,6 +23,7 @@ namespace Home.Devices.Hue.Devices {
         [DeviceProperty]
         public ColorXy ColorXy { get; private set; }
 
+        [DeviceCommand]
         public async Task SetColorXy(ColorXy c) {
             var command = new LightCommand {
                 ColorCoordinates = new[] { c.X, c.Y }

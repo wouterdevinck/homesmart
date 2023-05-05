@@ -58,11 +58,30 @@ namespace Home.Generator {
                 properties.Add(new PropertyModel(property.Name));
             }
 
+            // Find and process the members annotated with a command attribute
+            var commands = new List<CommandModel>();
+            var commandMembers = members.Where(x => x.GetAttributes().Any(y => y.AttributeClass?.Name == "DeviceCommandAttribute"));
+            foreach (var command in commandMembers) {
+                var syntax = command.DeclaringSyntaxReferences.First().GetSyntax() as MethodDeclarationSyntax;
+                var commandParams = syntax?.ParameterList;
+                var arguments = new List<CommandArgument>();
+                if (commandParams != null) {
+                    foreach (var param in commandParams.Parameters) {
+                        var paramName = param.Identifier.ToString();
+                        var paramType = param.Type?.ToString();
+                        arguments.Add(new CommandArgument(paramName, paramType));
+                    }
+                }
+                var name = command.Name.Replace("Async", "");
+                name = char.ToLowerInvariant(name[0]) + name.Substring(1);
+                commands.Add(new CommandModel(name, command.Name, arguments));
+            }
+
             // Return a model
             return new DeviceClassModel {
                 Classname = classSyntax.Identifier.Text,
                 Namespace = symbol.ContainingNamespace.ToDisplayString(),
-                Device = new DeviceModel(properties)
+                Device = new DeviceModel(properties, commands)
             };
 
         }

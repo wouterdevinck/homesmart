@@ -24,6 +24,7 @@ namespace Home.Devices.Hue.Common {
         [DeviceProperty]
         public bool On { get; protected set; }
 
+        [DeviceCommand]
         public async Task TurnOnAsync() {
             var command = new LightCommand { On = true };
             var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });
@@ -34,6 +35,7 @@ namespace Home.Devices.Hue.Common {
             // TODO Return result?
         }
 
+        [DeviceCommand]
         public async Task TurnOffAsync() {
             var command = new LightCommand { On = false };
             var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });
@@ -44,6 +46,7 @@ namespace Home.Devices.Hue.Common {
             // TODO Return result?
         }
 
+        [DeviceCommand]
         public Task ToggleOnOffAsync() {
             if (On) { 
                 return TurnOffAsync();

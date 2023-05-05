@@ -15,6 +15,7 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public bool On { get; protected set; }
 
+        [DeviceCommand]
         public async Task TurnOnAsync() {
             await Mqtt.EnqueueAsync($"{_configuration.BaseTopic}/{Name}/set", "{\"state\":\"ON\"}");
             On = true;
@@ -24,6 +25,7 @@ namespace Home.Devices.Zigbee.Devices {
             // TODO Return result
         }
 
+        [DeviceCommand]
         public async Task TurnOffAsync() {
             await Mqtt.EnqueueAsync($"{_configuration.BaseTopic}/{Name}/set", "{\"state\":\"OFF\"}");
             On = false;
@@ -33,6 +35,7 @@ namespace Home.Devices.Zigbee.Devices {
             // TODO Return result
         }
 
+        [DeviceCommand]
         public async Task ToggleOnOffAsync() {
             if (On) {
                 await TurnOffAsync();

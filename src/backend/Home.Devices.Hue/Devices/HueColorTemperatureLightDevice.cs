@@ -18,6 +18,7 @@ namespace Home.Devices.Hue.Devices {
         [DeviceProperty]
         public int ColorTemperature { get; private set; }
 
+        [DeviceCommand]
         public async Task SetColorTemperature(int ct) {
             var command = new LightCommand { ColorTemperature = ct };
             var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });

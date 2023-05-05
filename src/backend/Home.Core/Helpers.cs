@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using Home.Core.Configuration.Models;
+using System;
+using System.Reflection;
 
 namespace Home.Core {
 
@@ -9,6 +8,7 @@ namespace Home.Core {
         // TODO move into abstractdevice? with a base constructor?
 
         public const string Signify = "Signify Netherlands B.V.";
+        public const string Jaga = "Jaga";
         public const string VersionNotAvailable = "n/a";
 
         public static string HarmonizeManufacturer(this string manufacturer) {
@@ -17,6 +17,7 @@ namespace Home.Core {
                 "Philips" => "Philips",
                 Signify => "Philips",
                 "_TZ3210_ttkgurpb" => "Miboxer",
+                Jaga => Jaga,
                 _ => manufacturer
             };
         }
@@ -42,7 +43,8 @@ namespace Home.Core {
             Temperature,
             Leak,
             Hub,
-            Solar
+            Solar,
+            Fancoil
         }
 
         public static string GetTypeString(DeviceType type) {
@@ -60,6 +62,7 @@ namespace Home.Core {
                 DeviceType.Leak => "leak",
                 DeviceType.Hub => "hub",
                 DeviceType.Solar => "solar",
+                DeviceType.Fancoil => "fancoil",
                 _ => "device"
             };
         }
@@ -70,6 +73,13 @@ namespace Home.Core {
             char[] a = s.ToCharArray();
             a[0] = char.ToUpper(a[0]);
             return new string(a);
+        }
+
+        public static T ConvertType<T>(object value) {
+            if (typeof(T).GetTypeInfo().IsEnum) {
+                return (T)Enum.Parse(typeof(T), value.ToString() ?? string.Empty, true);
+            }
+            return (T)Convert.ChangeType(value, typeof(T));
         }
 
     }
