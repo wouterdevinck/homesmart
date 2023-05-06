@@ -42,6 +42,7 @@ namespace Home.Devices.Logo {
             _switchReturnTime = switchReturnTime;
         }
 
+        [DeviceCommand]
         public async Task ToggleOnOffAsync() {
             _logger.LogInformation($"Toggle device {DeviceId}");
             await _semaphore.WaitAsync();
@@ -59,6 +60,7 @@ namespace Home.Devices.Logo {
             }
         }
 
+        [DeviceCommand]
         public async Task TurnOnAsync() {
             _logger.LogInformation($"Switch on device {DeviceId}");
             if (!On) {
@@ -66,6 +68,7 @@ namespace Home.Devices.Logo {
             }
         }
 
+        [DeviceCommand]
         public async Task TurnOffAsync() {
             _logger.LogInformation($"Switch off device {DeviceId}");
             if (On) {

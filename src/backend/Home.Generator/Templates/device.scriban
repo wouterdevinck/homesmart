@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Home.Core;
 using Home.Core.Interfaces;
+using Home.Core.Models;
 
 namespace {{ Namespace }} {
 
@@ -35,6 +39,25 @@ namespace {{ Namespace }} {
 
         public override int GetHashCode() {
             return HashCode.Combine(DeviceId);
+        }
+
+        public {{ if Classname != "AbstractDevice" }}new{{ end }} async Task InvokeCommand(string command, Dictionary<string, object> args) {
+            {{~ if Device.Commands | array.size > 0 ~}}
+            switch(command) {
+                {{~ for command in Device.Commands ~}}
+                case "{{ command.Name }}":
+                    await {{ command.Method }}(
+                        {{~ for arg in command.Arguments ~}}
+                        Helpers.ConvertType<{{ arg.Type }}>(args["{{ arg.Name }}"])
+                        {{- if !for.last }},{{ end }}
+                        {{~ end ~}}
+                    );
+                    break;
+                {{~ end ~}}
+            }
+            {{~ else ~}}
+            await Task.FromResult(true);
+            {{~ end ~}}
         }
 
     }
