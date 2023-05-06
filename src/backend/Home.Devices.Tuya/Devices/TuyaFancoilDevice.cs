@@ -40,13 +40,20 @@ namespace Home.Devices.Tuya.Devices {
             Reachable = false;
         }
 
+        [DeviceProperty]
         public bool On { get; private set; }
+
+        [DeviceProperty]
         public double Temperature { get; private set; }
+
+        [DeviceProperty]
         public double RequestedTemperature { get; private set; }
 
+        [DeviceProperty]
         [JsonConverter(typeof(StringEnumConverter))]
         public FancoilMode Mode { get; private set; }
 
+        [DeviceProperty]
         [JsonConverter(typeof(StringEnumConverter))]
         public FancoilSpeed Speed { get; private set; }
 
