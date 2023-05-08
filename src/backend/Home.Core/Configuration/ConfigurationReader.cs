@@ -3,6 +3,7 @@ using System.IO;
 using Home.Core.Configuration.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace Home.Core.Configuration {
 
@@ -11,14 +12,27 @@ namespace Home.Core.Configuration {
         public ConfigurationModel ConfigurationModel { get; private set; }
         public List<Descriptor> ProviderDescriptors { get; private set; }
 
-        public ConfigurationReader(string configPath, List<Descriptor> providerDescriptors) {
+        public ConfigurationReader(string configPath, string secretsPath, List<Descriptor> providerDescriptors) {
+
+            // Secrets
+            var secretsYaml = File.ReadAllText(secretsPath);
+            var secretsDeserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            var secrets = secretsDeserializer.Deserialize<SecretsModel>(secretsYaml);
+
+            // Config
             var configYaml = File.ReadAllText(configPath);
-            var deserializer = new DeserializerBuilder()
+            var configDeserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithNodeTypeResolver(new ConfigurationResolver(providerDescriptors))
+                .WithNodeDeserializer(inner => new SecretDeserializer(inner, secrets), s => s.InsteadOf<ScalarNodeDeserializer>())
                 .Build();
-            ConfigurationModel = deserializer.Deserialize<ConfigurationModel>(configYaml);
+            ConfigurationModel = configDeserializer.Deserialize<ConfigurationModel>(configYaml);
+
+            // Providers
             ProviderDescriptors = providerDescriptors;
+
         }
 
     }
