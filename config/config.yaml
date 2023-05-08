@@ -144,6 +144,9 @@ home:
     - deviceId: ZIGBEE-0x00158d00091c28de
       friendlyId: sensor-shed
       roomId: shed
+    - deviceId: ZIGBEE-0x00158d00091a41b8
+      friendlyId: sensor-incubator
+      roomId: kitchen
     - deviceId: ZIGBEE-0x00158d0006c4af92
       friendlyId: leak-aquarium
       roomId: livingroom
@@ -285,6 +288,8 @@ deviceConsumers:
           - deviceId: sensor-outside
             properties: [ 'temperature', 'humidity', 'pressure' ]
           - deviceId: sensor-shed
+            properties: [ 'temperature', 'humidity', 'pressure' ]
+          - deviceId: sensor-incubator
             properties: [ 'temperature', 'humidity', 'pressure' ]
           - deviceId: solar
             properties: [ 'lifeTimeEnergy', 'lastYearEnergy', 'lastMonthEnergy', 'lastDayEnergy', 'currentPower', 'previousQuarterEnergy', 'previousQuarterPower' ]
