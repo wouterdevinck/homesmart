@@ -13,7 +13,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "HOME_CONFIG": "..\\..\\..\\config\\config-local.yaml"
+        "HOME_CONFIG": "..\\..\\..\\config\\config-local.yaml",
+        "HOME_SECRETS": "..\\..\\..\\config\\secrets.yaml"
       }
     },
     "Home.Web": {
@@ -23,7 +24,8 @@
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "HOME_CONFIG": "..\\..\\..\\config\\config-local.yaml"
+        "HOME_CONFIG": "..\\..\\..\\config\\config-local.yaml",
+        "HOME_SECRETS": "..\\..\\..\\config\\secrets.yaml"
       }
     }
   }

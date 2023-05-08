@@ -16,37 +16,37 @@ deviceProviders:
         switchAddress: 8257
         outputNumber: 2
   hue:
-    apiKey: xxx
+    apiKey: $hueApiKey
     polling:
       minPollInterval: 1000
       maxPollInterval: 60000
       backOffInterval: 120000
       backOffFactor: 2
   solaredge:
-    site: xxx
-    apiKey: xxx
+    site: $solaredgeSite
+    apiKey: $solaredgeApiKey
   tuya:
     devices:
       - name: Verwarming bureau
         type: fancoil
         ip: 192.168.2.217
         id: bfb5c321632e97e066ua7v
-        key: xxx
+        key: $tuyaApiKeyFancoilOffice
       - name: Verwarming slaapkamer
         type: fancoil
         ip: 192.168.2.197
         id: bfc25428abdae57f82kwdp
-        key: xxx
+        key: $tuyaApiKeyFancoilBedroom
       - name: Verwarming Tine's crib
         type: fancoil
         ip: 192.168.2.193
         id: bfdaafe7a17a881374fwfd
-        key: xxx
+        key: $tuyaApiKeyFancoilTine
       - name: Verwarming kinderkamer
         type: fancoil
         ip: 192.168.2.77
         id: bf5c398cf43a8c5cf5q2dm
-        key: xxx
+        key: $tuyaApiKeyFancoilKidsroom
 home:
   rooms:
     - id: livingroom
@@ -242,14 +242,14 @@ deviceConsumers:
         deviceId: leak-aquarium
         property: leak
         value: true
-        apiKey: xxx
+        apiKey: $opsgenieApiKey
         responder: Wouter
         message: "AQUARIUM LEAK"
   - influxdbTelemetry:
       description: Send telemetry to InfluxDB
       configuration:
         url: http://192.168.1.180:8086
-        token: xxx
+        token: $influxdbToken
         bucket: homesmart
         organization: homesmart
         points:

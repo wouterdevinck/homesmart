@@ -13,7 +13,7 @@ namespace Home.Core.Configuration {
         private NodeEvent _previousNodeEvent;
         private string _currentDeviceConsumerType;
 
-        private List<Descriptor> _providerDescriptors;
+        private readonly List<Descriptor> _providerDescriptors;
 
         public ConfigurationResolver(List<Descriptor> providerDescriptors) {
             _providerDescriptors = providerDescriptors;

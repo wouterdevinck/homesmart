@@ -22,9 +22,10 @@ namespace Home.Web {
 
     public class Startup {
 
-        private static readonly string _configFilePath = Environment.GetEnvironmentVariable("HOME_CONFIG") ?? "config.yaml";
+        private static readonly string ConfigFilePath = Environment.GetEnvironmentVariable("HOME_CONFIG") ?? "config.yaml";
+        private static readonly string SecretsFilePath = Environment.GetEnvironmentVariable("HOME_SECRETS") ?? "secrets.yaml";
 
-        private readonly ConfigurationReader _config = new(_configFilePath, new List<Descriptor> {
+        private readonly ConfigurationReader _config = new(ConfigFilePath, SecretsFilePath, new List<Descriptor> {
             HueDeviceProvider.Descriptor,
             LogoDeviceProvider.Descriptor,
             ZigbeeDeviceProvider.Descriptor,
