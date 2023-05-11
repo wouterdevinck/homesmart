@@ -11,22 +11,22 @@ namespace Home.Web.Controllers {
     [Route("api/v1")]
     public class ApiController : Controller {
 
-        private readonly IDeviceProvider _deviceProvider;
+        private readonly ISmartHome _home;
 
-        public ApiController(IDeviceProvider deviceProvider) {
-            _deviceProvider = deviceProvider;
+        public ApiController(ISmartHome home) {
+            _home = home;
         }
 
         [HttpGet]
         [Route("devices")]
         public IEnumerable<IDevice> Devices() {
-            return _deviceProvider.GetDevices().ToList();
+            return _home.GetDevices().ToList();
         }
 
         [HttpPost]
         [Route("devices/{id}/commands/{command}")]
         public async Task Command(string id, string command, [FromBody] Dictionary<string, object> args) {
-            var device = _deviceProvider.GetDevices().Single(x => x.DeviceId == id);
+            var device = _home.GetDevices().Single(x => x.DeviceId == id);
             await device.InvokeCommand(command, args);
         }
 
@@ -36,32 +36,43 @@ namespace Home.Web.Controllers {
             // TODO Support additional time range parameters
             if (string.IsNullOrEmpty(since)) since = "24h";
             var range = new TimeRange(new RelativeTime(since));
-            return await (_deviceProvider as ITelemetryProvider)?.GetDataAsync(id, point, range);
+            return await _home.GetDataAsync(id, point, range);
         }
 
-        [Obsolete]
+        [HttpGet]
+        [Route("providers")]
+        public IEnumerable<IDeviceProvider> Providers() {
+            return _home.GetProviders().ToList();
+        }
+
         [HttpGet]
         [Route("automations")]
-        public IEnumerable<IDeviceConsumer> Automations() {
-            return _deviceProvider.GetDeviceConsumers().ToList();
+        public IEnumerable<IAutomation> Automations() {
+            return _home.GetAutomations().ToList();
         }
 
         [HttpGet]
-        [Route("consumers")]
-        public IEnumerable<IDeviceConsumer> Consumers() {
-            return _deviceProvider.GetDeviceConsumers().ToList();
+        [Route("telemetry")]
+        public ITelemetry Telemetry() {
+            return _home.GetTelemetry();
+        }
+
+        [HttpGet]
+        [Route("remote")]
+        public IRemote Remote() {
+            return _home.GetRemote();
         }
 
         [HttpGet]
         [Route("rooms")]
         public IEnumerable<IRoom> Rooms() {
-            return _deviceProvider.GetRooms().ToList();
+            return _home.GetRooms().ToList();
         }
 
         [HttpGet]
         [Route("rooms/{id}/devices")]
         public IEnumerable<IDevice> RoomsDevices(string id) {
-            return _deviceProvider.GetDevices().Where(x => x.RoomId == id).ToList();
+            return _home.GetDevices().Where(x => x.RoomId == id).ToList();
         }
 
     }

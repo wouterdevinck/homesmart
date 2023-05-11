@@ -7,18 +7,18 @@ namespace Home.Web.Services {
 
     public class ConnectionService : IHostedService {
 
-        private readonly IDeviceProvider _deviceProvider;
+        private readonly ISmartHome _home;
 
-        public ConnectionService(IDeviceProvider deviceProvider) {
-            _deviceProvider = deviceProvider;
+        public ConnectionService(ISmartHome home) {
+            _home = home;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken) {
-            await _deviceProvider.ConnectAsync();
+            await _home.ConnectAsync();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken) {
-            await _deviceProvider.DisconnectAsync();
+            await _home.DisconnectAsync();
         }
 
     }

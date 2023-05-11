@@ -12,14 +12,14 @@ namespace Home.Devices.Tuya {
 
     public class TuyaDeviceProvider : AbstractDeviceProvider {
 
-        public static Descriptor Descriptor = new("tuya", typeof(TuyaDeviceProvider), typeof(TuyaConfiguration), DescriptorType.DeviceProvider);
+        public static Descriptor Descriptor = new("tuya", typeof(TuyaDeviceProvider), typeof(TuyaConfiguration), DescriptorType.Provider);
 
         private readonly HomeConfigurationModel _home;
         private readonly ILogger _logger;
         private readonly TuyaConfiguration _configuration; 
         private readonly List<TuyaDevice> _devices;
 
-        public TuyaDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+        public TuyaDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
             _home = home;
             _logger = logger;
             _configuration = configuration as TuyaConfiguration;

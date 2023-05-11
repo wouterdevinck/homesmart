@@ -8,14 +8,16 @@ using Home.Core.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Home.Core.Configuration.Interfaces;
+using Home.Core.Interfaces;
 
 namespace Home.Automations {
 
-    public class OpsgenieAlarmAutomation : AbstractDeviceConsumer {
+    public class OpsgenieAlarmAutomation : AbstractDeviceConsumer, IAutomation {
 
-        public static Descriptor Descriptor = new("opsgenieAlarm", typeof(OpsgenieAlarmAutomation), typeof(OpsgenieAlarmAutomationConfiguration), DescriptorType.DeviceConsumer, DescriptorSubtype.Automation);
+        public static Descriptor Descriptor = new("opsgenieAlarm", typeof(OpsgenieAlarmAutomation), typeof(OpsgenieAlarmAutomationConfiguration), DescriptorType.Automation);
 
         public override string Type => "Opsgenie Alarm";
+        public string Description { get; set; }
 
         private const string ApiUrl = "https://api.eu.opsgenie.com/v2/alerts";
 
@@ -85,7 +87,7 @@ namespace Home.Automations {
 
     }
 
-    public class OpsgenieAlarmAutomationConfiguration : IDeviceConsumerConfiguration {
+    public class OpsgenieAlarmAutomationConfiguration : IAutomationConfiguration {
 
         public string DeviceId { get; set; }
         public string Property { get; set; }

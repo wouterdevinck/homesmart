@@ -12,7 +12,7 @@ namespace Home.Devices.SolarEdge {
 
     public class SolarEdgeDeviceProvider : AbstractDeviceProvider, IDisposable {
 
-        public static Descriptor Descriptor = new("solaredge", typeof(SolarEdgeDeviceProvider), typeof(SolarEdgeConfiguration), DescriptorType.DeviceProvider);
+        public static Descriptor Descriptor = new("solaredge", typeof(SolarEdgeDeviceProvider), typeof(SolarEdgeConfiguration), DescriptorType.Provider);
 
         private readonly List<SolarEdgeInverterDevice> _devices;
         private readonly HomeConfigurationModel _home;
@@ -20,11 +20,11 @@ namespace Home.Devices.SolarEdge {
         private readonly SolarEdgeConfiguration _configuration;
         private readonly SolarEdgeApiClient _api;
 
-        public SolarEdgeDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+        public SolarEdgeDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
             _devices = new List<SolarEdgeInverterDevice>();
             _home = home;
             _logger = logger;
-            _configuration = configuration as SolarEdgeConfiguration;
+            _configuration = (SolarEdgeConfiguration)configuration;
             _api = new SolarEdgeApiClient(_configuration.Site, _configuration.ApiKey);
         }
 
@@ -43,7 +43,6 @@ namespace Home.Devices.SolarEdge {
                 NotifyObservers(_devices);
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");
-                return;
             }
         }
 

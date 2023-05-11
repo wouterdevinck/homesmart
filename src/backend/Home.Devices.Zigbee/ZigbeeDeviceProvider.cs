@@ -24,7 +24,7 @@ namespace Home.Devices.Zigbee {
         // TODO Reconnect working? - make all device unreachable when disconnected
         // TODO Try/catch everywhere?
 
-        public static Descriptor Descriptor = new("zigbee", typeof(ZigbeeDeviceProvider), typeof(ZigbeeConfiguration), DescriptorType.DeviceProvider);
+        public static Descriptor Descriptor = new("zigbee", typeof(ZigbeeDeviceProvider), typeof(ZigbeeConfiguration), DescriptorType.Provider);
 
         private readonly HomeConfigurationModel _home;
         private readonly ILogger _logger;
@@ -33,7 +33,7 @@ namespace Home.Devices.Zigbee {
 
         private IManagedMqttClient _mqtt;
 
-        public ZigbeeDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+        public ZigbeeDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
             _home = home;
             _logger = logger;
             _configuration = configuration as ZigbeeConfiguration;

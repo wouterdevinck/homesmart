@@ -21,13 +21,16 @@ namespace Home.Core.Configuration {
 
         public bool Resolve(NodeEvent nodeEvent, ref Type currentType) {
             Type type = null;
-            if (currentType == typeof(IDeviceProviderConfiguration)) {
-                var tag = (_previousNodeEvent as Scalar)?.Value;
-                type = GetConfigurationTypeByTagAndType(tag, DescriptorType.DeviceProvider);
-            } else if (currentType == typeof(ConfigurationWithDescriptionModel<IDeviceConsumerConfiguration>)) {
+            if (currentType == typeof(IProviderConfiguration)) {
+                type = GetConfigurationTypeByTagAndType((_previousNodeEvent as Scalar)?.Value, DescriptorType.Provider);
+            } else if (currentType == typeof(ITelemetryConfiguration)) {
+                type = GetConfigurationTypeByTagAndType((_previousNodeEvent as Scalar)?.Value, DescriptorType.Telemetry);
+            } else if (currentType == typeof(IRemoteConfiguration)) {
+                type = GetConfigurationTypeByTagAndType((_previousNodeEvent as Scalar)?.Value, DescriptorType.Remote);
+            } else if (currentType == typeof(ConfigurationWithDescriptionModel<IAutomationConfiguration>)) {
                 _currentDeviceConsumerType = (_previousNodeEvent as Scalar)?.Value;
-            } else if (currentType == typeof(IDeviceConsumerConfiguration)) {
-                type = GetConfigurationTypeByTagAndType(_currentDeviceConsumerType, DescriptorType.DeviceConsumer);
+            } else if (currentType == typeof(IAutomationConfiguration)) {
+                type = GetConfigurationTypeByTagAndType(_currentDeviceConsumerType, DescriptorType.Automation);
             }
             if (type != null) {
                 currentType = type;

@@ -14,9 +14,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Home.Telemetry {
 
-    public class InfluxDbTelemetry : AbstractDeviceConsumer, ITelemetryProvider {
+    public class InfluxDbTelemetry : AbstractDeviceConsumer, ITelemetry {
 
-        public static Descriptor Descriptor = new("influxdbTelemetry", typeof(InfluxDbTelemetry), typeof(InfluxDbTelemetryConfiguration), DescriptorType.DeviceConsumer, DescriptorSubtype.Telemetry);
+        public static Descriptor Descriptor = new("influx", typeof(InfluxDbTelemetry), typeof(InfluxDbTelemetryConfiguration), DescriptorType.Telemetry);
 
         public override string Type => "InfluxDB Telemetry";
 
@@ -34,7 +34,7 @@ namespace Home.Telemetry {
         protected override void Start() {
             _logger.LogInformation("Telemetry starting");
             foreach(var device in Devices) {
-                var properties = _configuration.Points.SingleOrDefault(x => x.DeviceId == device.Key).Properties;
+                var properties = _configuration.Data.Where(x => x.DeviceIds.Contains(device.Key)).SelectMany(x => x.Properties);
                 device.Value.DeviceUpdate += (s, e) => {
                     if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase))) {
                         using var writeApi = _client.GetWriteApi();
@@ -49,8 +49,8 @@ namespace Home.Telemetry {
         }
 
         private static List<string> GetDeviceIdList(InfluxDbTelemetryConfiguration configuration) {
-            if (configuration.Points == null) return new List<string>();
-            return configuration.Points.Select(p => p.DeviceId).Distinct().ToList();
+            if (configuration.Data == null) return new List<string>();
+            return configuration.Data.SelectMany(p => p.DeviceIds).Distinct().ToList();
         }
 
         public async Task<IEnumerable<IDataPoint>> GetDataAsync(string device, string point, TimeRange range) {

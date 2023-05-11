@@ -10,11 +10,11 @@ namespace Home.Web.Notifications {
     public class NotificationService : IHostedService {
 
         private readonly IHubContext<NotificationHub> _hub;
-        private readonly IDeviceProvider _deviceProvider;
+        private readonly ISmartHome _home;
 
-        public NotificationService(IHubContext<NotificationHub> hub, IDeviceProvider deviceProvider) {
+        public NotificationService(IHubContext<NotificationHub> hub, ISmartHome home) {
             _hub = hub;
-            _deviceProvider = deviceProvider;
+            _home = home;
         }
 
         public Task StartAsync(CancellationToken cancellationToken) {
@@ -23,10 +23,10 @@ namespace Home.Web.Notifications {
                     await _hub.Clients.All.SendAsync("deviceupdates", device);
                 };
             };
-            foreach (var device in _deviceProvider.GetDevices()) {
+            foreach (var device in _home.GetDevices()) {
                 subscribe(device);
             }
-            _deviceProvider.DeviceDiscovered += (_, device) => {
+            _home.DeviceDiscovered += (_, device) => {
                 subscribe(device);
             };
             return Task.CompletedTask;

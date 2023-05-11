@@ -1,6 +1,6 @@
 namespace Home.Core.Configuration.Interfaces {
 
-    public interface IDeviceConsumerConfiguration {
+    public interface ITelemetryConfiguration {
 
         // nop
 

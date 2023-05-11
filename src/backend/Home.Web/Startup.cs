@@ -10,6 +10,7 @@ using Home.Devices.Logo;
 using Home.Devices.Zigbee;
 using Home.Devices.SolarEdge;
 using Home.Devices.Tuya;
+using Home.Remote;
 using Home.Telemetry;
 using Home.Web.Notifications;
 using Home.Web.Services;
@@ -33,7 +34,8 @@ namespace Home.Web {
             TuyaDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
             OpsgenieAlarmAutomation.Descriptor,
-            InfluxDbTelemetry.Descriptor
+            InfluxDbTelemetry.Descriptor,
+            AzureRemote.Descriptor
         });
 
         public void ConfigureServices(IServiceCollection services) {
@@ -46,7 +48,7 @@ namespace Home.Web {
                 });
             });
             services.AddSingleton(_config);
-            services.AddSingleton<IDeviceProvider, DeviceProviderCollection>();
+            services.AddSingleton<ISmartHome, SmartHome>();
             services.AddControllers().AddNewtonsoftJson();
             services.AddSignalR().AddNewtonsoftJsonProtocol(); ;
             services.AddHostedService<NotificationService>();

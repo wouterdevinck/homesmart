@@ -5,8 +5,7 @@ using Home.Core.Interfaces;
 namespace Home.Core {
 
     public abstract class AbstractDeviceConsumer : IDeviceConsumer {
-
-        public string Description { get; set; }
+        
         public abstract string Type { get; }
 
         private readonly List<string> _deviceIds;
