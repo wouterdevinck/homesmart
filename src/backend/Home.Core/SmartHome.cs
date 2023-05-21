@@ -27,7 +27,12 @@ namespace Home.Core {
             _configuration = config.ConfigurationModel;
 
             // Consistency check
-            if (!config.ConfigurationModel.Home.CheckConsistency()) { 
+            if (config.ConfigurationModel.Home == null) {
+                config.ConfigurationModel.Home = new HomeConfigurationModel() {
+                    Devices = new(),
+                    Rooms = new()
+                };
+            } else if (!config.ConfigurationModel.Home.CheckConsistency()) { 
                 throw new Exception("Config consistency error!");
             }
 

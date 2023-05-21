@@ -308,4 +308,11 @@ telemetry:
           - requestedTemperature
 remote:
   azure:
-    xxx: meh
+    apiUrl: http://huis.wouterdevinck.be/api/v1/
+    iot: 
+      host: wouter.azure-devices.net
+      id: test2
+      key: $iotKey
+    notifications:
+      host: wouter.service.signalr.net
+      key: $notificationsKey

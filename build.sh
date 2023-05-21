@@ -4,7 +4,7 @@ set -e
 TAG="wouterdevinck/homesmart:$(git describe --tags --dirty)"
 
 function printUsage {
-  echo "Usage: $0 all|version|build|run|push|lf"
+  echo "Usage: $0 all|version|build|run|push|lf|swa"
   echo ""
   echo "   all     - Build, push and deploy."
   echo "   version - Print current version number."
@@ -12,6 +12,7 @@ function printUsage {
   echo "   run     - Run Docker image locally."
   echo "   push    - Push to Docker Hub."
   echo "   lf      - Fix line endings."
+  echo "   swa     - Deploy static web application."
   echo ""
 }
 
@@ -62,6 +63,13 @@ case $1 in
   find . -type f -name '*.cs' -not -path "*/obj/*" -exec dos2unix '{}' +
   find . -type f -name '*.csproj' -not -path "*/obj/*" -exec dos2unix '{}' +
   find . -type f -name '*.sln' -not -path "*/obj/*" -exec dos2unix '{}' +
+
+  ;;
+
+"swa")
+
+  swa build
+  swa deploy --deployment-token $2 --env production --api-location src/backend/Home.Remote.Functions/bin/Release/net7.0/publish
 
   ;;
 

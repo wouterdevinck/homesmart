@@ -1,0 +1,36 @@
+{
+  "routes": [
+    {
+      "route": "/login",
+      "rewrite": "/.auth/login/aad"
+    },
+    {
+      "route": "/.auth/login/twitter",
+      "statusCode": 404
+    },
+    {
+      "route": "/.auth/login/github",
+      "statusCode": 404
+    },
+    {
+      "route": "/logout",
+      "redirect": "/.auth/logout"
+    },  
+    {
+      "route": "/*",
+      "allowedRoles": ["admin"]
+    }
+  ],
+  "platform": {
+    "apiRuntime": "dotnet-isolated:7.0"
+  },
+  "responseOverrides": {
+    "401": {
+      "redirect": "/login",
+      "statusCode": 302
+    }
+  },
+  "navigationFallback": {
+    "rewrite": "index.html"
+  }
+}
