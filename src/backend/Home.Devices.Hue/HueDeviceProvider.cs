@@ -45,8 +45,12 @@ namespace Home.Devices.Hue {
             // Discover bridges
             var locator = new HttpBridgeLocator();
             var bridges = (await locator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
-            if (bridges.Count == 0) throw new Exception("No bridges found");
+            if (bridges.Count == 0) {
+                var mdnsLocator = new MdnsBridgeLocator();
+                bridges = (await mdnsLocator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
+            }
             if (bridges.Count > 1) throw new Exception("Multiple bridges found, not supported");
+            if (bridges.Count == 0) throw new Exception("No bridges found");
             var bridgeInfo = bridges.Single();
 
             // Connect to bridge

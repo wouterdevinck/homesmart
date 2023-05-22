@@ -23,7 +23,7 @@ namespace {{ Namespace }} {
         }
 
         private bool Equals({{ Classname }} other) {
-            return base.Equals(other){{if Device.Properties | array.size > 0}} &&{{ end }}
+            return {{ if Classname != "AbstractDevice" }}base.Equals(other){{if Device.Properties | array.size > 0}} &&{{ end }}{{ end }}
             {{~ for property in Device.Properties ~}}
                 {{ property.FieldName }} == other.{{ property.FieldName }}
                 {{- if !for.last }} &&{{ end }}
