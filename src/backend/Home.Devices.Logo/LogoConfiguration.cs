@@ -3,7 +3,7 @@ using Home.Core.Configuration.Interfaces;
 
 namespace Home.Devices.Logo {
 
-    public class LogoConfiguration : IDeviceProviderConfiguration {
+    public class LogoConfiguration : IProviderConfiguration {
 
         public string Ip { get; set; }
         public int Port { get; set; }

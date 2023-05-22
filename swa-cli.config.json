@@ -1,0 +1,17 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "homesmart": {
+      "appLocation": "src/frontend",
+      "apiLocation": "src/backend/Home.Remote.Functions",
+      "outputLocation": "dist",
+      "apiLanguage": "dotnetisolated",
+      "apiVersion": "7.0",
+      "swaConfigLocation": "./",
+      "appBuildCommand": "npm run build",
+      "apiBuildCommand": "dotnet publish -c Release",
+      "run": "npm run dev",
+      "appDevserverUrl": "http://localhost:5173"
+    }
+  }
+}

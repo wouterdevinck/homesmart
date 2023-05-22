@@ -16,7 +16,7 @@ namespace Home.Devices.Hue {
 
     public class HueDeviceProvider : AbstractDeviceProvider {
 
-        public static Descriptor Descriptor = new("hue", typeof(HueDeviceProvider), typeof(HueConfiguration), DescriptorType.DeviceProvider);
+        public static Descriptor Descriptor = new("hue", typeof(HueDeviceProvider), typeof(HueConfiguration), DescriptorType.Provider);
 
         private readonly HomeConfigurationModel _home;
         private readonly ILogger _logger;
@@ -31,7 +31,7 @@ namespace Home.Devices.Hue {
         private const string TypeColorTemperature = "Color temperature light";
         private const string TypeExtendedColor = "Extended color light";
 
-        public HueDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+        public HueDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
             _home = home;
             _logger = logger;
             _configuration = configuration as HueConfiguration;

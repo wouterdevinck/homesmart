@@ -16,7 +16,7 @@ namespace Home.Devices.Logo {
 
     public class LogoDeviceProvider : AbstractDeviceProvider {
 
-        public static Descriptor Descriptor = new("logo", typeof(LogoDeviceProvider), typeof(LogoConfiguration), DescriptorType.DeviceProvider);
+        public static Descriptor Descriptor = new("logo", typeof(LogoDeviceProvider), typeof(LogoConfiguration), DescriptorType.Provider);
 
         private readonly List<LogoLightDevice> _devices;
         private readonly HomeConfigurationModel _home;
@@ -28,7 +28,7 @@ namespace Home.Devices.Logo {
 
         private int _numberOfOutputs;
 
-        public LogoDeviceProvider(HomeConfigurationModel home, ILogger logger, IDeviceProviderConfiguration configuration) : base(home) {
+        public LogoDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
             _devices = new List<LogoLightDevice>();
             _home = home;
             _logger = logger;

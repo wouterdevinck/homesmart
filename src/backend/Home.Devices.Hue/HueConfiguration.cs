@@ -2,7 +2,7 @@ using Home.Core.Configuration.Interfaces;
 
 namespace Home.Devices.Hue {
 
-    public class HueConfiguration : IDeviceProviderConfiguration {
+    public class HueConfiguration : IProviderConfiguration {
 
         public string ApiKey { get; set; }
         public PollingConfiguration Polling { get; set; }

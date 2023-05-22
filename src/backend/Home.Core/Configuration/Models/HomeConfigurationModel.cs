@@ -11,7 +11,7 @@ namespace Home.Core.Configuration.Models {
         public bool CheckConsistency() {
             if (Devices == null) return true;
             foreach (var device in Devices) {
-                if (!Rooms.Any(x => x.Id == device.RoomId)) {
+                if (Rooms.All(x => x.Id != device.RoomId)) {
                     return false;
                 }
             }

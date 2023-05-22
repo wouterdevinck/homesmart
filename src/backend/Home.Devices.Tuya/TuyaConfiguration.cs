@@ -3,7 +3,7 @@ using Home.Core.Configuration.Interfaces;
 
 namespace Home.Devices.Tuya {
 
-    public class TuyaConfiguration : IDeviceProviderConfiguration {
+    public class TuyaConfiguration : IProviderConfiguration {
 
         public List<TuyaDeviceConfiguration> Devices { get; set; }
 

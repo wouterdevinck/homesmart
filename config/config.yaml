@@ -225,7 +225,7 @@ home:
     - deviceId: TUYA-bfdaafe7a17a881374fwfd
       friendlyId: fancoil-tine
       roomId: tine
-deviceConsumers:
+automations:
   - pushOnOff:
       description: Pushbutton hallway
       configuration:
@@ -245,71 +245,74 @@ deviceConsumers:
         apiKey: $opsgenieApiKey
         responder: Wouter
         message: "AQUARIUM LEAK"
-  - influxdbTelemetry:
-      description: Send telemetry to InfluxDB
-      configuration:
-        url: http://192.168.1.180:8086
-        token: $influxdbToken
-        bucket: homesmart
-        organization: homesmart
-        points:
-          - deviceId: sensor-living
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-laundry
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-basement
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-kitchen
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-shaft
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-hallway-downstairs
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-office
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-toilet
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-garage
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-kidsroom
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-bedroom
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-bathroom
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-tine
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-attic
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-storage
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-air-outlet-kitchen
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-outside
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-shed
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: sensor-incubator
-            properties: [ 'temperature', 'humidity', 'pressure' ]
-          - deviceId: solar
-            properties: [ 'lifeTimeEnergy', 'lastYearEnergy', 'lastMonthEnergy', 'lastDayEnergy', 'currentPower', 'previousQuarterEnergy', 'previousQuarterPower' ]
-          - deviceId: plug-fridge
-            properties: [ 'voltage', 'current', 'power', 'energy' ]
-          - deviceId: plug-washing-machine
-            properties: [ 'voltage', 'current', 'power', 'energy' ]
-          - deviceId: plug-rack
-            properties: [ 'voltage', 'current', 'power', 'energy' ]
-          - deviceId: plug-tv
-            properties: [ 'voltage', 'current', 'power', 'energy' ]
-          - deviceId: plug-office
-            properties: [ 'voltage', 'current', 'power', 'energy' ]
-          - deviceId: plug-freezer
-            properties: [ 'voltage', 'current', 'power', 'energy' ]
-          - deviceId: fancoil-office
-            properties: [ 'temperature', 'requestedTemperature' ]
-          - deviceId: fancoil-kidsroom
-            properties: [ 'temperature', 'requestedTemperature' ]
-          - deviceId: fancoil-bedroom
-            properties: [ 'temperature', 'requestedTemperature' ]
-          - deviceId: fancoil-tine
-            properties: [ 'temperature', 'requestedTemperature' ]
+telemetry:
+  influx:
+    url: http://192.168.1.180:8086
+    token: $influxdbToken
+    bucket: homesmart
+    organization: homesmart
+    data:
+      - deviceIds: 
+          - sensor-living
+          - sensor-laundry
+          - sensor-basement
+          - sensor-kitchen
+          - sensor-shaft
+          - sensor-hallway-downstairs
+          - sensor-office
+          - sensor-toilet
+          - sensor-garage
+          - sensor-kidsroom
+          - sensor-bedroom
+          - sensor-bathroom
+          - sensor-tine
+          - sensor-attic
+          - sensor-storage
+          - sensor-air-outlet-kitchen
+          - sensor-outside
+          - sensor-shed
+          - sensor-incubator
+        properties: 
+          - temperature
+          - humidity
+          - pressure
+      - deviceIds: 
+          - solar
+        properties: 
+          - lifeTimeEnergy
+          - lastYearEnergy
+          - lastMonthEnergy
+          - lastDayEnergy
+          - currentPower
+          - previousQuarterEnergy
+          - previousQuarterPower
+      - deviceIds: 
+          - plug-fridge
+          - plug-washing-machine
+          - plug-rack
+          - plug-tv
+          - plug-office
+          - plug-freezer
+        properties: 
+          - voltage
+          - current
+          - power
+          - energy
+      - deviceIds: 
+          - fancoil-office
+          - fancoil-kidsroom
+          - fancoil-bedroom
+          - fancoil-tine
+        properties: 
+          - temperature
+          - requestedTemperature
+remote:
+  azure:
+    apiUrl: http://huis.wouterdevinck.be/api/v1/
+    iot: 
+      host: wouter.azure-devices.net
+      id: test2
+      key: $iotKey
+    notifications:
+      host: wouter.service.signalr.net
+      key: $notificationsKey
