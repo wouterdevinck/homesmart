@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Home.Generator\Home.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Home.Core\Home.Core.csproj" />
-    <PackageReference Include="Q42.HueApi" Version="3.21.0" />
+    <PackageReference Include="HueApi" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

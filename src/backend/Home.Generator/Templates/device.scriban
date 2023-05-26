@@ -55,8 +55,15 @@ namespace {{ Namespace }} {
                     break;
                 {{~ end ~}}
             }
+            {{~ if Classname != "AbstractDevice" ~}}
+            await base.InvokeCommand(command, args);
+            {{~ end ~}}
+            {{~ else ~}}
+            {{~ if Classname != "AbstractDevice" ~}}
+            await base.InvokeCommand(command, args);
             {{~ else ~}}
             await Task.FromResult(true);
+            {{~ end ~}}
             {{~ end ~}}
         }
 

@@ -1,23 +1,24 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Core.Models;
-using Q42.HueApi;
+using HueApi;
+using HueApi.Models;
+using HueApi.Models.Requests;
 
 namespace Home.Devices.Hue.Devices {
 
     [Device]
     public partial class HueExtendedColorLightDevice : HueColorTemperatureLightDevice, IColorLight {
         
-        public HueExtendedColorLightDevice(Light light, HueClient hue, HomeConfigurationModel home) : base(light, hue, home) {
-            if (light.State.ColorCoordinates != null) {
-                ColorXy = new ColorXy {
-                    X = light.State.ColorCoordinates[0],
-                    Y = light.State.ColorCoordinates[1]
-                };
-            }
+        public HueExtendedColorLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
+            ColorXy = new ColorXy {
+                X = light.Color.Xy.X,
+                Y = light.Color.Xy.Y
+            };
         }
 
         [DeviceProperty]
@@ -25,14 +26,27 @@ namespace Home.Devices.Hue.Devices {
 
         [DeviceCommand]
         public async Task SetColorXy(ColorXy c) {
-            var command = new LightCommand {
-                ColorCoordinates = new[] { c.X, c.Y }
-            };
-            var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });
-            if (result[0].Error == null) {
+            var req = new UpdateLight().SetColor(c.X, c.Y);
+            var result = await Hue.UpdateLightAsync(HueApiId, req);
+            if (!result.HasErrors) {
                 ColorXy = c;
-                NotifyObservers(nameof(ColorTemperature), ColorTemperature);
+                NotifyObservers(nameof(ColorXy), ColorXy);
             }
+        }
+
+        public new void ProcessUpdate(Dictionary<string, JsonElement> data) {
+            if (data.TryGetValue("color", out JsonElement value)) {
+                var xy = value.GetProperty("xy");
+                var c = new ColorXy {
+                    X = xy.GetProperty("x").GetDouble(),
+                    Y = xy.GetProperty("y").GetDouble()
+                };
+                if (ColorXy != c) {
+                    ColorXy = c;
+                    NotifyObservers(nameof(ColorXy), ColorXy);
+                }
+            }
+            base.ProcessUpdate(data);
         }
 
     }
