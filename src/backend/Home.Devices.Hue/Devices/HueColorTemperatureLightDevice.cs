@@ -1,18 +1,21 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
 using Home.Devices.Hue.Common;
-using Q42.HueApi;
+using HueApi;
+using HueApi.Models;
+using HueApi.Models.Requests;
 
 namespace Home.Devices.Hue.Devices {
 
     [Device]
     public partial class HueColorTemperatureLightDevice : HueLightDevice, IColorTemperatureLight {
         
-        public HueColorTemperatureLightDevice(Light light, HueClient hue, HomeConfigurationModel home) : base(light, hue, home) {
-            if (light.State.ColorTemperature != null) ColorTemperature = light.State.ColorTemperature.Value;
+        public HueColorTemperatureLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
+            ColorTemperature = light.ColorTemperature.Mirek ?? 0;
         }
 
         [DeviceProperty]
@@ -20,12 +23,30 @@ namespace Home.Devices.Hue.Devices {
 
         [DeviceCommand]
         public async Task SetColorTemperatureAsync(int ct) {
-            var command = new LightCommand { ColorTemperature = ct };
-            var result = await Hue.SendCommandAsync(command, new List<string> { LocalId });
-            if (result[0].Error == null) {
+            var req = new UpdateLight().SetColor(ct);
+            var result = await Hue.UpdateLightAsync(HueApiId, req);
+            if (!result.HasErrors) {
                 ColorTemperature = ct;
                 NotifyObservers(nameof(ColorTemperature), ColorTemperature);
             }
+        }
+
+        public new void ProcessUpdate(Dictionary<string, JsonElement> data) {
+            if (data.TryGetValue("color_temperature", out JsonElement value)) {
+                if (value.GetProperty("mirek_valid").GetBoolean()) {
+                    var ct = value.GetProperty("mirek").GetInt32();
+                    if (ColorTemperature != ct) {
+                        ColorTemperature = ct;
+                        NotifyObservers(nameof(ColorTemperature), ColorTemperature);
+                    }
+                } else {
+                    if (ColorTemperature != 0) {
+                        ColorTemperature = 0;
+                        NotifyObservers(nameof(ColorTemperature), ColorTemperature);
+                    }
+                }
+            }
+            base.ProcessUpdate(data);
         }
 
     }

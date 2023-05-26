@@ -1,17 +1,19 @@
+using System;
 using Home.Core;
 using Home.Core.Configuration.Models;
-using Q42.HueApi;
+using HueApi;
 
 namespace Home.Devices.Hue.Common {
 
     public abstract class HueDevice : AbstractDevice {
         
-        protected readonly HueClient Hue;
-        protected readonly string LocalId;
+        protected readonly LocalHueApi Hue;
+        protected Guid HueApiId;
+        public Guid HueDeviceId { get; private set; }
 
-        protected HueDevice(HueClient hue, string localId, HomeConfigurationModel home, string id) : base(home, id) {
+        protected HueDevice(LocalHueApi hue, Guid hueDeviceId, HomeConfigurationModel home, string id) : base(home, id) {
             Hue = hue;
-            LocalId = localId;
+            HueDeviceId = hueDeviceId;
         }
 
     }
