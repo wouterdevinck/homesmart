@@ -41,7 +41,7 @@ namespace Home.Devices.Hue {
                     if (hueEvent.Type == "update") {
                         foreach (var data in hueEvent.Data) {
                             _logger.LogInformation($"Received event of type {data.Type} for {data.IdV1}.");
-                            if (data.Type == "light" || data.Type == "zigbee_connectivity" || data.Type == "device_power") { // TODO test device power
+                            if (data.Type == "light" || data.Type == "zigbee_connectivity" || data.Type == "device_power" || data.Type == "relative_rotary" || data.Type == "button") {
                                 var dev = _devices.SingleOrDefault(x => (x as HueDevice).HueDeviceId == data.Owner.Rid) as HueDevice;
                                 if (dev != null) {
                                     var type = dev.GetType();
@@ -52,7 +52,7 @@ namespace Home.Devices.Hue {
                                     } else if (type == typeof(HueExtendedColorLightDevice)) {
                                         (dev as HueExtendedColorLightDevice).ProcessUpdate(data.ExtensionData);
                                     } else if (type == typeof(HueSwitchDevice)) {
-                                        (dev as HueSwitchDevice).ProcessUpdate(data.ExtensionData);
+                                        (dev as HueSwitchDevice).ProcessUpdate(data.Id, data.ExtensionData);
                                     }
                                 }
                             }
@@ -81,13 +81,15 @@ namespace Home.Devices.Hue {
             var bridgesResp = await _hue.GetBridgeAsync();
             var lightsResp = await _hue.GetLightsAsync();
             var buttonsResp = await _hue.GetButtonsAsync();
+            var rotaryResp = await _hue.GetRelativeRotaryAsync();
             var zigbeeResp = await _hue.GetZigbeeConnectivityAsync();
             var powerResp = await _hue.GetDevicePowersAsync();
-            if (!devicesResp.HasErrors && !bridgesResp.HasErrors && !lightsResp.HasErrors && !buttonsResp.HasErrors && !zigbeeResp.HasErrors && !powerResp.HasErrors) {
+            if (!devicesResp.HasErrors && !bridgesResp.HasErrors && !lightsResp.HasErrors && !buttonsResp.HasErrors && !rotaryResp.HasErrors && !zigbeeResp.HasErrors && !powerResp.HasErrors) {
                 var devices = devicesResp.Data;
                 var bridge = bridgesResp.Data.SingleOrDefault();
                 var lights = lightsResp.Data;
                 var buttons = buttonsResp.Data;
+                var rotary = rotaryResp.Data;
                 var zigbee = zigbeeResp.Data;
                 var power = powerResp.Data;
                 foreach (var device in devices) {
@@ -108,10 +110,10 @@ namespace Home.Devices.Hue {
                         }
                     } else if (types.Contains("button")) {
                         var btns = buttons.Where(x => device.Services.Where(x => x.Rtype == "button").Select(y => y.Rid).Contains(x.Id)).ToList();
-                        // TODO Add support for rotary control of dial - https://github.com/michielpost/Q42.HueApi/issues/306
+                        var rot = rotary.Where(x => device.Services.Where(x => x.Rtype == "relative_rotary").Select(y => y.Rid).Contains(x.Id)).ToList();
                         var zgb = zigbee.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "zigbee_connectivity").Rid);
                         var pwr = power.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "device_power").Rid);
-                        result.Add(new HueSwitchDevice(btns, device, zgb, pwr, _hue, _home));
+                        result.Add(new HueSwitchDevice(btns, rot, device, zgb, pwr, _hue, _home));
                     }
                 }
             }

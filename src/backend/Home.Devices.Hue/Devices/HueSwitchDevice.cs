@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Home.Core;
@@ -13,7 +14,6 @@ namespace Home.Devices.Hue.Devices {
     [Device]
     public partial class HueSwitchDevice : HueDevice, IBatteryDevice {
     
-
         [DeviceProperty]
         public double Battery { get; private set; }
 
@@ -23,7 +23,7 @@ namespace Home.Devices.Hue.Devices {
         //    [DeviceProperty]
         //    public DateTime SensorUpdate { get; private set; }
 
-        public HueSwitchDevice(List<ButtonResource> _, Device device, ZigbeeConnectivity zigbee, DevicePower pwr, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, $"HUE-SENSOR-{zigbee.MacAddress}") {
+        public HueSwitchDevice(List<ButtonResource> _, List<RelativeRotaryResource> __, Device device, ZigbeeConnectivity zigbee, DevicePower pwr, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, $"HUE-SENSOR-{zigbee.MacAddress}") {
             Name = device.Metadata.Name;
             Manufacturer = device.ProductData.ManufacturerName.HarmonizeManufacturer();
             Model = device.ProductData.ModelId.HarmonizeModel();
@@ -34,7 +34,7 @@ namespace Home.Devices.Hue.Devices {
             // TODO Implement buttons
         }
 
-        public void ProcessUpdate(Dictionary<string, JsonElement> data) {
+        public void ProcessUpdate(Guid id, Dictionary<string, JsonElement> data) {
             // TODO Test battery update - can take a while?
             //if (data.TryGetValue("on", out JsonElement value)) {
             //    var on = value.GetProperty("on").GetBoolean();
@@ -43,6 +43,15 @@ namespace Home.Devices.Hue.Devices {
             //        NotifyObservers(nameof(Battery), Battery);
             //    }
             //}
+
+            if (data.TryGetValue("relative_rotary", out JsonElement rotaryValue)) {
+                // TODO
+            }
+
+            if (data.TryGetValue("button", out JsonElement buttonValue)) {
+                // TODO
+            }
+
             if (data.TryGetValue("status", out JsonElement statusValue)) {
                 var r = statusValue.GetString() == "connected";
                 if (Reachable != r) {
