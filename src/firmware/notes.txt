@@ -1,0 +1,600 @@
+#include "cc1101.h"
+
+// based on https://pushstack.wordpress.com/somfy-rtimestamp-protocol/
+
+int pin = PIN2;
+
+unsigned long previousTimestamp = 0;
+unsigned long previousDelta = 0;
+unsigned int bitTime = 0;
+byte bitCounter = 0;
+byte syncCount = 0;
+byte expectedSyncCount = 0;
+bool pinState;
+
+byte state = 2;
+// 0 = waiting
+// 1 = wake up detected
+// 2 = hardware sync detected
+// 3 = software sync detected
+// 4 = receiving frame
+
+void setup() {
+  delay(5000);
+  pinMode(pin, INPUT);
+  Serial.begin(9600);
+  if (ELECHOUSE_cc1101.getCC1101()) {
+    Serial.println("Connection OK");
+  } else {
+    Serial.println("Connection Error");
+  }
+  ELECHOUSE_cc1101.Init();
+  ELECHOUSE_cc1101.setGDO0(pin); 
+  ELECHOUSE_cc1101.setMHZ(433.42);
+  ELECHOUSE_cc1101.SetRx();
+  pinState = digitalRead(pin);
+  attachInterrupt(digitalPinToInterrupt(pin), change, CHANGE);
+}
+
+void loop() {}
+
+void change() {
+  pinState = !pinState;
+  unsigned long timestamp = micros();
+  if (previousTimestamp != 0) {
+    unsigned long delta = (unsigned long)(timestamp - previousTimestamp);
+    if (pinState == true && delta > 9000 && delta < 11000) { 
+      state = 1;
+      syncCount = 0;
+      expectedSyncCount = 2;
+      Serial.println();
+    } else if (state == 1 && pinState == false && delta > 2400 && delta < 2600 && previousDelta > 2400 && previousDelta < 2600) {
+      syncCount++;
+      if (syncCount == expectedSyncCount) {
+        state = 2;
+      }
+    } else if (state == 2 && pinState == true && delta > 4400 && delta < 4900) {
+      state = 3;
+      bitCounter = 0;
+    } else if (state == 3) {
+      bitTime += delta;
+      if (bitTime > 1100) {
+        bitTime = 0;
+        bitCounter++;
+        Serial.print(!pinState ? "1" : "0");
+        if (bitCounter == 56) {
+          state = 1;
+          syncCount = 0;
+          expectedSyncCount = 7;
+          Serial.println();
+        }
+      }
+    }
+    previousDelta = delta;
+  }
+  previousTimestamp = timestamp;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "cc1101.h"
+
+// based on https://pushstack.wordpress.com/somfy-rtimestamp-protocol/
+
+int pin = PIN2;
+
+unsigned long previousTimestamp = 0;
+unsigned long previousDelta = 0;
+unsigned int bitTime = 0;
+byte bitCounter = 0;
+byte syncCount = 0;
+byte expectedSyncCount = 0;
+bool pinState;
+
+byte state = 2;
+// 0 = waiting
+// 1 = wake up detected
+// 2 = hardware sync detected
+// 3 = software sync detected
+// 4 = receiving frame
+
+void setup() {
+  delay(5000);
+  pinMode(pin, INPUT);
+  Serial.begin(9600);
+  if (ELECHOUSE_cc1101.getCC1101()) {
+    Serial.println("Connection OK");
+  } else {
+    Serial.println("Connection Error");
+  }
+  ELECHOUSE_cc1101.Init();
+  ELECHOUSE_cc1101.setGDO0(pin); 
+  ELECHOUSE_cc1101.setMHZ(433.42);
+  ELECHOUSE_cc1101.SetRx();
+  pinState = digitalRead(pin);
+  attachInterrupt(digitalPinToInterrupt(pin), change, CHANGE);
+}
+
+void loop() {}
+
+void change() {
+  pinState = !pinState;
+  unsigned long timestamp = micros();
+  if (previousTimestamp != 0) {
+    unsigned long delta = (unsigned long)(timestamp - previousTimestamp);
+
+    //if (delta > 100000) {
+    //  Serial.println(delta);    
+    //}
+    
+    /*Serial.print(state);
+    Serial.print(" - ");
+    Serial.print(pinState);
+    Serial.print(" - ");
+    Serial.println(delta);*/
+
+    /*if ((pinState == true && delta > 9000 && delta < 11000) || (pinState == false && delta > 100000)) {
+      state = 1;
+       // Serial.println(state);
+      syncCount = 0;
+      expectedSyncCount = 2;
+      Serial.println();
+    } else if (state == 1 && pinState == false && delta > 2400 && delta < 2600 && previousDelta > 2400 && previousDelta < 2600) {
+      syncCount++;
+        //Serial.print("   ");
+        //Serial.println(syncCount);
+
+
+        
+      if (syncCount == expectedSyncCount) {
+        state = 2;
+       // Serial.println(state);
+      }
+    } else*/ if (state == 2 && pinState == true && delta > 4400 && delta < 4900) {
+      state = 3;
+       // Serial.println(state);
+      bitCounter = 0;
+    } else if (state == 3) {
+      bitTime += delta;
+      if (bitTime > 1100) {
+        bitTime = 0;
+        bitCounter++;
+        
+        Serial.print(!pinState ? "1" : "0");
+        if (bitCounter == 56) {
+          state = 2;//1;
+
+      //syncCount = 0;
+      //expectedSyncCount = 2;
+
+          
+       // Serial.println(state);
+          //syncCount = 0;
+          //expectedSyncCount = 7;
+          Serial.println();
+        }
+      }
+      
+
+    }
+
+    /*if (state == 1) {
+      Serial.print("state: ");
+      Serial.print(state);
+      Serial.print(" - pinState: ");
+      Serial.print(pinState);
+      Serial.print(" - delta: ");
+      Serial.print(delta);  
+      Serial.print(" - syncCount: ");
+      Serial.print(syncCount);  
+      Serial.print(" - expectedSyncCount: ");
+      Serial.println(expectedSyncCount);  
+    }*/
+
+    previousDelta = delta;
+  }
+  previousTimestamp = timestamp;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "cc1101.h"
+
+// based on https://pushstack.wordpress.com/somfy-rtimestamp-protocol/
+
+int pin = PIN2;
+
+unsigned long previousTimestamp = 0;
+unsigned int bitTime = 0;
+byte bitCounter = 0;
+bool pinState;
+bool receivingFrame = false;
+
+void setup() {
+  delay(5000);
+  pinMode(pin, INPUT);
+  Serial.begin(9600);
+  if (ELECHOUSE_cc1101.getCC1101()) {
+    Serial.println("Connection OK");
+  } else {
+    Serial.println("Connection Error");
+  }
+  ELECHOUSE_cc1101.Init();
+  ELECHOUSE_cc1101.setGDO0(pin); 
+  ELECHOUSE_cc1101.setMHZ(433.42);
+  ELECHOUSE_cc1101.SetRx();
+  pinState = digitalRead(pin);
+  attachInterrupt(digitalPinToInterrupt(pin), change, CHANGE);
+}
+
+void loop() {}
+
+void change() {
+  pinState = !pinState;
+  unsigned long timestamp = micros();
+  if (previousTimestamp != 0) {
+    unsigned long delta = (unsigned long)(timestamp - previousTimestamp);
+    if (!receivingFrame && pinState == true && delta > 4000 && delta < 5200) {
+      receivingFrame = true;
+      bitCounter = 0;
+    } else if (receivingFrame) {
+      bitTime += delta;
+      if (bitTime > 1100) {
+        bitTime = 0;
+        bitCounter++;
+        Serial.print(!pinState ? "1" : "0");
+        if (bitCounter == 56) {
+          receivingFrame = false;
+          Serial.println();
+        }
+      }
+    }
+  }
+  previousTimestamp = timestamp;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+10100011101100011011011001101011111001000101110000000000
+10100011101100011011011001101011111001000101110000000000
+10100011101100011011011001101011111001000101110000000000
+10100011101100011011011001101011111001000101110000000000
+10100011101100011011011001101011111001000101110000000000
+10100011101100011011011001101011111001000101110000000000
+01011100010011100100100110010100000110111010001111111111
+Connection OK
+
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+10101000101111011011101001011000110101110110111100110011
+
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+10101001101111001011101101011000110101110110111100110011
+
+10101010101110111011110001011000110101110110111100110011
+10101010101110111011110001011000110101110110111100110011
+10101010101110111011110001011000110101110110111100110011
+10101010101110111011110001011000110101110110111100110011
+10101010101110111011110001011000110101110110111100110011
+10101010101110111011110001011000110101110110111100110011
+
+10101011101110101011110101011000110101110110111100110000
+10100001100001111000000001101011111001000101110000000000
+10100001100001111000000001101011111001000101110000000000
+
+10100010101100111011010001011000110101110110111100110011
+
+10100011111001111110000000001101100000100011101001100110
+
+10100100101100011011011001011000110101110110111100110011
+
+10100101101100001011011101011000110101110110111100110011
+
+10100110101111101011100101001001110001100111111000100010
+
+10100111101111111011100001001001110001100111111000100010
+
+10101000101111001011101101001001110001100111111000100010
+
+10101001101111011011101001001001110001100111111000100010
+
+10101010101110101011110101001001110001100111111000100010
+
+10101011101110111011110001001001110001100111111000100010
+10101011101110111011110001001001110001100111111000100010
+10101011101110111011110001001001110001100111111000100010
+10101011101110111011110001001001110001100111111000100010
+10101011101110111011110001001001110001100111111000100010
+10101011101110111011110001001001110001101000000111011101
+10101101101110011011111001001001110001100111111000100010
+
+10101110101101101011000101001001110001100111111000100010
+
+10101111101101111011000001001001110001100111111000100010
+
+10100000101101001011001101001001110001100111111000100010
+
+10100001101101011011001001001001110001100111111000100010
+
+10100010101100101011010101001001110001100111111000100010
+
+10100011101100111011010001001001110001100111111000100010
+
+10100100101100001011011101001001110001100111111000100010
+10100100101100001011011101001001110001100111111000100010
+10100100101100001011011101001001110001100111111000100010
+10100100101100001011011101001001110001100111111000100010
+10100100101100001011011101001001110001100111111000100010
+10100100101100001011011101001001110001100111111000100010
+10100100101100001011011101001001110001100111111000100010
+10100100110011110100100010110110001110011000000111011101
+
+
+10101010101110101011001010110110001110011000000111011101
+
+10101011101110111011001110110110001110011000000111011101
+
+10101100101110001011000010110110001110011000000111011101
+
+10101101101110011011000110110110001110011000000111011101
+
+10101110101101101011111010110110001110011000000111011101
+
+10101111101101111011111110110110001110011000000111011101
+
+10100000101101001011110010110110001110011000000111011101
+
+10100001101101011011110110110110001110011000000111011101
+
+
+10100010100000011000100110000101000010101011001011101110
+10100011100000001000100010000101000010101011001011101110
+
+10100100100000111000101110000101000010101011001011101110
+10100100100000111000101110000101000010101011001011101110
+
+10100101100000101000101010000101000010101010110100010001
+
+
+
+
+
+
+
+
+
+#include "cc1101.h"
+
+
+
+unsigned long duration;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(pin, INPUT);
+}
+
+void loop() {
+  duration = pulseIn(pin, HIGH);
+  Serial.println(duration);
+}
+
+int RXLED = 17;
+
+void setup() {
+  pinMode(RXLED, OUTPUT);
+  delay(5000);
+  Serial.begin(9600);
+  Serial.println("Initialize Serial Monitor");
+  if (ELECHOUSE_cc1101.getCC1101()) { // Check the CC1101 Spi connection.
+    Serial.println("Connection OK");
+  } else {
+    Serial.println("Connection Error");
+  }
+
+  //ELECHOUSE_cc1101.Init();                // must be set to initialize the cc1101!
+  //ELECHOUSE_cc1101.setGDO0(PIN2); 
+  //ELECHOUSE_cc1101.setCCMode(1);          // set config for internal transmission mode.
+  //ELECHOUSE_cc1101.setModulation(2);      // set modulation mode. 0 = 2-FSK, 1 = GFSK, 2 = ASK/OOK, 3 = 4-FSK, 4 = MSK.
+  //ELECHOUSE_cc1101.setMHZ(433.42);        // Here you can set your basic frequency. The lib calculates the frequency automatically (default = 433.92).The cc1101 can: 300-348 MHZ, 387-464MHZ and 779-928MHZ. Read More info from datasheet.
+  //ELECHOUSE_cc1101.SetRx();
+  //ELECHOUSE_cc1101.setDeviation(47.60);   // Set the Frequency deviation in kHz. Value from 1.58 to 380.85. Default is 47.60 kHz.
+  //ELECHOUSE_cc1101.setChannel(0);         // Set the Channelnumber from 0 to 255. Default is cahnnel 0.
+  //ELECHOUSE_cc1101.setChsp(199.95);       // The channel spacing is multiplied by the channel number CHAN and added to the base frequency in kHz. Value from 25.39 to 405.45. Default is 199.95 kHz.
+  //ELECHOUSE_cc1101.setRxBW(812.50);       // Set the Receive Bandwidth in kHz. Value from 58.03 to 812.50. Default is 812.50 kHz.
+  //ELECHOUSE_cc1101.setDRate(99.97);       // Set the Data Rate in kBaud. Value from 0.02 to 1621.83. Default is 99.97 kBaud!
+  //ELECHOUSE_cc1101.setPA(10);             // Set TxPower. The following settings are possible depending on the frequency band.  (-30  -20  -15  -10  -6    0    5    7    10   11   12) Default is max!
+  //ELECHOUSE_cc1101.setSyncMode(0);        // Combined sync-word qualifier mode. 0 = No preamble/sync. 1 = 16 sync word bits detected. 2 = 16/16 sync word bits detected. 3 = 30/32 sync word bits detected. 4 = No preamble/sync, carrier-sense above threshold. 5 = 15/16 + carrier-sense above threshold. 6 = 16/16 + carrier-sense above threshold. 7 = 30/32 + carrier-sense above threshold.
+  //ELECHOUSE_cc1101.setSyncWord(211, 145); // Set sync word. Must be the same for the transmitter and receiver. (Syncword high, Syncword low)
+  //ELECHOUSE_cc1101.setAdrChk(0);          // Controls address check configuration of received packages. 0 = No address check. 1 = Address check, no broadcast. 2 = Address check and 0 (0x00) broadcast. 3 = Address check and 0 (0x00) and 255 (0xFF) broadcast.
+  //ELECHOUSE_cc1101.setAddr(0);            // Address used for packet filtration. Optional broadcast addresses are 0 (0x00) and 255 (0xFF).
+  //ELECHOUSE_cc1101.setWhiteData(0);       // Turn data whitening on / off. 0 = Whitening off. 1 = Whitening on.
+  //ELECHOUSE_cc1101.setPktFormat(0);       // Format of RX and TX data. 0 = Normal mode, use FIFOs for RX and TX. 1 = Synchronous serial mode, Data in on GDO0 and data out on either of the GDOx pins. 2 = Random TX mode; sends random data using PN9 generator. Used for test. Works as normal mode, setting 0 (00), in RX. 3 = Asynchronous serial mode, Data in on GDO0 and data out on either of the GDOx pins.
+  //ELECHOUSE_cc1101.setLengthConfig(0);    // 0 = Fixed packet length mode. 1 = Variable packet length mode. 2 = Infinite packet length mode. 3 = Reserved
+  //ELECHOUSE_cc1101.setPacketLength(56);    // Indicates the packet length when fixed packet length mode is enabled. If variable packet length mode is used, this value indicates the maximum packet length allowed.
+  //ELECHOUSE_cc1101.setCrc(0);             // 1 = CRC calculation in TX and CRC check in RX enabled. 0 = CRC disabled for TX and RX.
+  //ELECHOUSE_cc1101.setCRC_AF(0);          // Enable automatic flush of RX FIFO when CRC is not OK. This requires that only one packet is in the RXIFIFO and that packet length is limited to the RX FIFO size.
+  //ELECHOUSE_cc1101.setDcFilterOff(0);     // Disable digital DC blocking filter before demodulator. Only for data rates ≤ 250 kBaud The recommended IF frequency changes when the DC blocking is disabled. 1 = Disable (current optimized). 0 = Enable (better sensitivity).
+  //ELECHOUSE_cc1101.setManchester(1);      // Enables Manchester encoding/decoding. 0 = Disable. 1 = Enable.
+  //ELECHOUSE_cc1101.setFEC(0);             // Enable Forward Error Correction (FEC) with interleaving for packet payload (Only supported for fixed packet length mode. 0 = Disable. 1 = Enable.
+  //ELECHOUSE_cc1101.setPRE(0);             // Sets the minimum number of preamble bytes to be transmitted. Values: 0 : 2, 1 : 3, 2 : 4, 3 : 6, 4 : 8, 5 : 12, 6 : 16, 7 : 24
+  //ELECHOUSE_cc1101.setPQT(0);             // Preamble quality estimator threshold. The preamble quality estimator increases an internal counter by one each time a bit is received that is different from the previous bit, and decreases the counter by 8 each time a bit is received that is the same as the last bit. A threshold of 4∙PQT for this counter is used to gate sync word detection. When PQT=0 a sync word is always accepted.
+  //ELECHOUSE_cc1101.setAppendStatus(0);    // When enabled, two status bytes will be appended to the payload of the packet. The status bytes contain RSSI and LQI values, as well as CRC OK.
+
+  /*ELECHOUSE_cc1101.Init();
+  ELECHOUSE_cc1101.setCCMode(1);
+  ELECHOUSE_cc1101.setModulation(2);
+  ELECHOUSE_cc1101.setMHZ(433.42);
+  ELECHOUSE_cc1101.setSyncMode(0);
+  ELECHOUSE_cc1101.setCrc(0);
+  ELECHOUSE_cc1101.setManchester(1);*/
+
+  ELECHOUSE_cc1101.Init();
+  ELECHOUSE_cc1101.setGDO0(PIN2); 
+  ELECHOUSE_cc1101.setMHZ(433.42);
+  ELECHOUSE_cc1101.SetRx();
+
+}
+
+// byte buffer[61] = {0};
+
+void loop() {
+
+  /*ELECHOUSE_cc1101.SetRx();
+
+  if (ELECHOUSE_cc1101.CheckRxFifo(100)){
+    int len = ELECHOUSE_cc1101.ReceiveData(buffer);
+    buffer[len] = '\0';
+    Serial.print(len);
+    Serial.print(" - ");
+    for (int i = 0; i < len; i++) {
+      Serial.print(buffer[i]);
+      Serial.print(",");
+    }
+    Serial.println();
+  }*/
+
+  /*if (ELECHOUSE_cc1101.CheckReceiveFlag()){
+    int len = ELECHOUSE_cc1101.ReceiveData(buffer);
+    buffer[len] = '\0';
+    Serial.print(len);
+    for (int i = 0; i < len; i++) {
+      Serial.print(buffer[i]);
+      Serial.print(" - ");
+      Serial.print(",");
+    }
+    Serial.println();
+  }*/
+  
+}
+
+
+
+
+    // Rssi Level in dBm
+    //Serial.print("Rssi: ");
+    //Serial.println(ELECHOUSE_cc1101.getRssi());
+
+    // Link Quality Indicator
+    //Serial.print("LQI: ");
+    //Serial.println(ELECHOUSE_cc1101.getLqi());
+
+    // Get received Data and calculate length
+    // Print received in char format.
+    //Serial.println((char *) buffer);
+
+    // Print received in bytes format.
+
+
+
+
+/*void loop()
+  {
+  Serial.println("Hello world!");
+
+  digitalWrite(RXLED, LOW);
+  TXLED0;
+  delay(1000);
+
+  digitalWrite(RXLED, HIGH);
+  TXLED1;
+  delay(1000);
+  }*/
+
+
+
+
+
+#include "cc1101.h"
+
+int pin = PIN2;
+unsigned long durationHigh;
+unsigned long durationLow;
+
+void setup() {
+  delay(5000);
+  pinMode(pin, INPUT);
+  Serial.begin(9600);
+  if (ELECHOUSE_cc1101.getCC1101()) {
+    Serial.println("Connection OK");
+  } else {
+    Serial.println("Connection Error");
+  }
+  ELECHOUSE_cc1101.Init();
+  ELECHOUSE_cc1101.setGDO0(pin); 
+  ELECHOUSE_cc1101.setMHZ(433.42);
+  ELECHOUSE_cc1101.SetRx();
+  attachInterrupt(digitalPinToInterrupt(pin), change, CHANGE);
+}
+
+void loop() {
+  durationHigh = pulseIn(pin, HIGH);
+  durationLow = pulseIn(pin, LOW);
+  Serial.print("HIGH ");
+  Serial.print(durationHigh);
+  Serial.print(" LOW ");
+  Serial.print(durationLow);
+  Serial.println();
+}
+
+void change() {
+  // state = !state;
+}
