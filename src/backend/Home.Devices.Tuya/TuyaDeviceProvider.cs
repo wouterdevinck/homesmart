@@ -40,6 +40,7 @@ namespace Home.Devices.Tuya {
                 await device.ConnectAsync();
                 _devices.Add(device);
             }
+            NotifyObservers(_devices);
         }
 
         public override async Task DisconnectAsync() {

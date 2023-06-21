@@ -73,7 +73,7 @@ namespace Home.Devices.Tuya {
         private void DataReceived(object sender, DataReceivedEventArgs e) {
             // TODO Take framing properly into account - doesn't seem to be an issue
             var res = TuyaParser.DecodeResponse(e.Data.Array, Encoding.UTF8.GetBytes(_model.Key));
-            _logger.LogInformation($"Received {e.Data.Count} bytes from {e.IpPort}: {res.Command} {res.ReturnCode} {res.Json}");
+            _logger.LogDebug($"Received {e.Data.Count} bytes from {e.IpPort}: {res.Command} {res.ReturnCode} {res.Json}");
             if (res.ReturnCode == 0 && !string.IsNullOrWhiteSpace(res.Json)) {
                 UpdateAvailability(true);
                 if (res.Command is TuyaCommand.Status or TuyaCommand.DpQuery) {
@@ -115,9 +115,13 @@ namespace Home.Devices.Tuya {
         }
 
         private async Task SendCommand(TuyaCommand command, TuyaRequest request) {
-            var json = JsonConvert.SerializeObject(request);
-            var req = TuyaParser.EncodeRequest(command, json, Encoding.UTF8.GetBytes(_model.Key));
-            await _tcp.SendAsync(req);
+            try {
+                var json = JsonConvert.SerializeObject(request);
+                var req = TuyaParser.EncodeRequest(command, json, Encoding.UTF8.GetBytes(_model.Key));
+                await _tcp.SendAsync(req);
+            } catch (Exception ex) {
+                _logger.LogError($"Error while sending command - {ex.Message}");
+            }
         }
 
     }
