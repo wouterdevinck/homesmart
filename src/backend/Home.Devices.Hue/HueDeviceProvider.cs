@@ -43,18 +43,18 @@ namespace Home.Devices.Hue {
             _logger.LogInformation($"Connecting");
 
             // Discover bridges
-            var locator = new HttpBridgeLocator();
-            var bridges = (await locator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
-            if (bridges.Count == 0) {
-                var mdnsLocator = new MdnsBridgeLocator();
-                bridges = (await mdnsLocator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
-            }
-            if (bridges.Count > 1) throw new Exception("Multiple bridges found, not supported");
-            if (bridges.Count == 0) throw new Exception("No bridges found");
-            var bridgeInfo = bridges.Single();
+            //var locator = new HttpBridgeLocator();
+            //var bridges = (await locator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
+            //if (bridges.Count == 0) {
+            //    var mdnsLocator = new MdnsBridgeLocator();
+            //    bridges = (await mdnsLocator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
+            //}
+            //if (bridges.Count > 1) throw new Exception("Multiple bridges found, not supported");
+            //if (bridges.Count == 0) throw new Exception("No bridges found");
+            //var bridgeInfo = bridges.Single();
 
             // Connect to bridge
-            _hue = new LocalHueClient(bridgeInfo.IpAddress);
+            _hue = new LocalHueClient("192.168.1.179");
             _hue.Initialize(_configuration.ApiKey);
 
             // Get all devices from the bridge
