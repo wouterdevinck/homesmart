@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 
 namespace Home.Core.Devices {
 
-    public interface IHeater {
+    public interface IHeater : ITemperatureSensor, IOnOffDevice {
 
         double RequestedTemperature { get; }
 
-        Task SetRequestedTemperature(double t);
+        Task SetRequestedTemperatureAsync(double t);
 
     }
 
