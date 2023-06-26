@@ -1,3 +1,4 @@
+using System;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
@@ -34,19 +35,19 @@ namespace Home.Devices.Zigbee.Devices {
                 NotifyObservers(nameof(Locked), Locked);
             }
             if (!isRetainedUpdate) { // TODO Use this to update the values, without writing them to telemetry
-                if (Current != update.Current) {
+                if (Math.Abs(Current - update.Current) > Tolerance) {
                     Current = update.Current;
                     NotifyObservers(nameof(Current), Current);
                 }
-                if (Power != update.Power) {
+                if (Math.Abs(Power - update.Power) > Tolerance) {
                     Power = update.Power;
                     NotifyObservers(nameof(Power), Power);
                 }
-                if (Voltage != update.Voltage) {
+                if (Math.Abs(Voltage - update.Voltage) > Tolerance) {
                     Voltage = update.Voltage;
                     NotifyObservers(nameof(Voltage), Voltage);
                 }
-                if (Energy != update.Energy) {
+                if (Math.Abs(Energy - update.Energy) > Tolerance) {
                     Energy = update.Energy;
                     NotifyObservers(nameof(Energy), Energy);
                 }

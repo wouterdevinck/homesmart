@@ -7,7 +7,7 @@ namespace Home.Core.Devices {
 
         ColorXy ColorXy { get; }
 
-        Task SetColorXy(ColorXy c);
+        Task SetColorXyAsync(ColorXy c);
 
     }
 

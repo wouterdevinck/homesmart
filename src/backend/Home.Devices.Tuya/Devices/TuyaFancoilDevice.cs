@@ -77,17 +77,17 @@ namespace Home.Devices.Tuya.Devices {
         }
 
         [DeviceCommand]
-        public async Task SetRequestedTemperature(double t) {
+        public async Task SetRequestedTemperatureAsync(double t) {
             await SetDpAsync(2, (int)(t * 10));
         }
 
         [DeviceCommand]
-        public async Task SetMode(FancoilMode m) {
+        public async Task SetModeAsync(FancoilMode m) {
             await SetDpAsync(4, _fancoilModes[m]);
         }
 
         [DeviceCommand]
-        public async Task SetSpeed(FancoilSpeed s) {
+        public async Task SetSpeedAsync(FancoilSpeed s) {
             await SetDpAsync(5, _fancoilSpeeds[s]);
         }
 

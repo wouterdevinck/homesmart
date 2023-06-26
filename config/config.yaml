@@ -225,6 +225,9 @@ home:
     - deviceId: TUYA-bfdaafe7a17a881374fwfd
       friendlyId: fancoil-tine
       roomId: tine
+    - deviceId: ZIGBEE-0x18fc260000084fd9
+      friendlyId: trv-bathroom
+      roomId: bathroom
 automations:
   - pushOnOff:
       description: Pushbutton hallway
@@ -303,6 +306,7 @@ telemetry:
           - fancoil-kidsroom
           - fancoil-bedroom
           - fancoil-tine
+          - trv-bathroom
         properties: 
           - temperature
           - requestedTemperature

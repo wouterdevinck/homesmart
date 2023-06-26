@@ -1,3 +1,4 @@
+using System;
 using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
@@ -21,7 +22,7 @@ namespace Home.Devices.Zigbee.Devices {
         }
 
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
-            if (Battery != update.Battery) {
+            if (Math.Abs(Battery - update.Battery) > Tolerance) {
                 Battery = update.Battery;
                 NotifyObservers(nameof(Battery), Battery);
             }

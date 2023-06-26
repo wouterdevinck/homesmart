@@ -6,7 +6,7 @@ namespace Home.Core.Devices {
 
         int ColorTemperature { get; }
 
-        Task SetColorTemperature(int ct);
+        Task SetColorTemperatureAsync(int ct);
 
     }
 

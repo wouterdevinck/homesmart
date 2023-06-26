@@ -3,13 +3,13 @@ using Home.Core.Models;
 
 namespace Home.Core.Devices {
 
-    public interface IFancoil : ITemperatureSensor, IHeater, IOnOffDevice {
+    public interface IFancoil : IHeater {
 
         FancoilMode Mode { get; }
         FancoilSpeed Speed { get; }
 
-        Task SetMode(FancoilMode m);
-        Task SetSpeed(FancoilSpeed s);
+        Task SetModeAsync(FancoilMode m);
+        Task SetSpeedAsync(FancoilSpeed s);
 
     }
 

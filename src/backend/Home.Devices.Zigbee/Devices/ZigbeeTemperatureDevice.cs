@@ -1,3 +1,4 @@
+using System;
 using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
@@ -27,19 +28,19 @@ namespace Home.Devices.Zigbee.Devices {
         }
 
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
-            if (Battery != update.Battery) {
+            if (Math.Abs(Battery - update.Battery) > Tolerance) {
                 Battery = update.Battery;
                 NotifyObservers(nameof(Battery), Battery);
             }
-            if (Humidity != update.Humidity) {
+            if (Math.Abs(Humidity - update.Humidity) > Tolerance) {
                 Humidity = update.Humidity;
                 NotifyObservers(nameof(Humidity), Humidity);
             }
-            if (Pressure != update.Pressure) {
+            if (Math.Abs(Pressure - update.Pressure) > Tolerance) {
                 Pressure = update.Pressure;
                 NotifyObservers(nameof(Pressure), Pressure);
             }
-            if (Temperature != update.Temperature) {
+            if (Math.Abs(Temperature - update.Temperature) > Tolerance) {
                 Temperature = update.Temperature;
                 NotifyObservers(nameof(Temperature), Temperature);
             }
