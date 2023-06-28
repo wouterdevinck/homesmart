@@ -69,7 +69,7 @@ namespace Home.Devices.Zigbee.Devices {
         }
 
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
-            if (Math.Abs(Battery - update.Battery) > Tolerance) {
+            if (Math.Abs(Battery - update.Battery) >= Tolerance) {
                 Battery = update.Battery;
                 NotifyObservers(nameof(Battery), Battery);
             }
@@ -82,11 +82,11 @@ namespace Home.Devices.Zigbee.Devices {
                 Locked = locked;
                 NotifyObservers(nameof(Locked), Locked);
             }
-            if (Math.Abs(Temperature - update.LocalTemperature) > Tolerance) {
+            if (Math.Abs(Temperature - update.LocalTemperature) >= Tolerance) {
                 Temperature = update.LocalTemperature;
                 NotifyObservers(nameof(Temperature), Temperature);
             }
-            if (Math.Abs(RequestedTemperature - update.RequestedTemperature) > Tolerance) {
+            if (Math.Abs(RequestedTemperature - update.RequestedTemperature) >= Tolerance) {
                 RequestedTemperature = update.RequestedTemperature;
                 NotifyObservers(nameof(RequestedTemperature), RequestedTemperature);
             }

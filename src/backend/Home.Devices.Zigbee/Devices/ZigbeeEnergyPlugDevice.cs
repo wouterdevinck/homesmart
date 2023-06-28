@@ -35,19 +35,19 @@ namespace Home.Devices.Zigbee.Devices {
                 NotifyObservers(nameof(Locked), Locked);
             }
             if (!isRetainedUpdate) { // TODO Use this to update the values, without writing them to telemetry
-                if (Math.Abs(Current - update.Current) > Tolerance) {
+                if (Math.Abs(Current - update.Current) >= Tolerance) {
                     Current = update.Current;
                     NotifyObservers(nameof(Current), Current);
                 }
-                if (Math.Abs(Power - update.Power) > Tolerance) {
+                if (Math.Abs(Power - update.Power) >= Tolerance) {
                     Power = update.Power;
                     NotifyObservers(nameof(Power), Power);
                 }
-                if (Math.Abs(Voltage - update.Voltage) > Tolerance) {
+                if (Math.Abs(Voltage - update.Voltage) >= Tolerance) {
                     Voltage = update.Voltage;
                     NotifyObservers(nameof(Voltage), Voltage);
                 }
-                if (Math.Abs(Energy - update.Energy) > Tolerance) {
+                if (Math.Abs(Energy - update.Energy) >= Tolerance) {
                     Energy = update.Energy;
                     NotifyObservers(nameof(Energy), Energy);
                 }

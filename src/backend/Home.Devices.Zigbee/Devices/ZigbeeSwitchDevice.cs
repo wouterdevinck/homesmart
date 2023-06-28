@@ -26,7 +26,7 @@ namespace Home.Devices.Zigbee.Devices {
         }
 
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
-            if (Math.Abs(Battery - update.Battery) > Tolerance) {
+            if (Math.Abs(Battery - update.Battery) >= Tolerance) {
                 Battery = update.Battery;
                 NotifyObservers(nameof(Battery), Battery);
             }

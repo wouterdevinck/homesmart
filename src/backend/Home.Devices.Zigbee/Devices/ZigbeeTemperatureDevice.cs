@@ -28,19 +28,19 @@ namespace Home.Devices.Zigbee.Devices {
         }
 
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
-            if (Math.Abs(Battery - update.Battery) > Tolerance) {
+            if (Math.Abs(Battery - update.Battery) >= Tolerance) {
                 Battery = update.Battery;
                 NotifyObservers(nameof(Battery), Battery);
             }
-            if (Math.Abs(Humidity - update.Humidity) > Tolerance) {
+            if (Math.Abs(Humidity - update.Humidity) >= Tolerance) {
                 Humidity = update.Humidity;
                 NotifyObservers(nameof(Humidity), Humidity);
             }
-            if (Math.Abs(Pressure - update.Pressure) > Tolerance) {
+            if (Math.Abs(Pressure - update.Pressure) >= Tolerance) {
                 Pressure = update.Pressure;
                 NotifyObservers(nameof(Pressure), Pressure);
             }
-            if (Math.Abs(Temperature - update.Temperature) > Tolerance) {
+            if (Math.Abs(Temperature - update.Temperature) >= Tolerance) {
                 Temperature = update.Temperature;
                 NotifyObservers(nameof(Temperature), Temperature);
             }
