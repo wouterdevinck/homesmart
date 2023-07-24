@@ -25,6 +25,12 @@
           Battery
         </router-link>
       </li>
+      <li>
+        <router-link to="/development" href="#" class="nav-link" active-class="active">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#code"/></svg>
+          Development
+        </router-link>
+      </li>
     </ul>
   </nav>
 </template>

@@ -3,6 +3,7 @@ import { routes } from './routes.js'
 import store from './store'
 import icons from './mixins/icons.js'
 import ago from './mixins/ago.js'
+import color from './mixins/color.js'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -24,5 +25,6 @@ app.use(store)
 
 app.mixin(icons)
 app.mixin(ago)
+app.mixin(color)
 
 app.mount('#app')
