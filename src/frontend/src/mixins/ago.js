@@ -37,7 +37,7 @@ const getDuration = (timeAgoInSeconds) => {
 
 const timeAgo = (date) => {
   const timeAgoInSeconds = Math.floor((new Date() - new Date(date)) / 1000)
-  if (timeAgoInSeconds == 0) {
+  if (timeAgoInSeconds <= 0) {
     return 'just now'
   }
   const {interval, epoch} = getDuration(timeAgoInSeconds)
