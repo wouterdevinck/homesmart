@@ -15,5 +15,9 @@ export const routes = [
     path: '/battery',
     meta: { title: 'Battery' },
     component: () => import('./views/Battery.vue')
+  }, {
+    path: '/development',
+    meta: { title: 'Development' },
+    component: () => import('./views/Development.vue')
   }
 ]

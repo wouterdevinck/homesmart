@@ -52,7 +52,11 @@ namespace Home.Remote {
 
             Action<IDevice> subscribe = device => {
                 device.DeviceUpdate += async (_, _) => {
-                    await hub.Clients.All.SendAsync("deviceupdates", device); 
+                    try {
+                        await hub.Clients.All.SendAsync("deviceupdates", device);
+                    } catch (Exception ex) {
+                        _logger.LogError($"Error while sending notification - {ex.Message}");
+                    }
                 };
             };
             foreach (var device in provider.GetDevices()) {

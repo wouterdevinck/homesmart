@@ -25,7 +25,7 @@ namespace Home.Web.Controllers {
         [HttpPost]
         [Route("devices/{id}/commands/{command}")]
         public async Task Command(string id, string command, [FromBody] Dictionary<string, object> args) {
-            var device = _home.GetDevices().Single(x => x.DeviceId == id);
+            var device = _home.GetDevices().Single(x => x.HasId(id));
             await device.InvokeCommand(command, args);
         }
 

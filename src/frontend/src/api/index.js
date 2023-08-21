@@ -4,6 +4,12 @@ const url = import.meta.env.VITE_API_URL
 
 export default {
 
+  getRooms(cb) {
+    axios.get(`${url}/api/v1/rooms`).then((response) => {
+      cb(response.data)
+    })
+  },
+
   getDevices(cb) {
     axios.get(`${url}/api/v1/devices`).then((response) => {
       cb(response.data)
@@ -39,8 +45,8 @@ export default {
     start()
   },
 
-  sendDeviceCommand(deviceId, command) {
-    axios.post(`${url}/api/v1/devices/${deviceId}/commands/${command}`, {})
+  sendDeviceCommand(deviceId, command, payload = {}) {
+    axios.post(`${url}/api/v1/devices/${deviceId}/commands/${command}`, payload)
   }
 
 }

@@ -49,6 +49,7 @@ namespace Home.Devices.Zigbee {
                 "E1812" => new ZigbeeButtonDevice(_home, model, _mqtt, _configuration),
                 "WSDCGQ11LM" => new ZigbeeTemperatureDevice(_home, model, _mqtt, _configuration),
                 "SJCGQ11LM" => new ZigbeeLeakDevice(_home, model, _mqtt, _configuration),
+                "BTH-RA" => new ZigbeeTrvDevice(_home, model, _mqtt, _configuration),
                 "E1746" => null, // TODO Repeater device
                 _ => null
             };

@@ -44,7 +44,8 @@ namespace Home.Core {
             Leak,
             Hub,
             Solar,
-            Fancoil
+            Fancoil,
+            Trv
         }
 
         public static string GetTypeString(DeviceType type) {
@@ -63,6 +64,7 @@ namespace Home.Core {
                 DeviceType.Hub => "hub",
                 DeviceType.Solar => "solar",
                 DeviceType.Fancoil => "fancoil",
+                DeviceType.Trv => "trv",
                 _ => "device"
             };
         }

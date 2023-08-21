@@ -1,34 +1,37 @@
 using System;
+using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Devices.Zigbee.Models;
+using Home.Devices.Zigbee.Models.Requests;
 using MQTTnet.Extensions.ManagedClient;
+using Newtonsoft.Json;
 
 namespace Home.Devices.Zigbee {
 
     [Device]
     public abstract partial class ZigbeeDevice : AbstractDevice {
-
-        protected IManagedMqttClient Mqtt;
+        
+        private readonly IManagedMqttClient _mqtt;
+        protected double Tolerance = 0.01;
+        protected ZigbeeConfiguration Configuration;
 
         [DeviceProperty]
         public string PowerSource { get; protected set; }
 
         [DeviceProperty]
         public DateTime LastSeen { get; protected set; }
-
-        protected ZigbeeConfiguration _configuration;
-
-        public ZigbeeDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, $"ZIGBEE-{model.Id}") {
-            Mqtt = mqtt;
+        
+        protected ZigbeeDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, $"ZIGBEE-{model.Id}") {
+            _mqtt = mqtt;
             Name = model.Name;
             Manufacturer = model.Definition.Manufacturer.HarmonizeManufacturer();
             Version = string.IsNullOrEmpty(model.Version) ? Helpers.VersionNotAvailable : model.Version;
             Model = model.Model;
             PowerSource = model.PowerSource;
             Reachable = true;
-            _configuration = configuration;
+            Configuration = configuration;
         }
 
         public abstract void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate);
@@ -41,6 +44,12 @@ namespace Home.Devices.Zigbee {
                 Reachable = available;
                 NotifyObservers(nameof(Reachable), Reachable);
             }
+        }
+
+        protected async Task SendRequestAsync(IZigbeeRequest request) {
+            var json = JsonConvert.SerializeObject(request);
+            await _mqtt.EnqueueAsync($"{Configuration.BaseTopic}/{Name}/set", json);
+            // TODO Check if successful & return result
         }
 
     }

@@ -43,9 +43,9 @@ namespace {{ Namespace }} {
 
         public {{ if Classname != "AbstractDevice" }}new{{ end }} async Task InvokeCommand(string command, Dictionary<string, object> args) {
             {{~ if Device.Commands | array.size > 0 ~}}
-            switch(command) {
+            switch(command.ToLower()) {
                 {{~ for command in Device.Commands ~}}
-                case "{{ command.Name }}":
+                case "{{ command.Name | string.downcase }}":
                     await {{ command.Method }}(
                         {{~ for arg in command.Arguments ~}}
                         Helpers.ConvertType<{{ arg.Type }}>(args["{{ arg.Name }}"])
@@ -55,8 +55,15 @@ namespace {{ Namespace }} {
                     break;
                 {{~ end ~}}
             }
+            {{~ if Classname != "AbstractDevice" ~}}
+            await base.InvokeCommand(command, args);
+            {{~ end ~}}
+            {{~ else ~}}
+            {{~ if Classname != "AbstractDevice" ~}}
+            await base.InvokeCommand(command, args);
             {{~ else ~}}
             await Task.FromResult(true);
+            {{~ end ~}}
             {{~ end ~}}
         }
 
