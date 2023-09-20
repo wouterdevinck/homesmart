@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Remote", "Home.Remote\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Remote.Functions", "Home.Remote.Functions\Home.Remote.Functions.csproj", "{12ED41B6-00DC-41AF-8B40-758D75F64101}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Devices.Somfy", "Home.Devices.Somfy\Home.Devices.Somfy.csproj", "{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,18 @@ Global
 		{12ED41B6-00DC-41AF-8B40-758D75F64101}.Release|x64.Build.0 = Release|Any CPU
 		{12ED41B6-00DC-41AF-8B40-758D75F64101}.Release|x86.ActiveCfg = Release|Any CPU
 		{12ED41B6-00DC-41AF-8B40-758D75F64101}.Release|x86.Build.0 = Release|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Debug|x64.Build.0 = Debug|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Debug|x86.Build.0 = Debug|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x64.ActiveCfg = Release|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x64.Build.0 = Release|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x86.ActiveCfg = Release|Any CPU
+		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

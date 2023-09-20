@@ -9,6 +9,9 @@ namespace Home.Core {
 
         public const string Signify = "Signify Netherlands B.V.";
         public const string Jaga = "Jaga";
+        public const string Somfy = "Somfy";
+        public const string Diy = "DIY";
+
         public const string VersionNotAvailable = "n/a";
 
         public static string HarmonizeManufacturer(this string manufacturer) {
@@ -18,6 +21,8 @@ namespace Home.Core {
                 Signify => "Philips",
                 "_TZ3210_ttkgurpb" => "Miboxer",
                 Jaga => Jaga,
+                Somfy => Somfy,
+                Diy => Diy,
                 _ => manufacturer
             };
         }
@@ -31,12 +36,6 @@ namespace Home.Core {
         }
 
         public enum DeviceType {
-            Media,
-            SetTop,
-            Console,
-            Audio,
-            Tv,
-            Remote,
             Light,
             Switch,
             Outlet,
@@ -45,17 +44,12 @@ namespace Home.Core {
             Hub,
             Solar,
             Fancoil,
-            Trv
+            Trv,
+            Shutter
         }
 
         public static string GetTypeString(DeviceType type) {
             return type switch {
-                DeviceType.Media => "media",
-                DeviceType.SetTop => "settop",
-                DeviceType.Console => "console",
-                DeviceType.Audio => "audio",
-                DeviceType.Tv => "tv",
-                DeviceType.Remote => "remote",
                 DeviceType.Light => "light",
                 DeviceType.Switch => "switch",
                 DeviceType.Outlet => "outlet",
@@ -65,6 +59,7 @@ namespace Home.Core {
                 DeviceType.Solar => "solar",
                 DeviceType.Fancoil => "fancoil",
                 DeviceType.Trv => "trv",
+                DeviceType.Shutter => "shutter",
                 _ => "device"
             };
         }

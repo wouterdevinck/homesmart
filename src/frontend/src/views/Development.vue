@@ -9,9 +9,10 @@
     <option value="plugs">Plugs</option>
     <option value="lights">Lights</option>
     <option value="sensors">Sensors</option>
+    <option value="shutters">Shutters</option>
   </select>
   <div class="card-columns">
-    <div class="card mb-1 p-2" v-for="device in devices.filter(device => (selectedRoom == 'all' || device.roomId == selectedRoom) && (selectedType == 'all' || (selectedType == 'heating' && (device.type == 'trv' || device.type == 'fancoil')) || (selectedType == 'plugs' && device.type == 'outlet') || (selectedType == 'lights' && device.type == 'light') || (selectedType == 'sensors' && (device.type == 'temperature' || device.type == 'leak'))))">
+    <div class="card mb-1 p-2" v-for="device in devices.filter(device => (selectedRoom == 'all' || device.roomId == selectedRoom) && (selectedType == 'all' || (selectedType == 'heating' && (device.type == 'trv' || device.type == 'fancoil')) || (selectedType == 'plugs' && device.type == 'outlet') || (selectedType == 'lights' && device.type == 'light') || (selectedType == 'sensors' && (device.type == 'temperature' || device.type == 'leak')) || (selectedType == 'shutters' && device.type == 'shutter')))">
       <div class="card-body">
         <span :class="device.reachable ? 'online' : 'offline'" v-if="device.reachable != undefined" class="trafficlight">
           <svg class="bi me-2" width="16" height="16">
@@ -156,6 +157,15 @@
             <label class="btn btn-outline-primary" :for="device.deviceId + '-radio-mode-2'">Cooling</label>
           </div>
         </div>
+        <div v-if="device.type == 'shutter'">
+          <h6 class="card-subtitle mb-2 text-muted">Shutter</h6>
+          <input type="range" class="form-range" min="0" max="100" :value="device.position" v-if="device.position != undefined" @change="setPosition($event, device)">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-primary" @click="up($event, device)">Up</button>
+            <button type="button" class="btn btn-outline-danger" @click="stop($event, device)">Stop</button>
+            <button type="button" class="btn btn-outline-primary" @click="down($event, device)">Down</button>
+          </div>
+        </div>
         <div class="info">
           <span class="label">Manufacturer:</span> {{ device.manufacturer }}
         </div>
@@ -246,6 +256,20 @@ export default {
         X: xy.x,
         Y: xy.y
       })
+    },
+    setPosition: function (event, device) {
+      api.sendDeviceCommand(device.deviceId, "moveToTarget", {
+        t: event.target.value
+      })
+    },
+    up: function (event, device) {
+      api.sendDeviceCommand(device.deviceId, "moveUp")
+    },
+    stop: function (event, device) {
+      api.sendDeviceCommand(device.deviceId, "stop")
+    },
+    down: function (event, device) {
+      api.sendDeviceCommand(device.deviceId, "moveDown")
     }
   }
 }
