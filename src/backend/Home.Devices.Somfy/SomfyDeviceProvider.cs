@@ -52,6 +52,7 @@ namespace Home.Devices.Somfy {
                         _devices.Add(new SomfyRemoteDevice(_home, name, remote.Address));
                     }
                 }
+                NotifyObservers(_devices);
                 await ConnectWebSocketAsync();
             } catch (Exception ex) {
                 _logger.LogError($"Connect error - {ex.Message}");
