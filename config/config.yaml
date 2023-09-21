@@ -47,6 +47,8 @@ deviceProviders:
         ip: 192.168.2.77
         id: bf5c398cf43a8c5cf5q2dm
         key: $tuyaApiKeyFancoilKidsroom
+  somfy:
+    ip: 192.168.2.12
 home:
   rooms:
     - id: livingroom
@@ -228,6 +230,54 @@ home:
     - deviceId: ZIGBEE-0x18fc260000084fd9
       friendlyId: trv-bathroom
       roomId: bathroom
+    - deviceId: SOMFY-BRIDGE
+      friendlyId: somfy-bridge
+      roomId: livingroom
+    - deviceId: SOMFY-SHUTTER-1
+      friendlyId: shutter-living-side-back
+      roomId: livingroom
+    - deviceId: SOMFY-REMOTE-13628768
+      friendlyId: somfy-remote-living-side-back
+      roomId: livingroom
+    - deviceId: SOMFY-SHUTTER-2
+      friendlyId: shutter-living-side-front
+      roomId: livingroom
+    - deviceId: SOMFY-REMOTE-5109344
+      friendlyId: somfy-remote-living-side-front
+      roomId: livingroom
+    - deviceId: SOMFY-SHUTTER-3
+      friendlyId: shutter-living-front
+      roomId: livingroom
+    - deviceId: SOMFY-REMOTE-657249
+      friendlyId: somfy-remote-living-front
+      roomId: livingroom
+    - deviceId: SOMFY-SHUTTER-5
+      friendlyId: shutter-living-back
+      roomId: livingroom
+    - deviceId: SOMFY-REMOTE-9418844
+      friendlyId: somfy-remote-living-back
+      roomId: livingroom
+    - deviceId: SOMFY-SHUTTER-4
+      friendlyId: shutter-office
+      roomId: office
+    - deviceId: SOMFY-REMOTE-11925856
+      friendlyId: somfy-remote-office
+      roomId: office
+    - deviceId: SOMFY-SHUTTER-6
+      friendlyId: shutter-kitchen-window
+      roomId: kitchen
+    - deviceId: SOMFY-REMOTE-264033
+      friendlyId: somfy-remote-kitchen-window
+      roomId: kitchen
+    - deviceId: SOMFY-SHUTTER-7
+      friendlyId: shutter-kitchen-door
+      roomId: kitchen
+    - deviceId: SOMFY-REMOTE-13432160
+      friendlyId: somfy-remote-kitchen-door
+      roomId: kitchen
+    - deviceId: SOMFY-REMOTE-9620325
+      friendlyId: somfy-timer
+      roomId: kitchen
 automations:
   - pushOnOff:
       description: Pushbutton hallway
