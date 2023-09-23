@@ -53,38 +53,55 @@ home:
   rooms:
     - id: livingroom
       name: Living
+      type: livingroom
     - id: kitchen
       name: Keuken
+      type: kitchen
     - id: kidsroom
       name: Kinderkamer
+      type: bedroom
     - id: bedroom
       name: Slaapkamer
+      type: bedroom
     - id: tine
       name: Tine's crib
+      type: office
     - id: office
       name: Bureau
-    - id: hallway
-      name: Hal
-    - id: garage
-      name: Garage
-    - id: laundry
-      name: Wasruimte
-    - id: basement
-      name: Kelder
-    - id: shaft
-      name: Koker
-    - id: toilet
-      name: WC
+      type: office
     - id: bathroom
       name: Badkamer
-    - id: attic
-      name: Zolder
+      type: bathroom
+    - id: hallway
+      name: Hal
+      type: hallway
+    - id: toilet
+      name: WC
+      type: toilet
+    - id: garage
+      name: Garage
+      type: garage
     - id: storage
       name: Berging
+      type: storage
+    - id: laundry
+      name: Wasruimte
+      type: laundry
     - id: outside
       name: Buiten
+      type: outside
     - id: shed
       name: Tuinhuis
+      type: shed
+    - id: attic
+      name: Zolder
+      type: attic
+    - id: basement
+      name: Kelder
+      type: basement
+    - id: shaft
+      name: Koker
+      type: other
   devices:
     - deviceId: ZIGBEE-0x00158d0006d0ba73
       friendlyId: button-hallway
