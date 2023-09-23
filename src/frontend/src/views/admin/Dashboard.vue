@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import Light from '../components/Light.vue'
-import Outlet from '../components/Outlet.vue'
-import Temperature from '../components/Temperature.vue'
+import Light from '../../components/dashboard/Light.vue'
+import Outlet from '../../components/dashboard/Outlet.vue'
+import Temperature from '../../components/dashboard/Temperature.vue'
 import { mapState } from 'vuex'
 export default {
   components: { Light, Outlet, Temperature },

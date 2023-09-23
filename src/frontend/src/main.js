@@ -16,7 +16,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
-  document.title = to.meta.title || 'Home'
+  document.title = to.meta.title || 'Homesmart'
   next()
 })
 

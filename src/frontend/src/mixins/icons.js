@@ -29,6 +29,9 @@ export default {
         default:
           return "hdd"
       }
+    },
+    getRoomIcon: function(room) {
+      return "room-" + room.type
     }
   }
 }

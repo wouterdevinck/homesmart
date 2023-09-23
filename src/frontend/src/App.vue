@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper">
     <Icons />
-    <Navigation />
+    <Navigation v-if="$route.meta.navigation" />
     <main class="p-3">
       <router-view></router-view>
     </main>
@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Icons from './components/Icons.vue'
-import Navigation from './components/Navigation.vue'
+import Icons from './components/common/Icons.vue'
+import Navigation from './components/common/Navigation.vue'
 export default {
   components: { Icons, Navigation }
 }

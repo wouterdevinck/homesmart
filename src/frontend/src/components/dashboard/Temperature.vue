@@ -30,5 +30,5 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/card.css';
+@import '../../assets/card.css';
 </style>

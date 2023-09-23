@@ -197,7 +197,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import api from '../api'
+import api from '../../api'
 export default {
   data() {
     return {
@@ -276,7 +276,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/card.css';
+@import '../../assets/card.css';
 .card {
   margin-top: 10px;
 }
