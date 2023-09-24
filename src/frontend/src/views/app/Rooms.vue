@@ -1,6 +1,6 @@
 <template>
   <div class="card-columns">
-    <Room v-for="room in rooms" :key="room.id" :room="room" />
+    <Room v-for="room in rooms" :key="room.id" :room="room" @click="navigate($event, room)" />
   </div>
 </template>
   
@@ -24,6 +24,11 @@ export default {
   }),
   created () {
     this.$store.dispatch('getRooms')
+  },
+  methods: {
+    navigate: function (event, room) {
+      this.$router.push({ path: `/rooms/${room.id}` })
+    }
   }
 }
 </script>

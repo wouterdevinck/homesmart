@@ -3,6 +3,10 @@ export const routes = [
     path: '/',
     meta: { title: 'Homesmart', navigation: false },
     component: () => import('./views/app/Rooms.vue')
+  },{
+    path: '/rooms/:id',
+    meta: { title: 'Homesmart', navigation: false, transition: 'fade' },
+    component: () => import('./views/app/Room.vue')
   }, { 
     path: '/dashboard', 
     meta: { title: 'Dashboard', navigation: true }, 

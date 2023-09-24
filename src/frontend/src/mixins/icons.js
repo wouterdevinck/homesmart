@@ -31,7 +31,7 @@ export default {
       }
     },
     getRoomIcon: function(room) {
-      return "room-" + room.type
+      return `room-${room.type}`
     }
   }
 }
