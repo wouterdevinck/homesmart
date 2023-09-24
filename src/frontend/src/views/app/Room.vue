@@ -1,15 +1,21 @@
 <template>
   <div v-if="room">
-    <router-link to="/"><svg class="bi me-2" width="16" height="16"><use xlink:href="#arrow-left-circle-fill"/></svg></router-link> 
-    <b>{{ room.name }}</b>
+    <div class="roomNavigation">
+      <router-link to="/"><svg class="bi me-2" width="16" height="16"><use xlink:href="#arrow-left-circle-fill"/></svg></router-link> 
+      <b>{{ room.name }}</b>
+    </div>
+
+    <!-- TEMP -->
+    <Dashboard :roomId="room.id" />
+
   </div>
 </template>
   
 <script>
-
+import Dashboard from '../../views/admin/Dashboard.vue'
 import { mapState } from 'vuex'
 export default {
-  components: {  },
+  components: { Dashboard },
   computed: {
     ...mapState({
       rooms: state => state.rooms.all
@@ -25,5 +31,7 @@ export default {
 </script>
   
 <style scoped>
-
+.roomNavigation {
+  margin-bottom: 15px;
+}
 </style>
