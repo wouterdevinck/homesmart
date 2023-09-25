@@ -63,6 +63,7 @@ case $1 in
   find . -type f -name '*.cs' -not -path "*/obj/*" -exec dos2unix '{}' +
   find . -type f -name '*.csproj' -not -path "*/obj/*" -exec dos2unix '{}' +
   find . -type f -name '*.sln' -not -path "*/obj/*" -exec dos2unix '{}' +
+  find . -type f -name '*.vue' -not -path "*/obj/*" -exec dos2unix '{}' +
 
   ;;
 
