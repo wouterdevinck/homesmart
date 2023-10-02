@@ -11,10 +11,12 @@ const mutations = {
 }
 
 const actions = {
-  getRooms ({ commit }) {
-    api.getRooms(rooms => {
-      commit('UPDATE_ROOMS', rooms)
-    })
+  getRooms ({ commit, state }) {
+    if (state.all.length == 0) {
+      api.getRooms(rooms => {
+        commit('UPDATE_ROOMS', rooms)
+      })
+    }
   }
 }
 

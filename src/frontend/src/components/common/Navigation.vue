@@ -21,7 +21,7 @@
       </li>
       <li>
         <router-link to="/automations" href="#" class="nav-link" active-class="active">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#bi-gear"/></svg>
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#gear"/></svg>
           Automations
         </router-link>
       </li>

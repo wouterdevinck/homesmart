@@ -5,8 +5,27 @@ export const routes = [
     component: () => import('./views/app/Rooms.vue')
   },{
     path: '/rooms/:id',
-    meta: { title: 'Homesmart', navigation: false, transition: 'fade' },
-    component: () => import('./views/app/Room.vue')
+    meta: { title: 'Homesmart', navigation: false/*, transition: 'fade' */},
+    component: () => import('./views/app/Room.vue'),
+    children: [
+      {
+        path: 'lights',
+        meta: { subPage: true },
+        component: () => import('./views/app/Lights.vue')
+      },{
+        path: 'climate',
+        meta: { subPage: true },
+        component: () => import('./views/app/Climate.vue')
+      },{
+        path: 'shutters',
+        meta: { subPage: true },
+        component: () => import('./views/app/Shutters.vue')
+      },{
+        path: 'energy',
+        meta: { subPage: true },
+        component: () => import('./views/app/Energy.vue')
+      }
+    ]
   }, { 
     path: '/dashboard', 
     meta: { title: 'Dashboard', navigation: true }, 

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="card mb-3">
-      <div class="card-body"> 
+      <div class="card-body p-2"> 
         <div class="roomname"> 
-          <svg class="bi me-2" width="50" height="50">
+          <svg class="icon">
             <use v-bind:xlink:href="'#' + getRoomIcon(room)"/>
           </svg>
-          <span>{{ room.name }}</span>
+          <span class="ms-2">{{ room.name }}</span>
         </div>
       </div>
     </div>
@@ -27,10 +27,14 @@ export default {
 .roomname > * {
   vertical-align: middle;
 }
-.roomname > span {
-  margin-left: 5px;
+.icon {
+  width: 50px;
+  height: 50px;
 }
-/*.card {
-  height: 80px;
-}*/
+@media (max-width: 400px) {
+  .icon {
+    width: 45px;
+    height: 45px;
+  }
+}
 </style>

@@ -17,6 +17,11 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   document.title = to.meta.title || 'Homesmart'
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant",
+  })
   next()
 })
 
