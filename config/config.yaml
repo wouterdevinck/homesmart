@@ -229,9 +229,18 @@ home:
     - deviceId: ZIGBEE-0xa4c1383dc2a0e3ea
       friendlyId: plug-office
       roomId: office
-    - deviceId: ZIGBEE-0xa4c1385567d073a9
+    - deviceId: ZIGBEE-0xa4c13859bde770fd
       friendlyId: plug-freezer
       roomId: storage
+    - deviceId: ZIGBEE-0xa4c138c05c91221b
+      friendlyId: plug-rainwater-pump
+      roomId: garage
+    - deviceId: ZIGBEE-0xa4c138a935df171a
+      friendlyId: plug-dishwasher
+      roomId: kitchen
+    - deviceId: ZIGBEE-0xa4c138b4f04bfd71
+      friendlyId: plug-vacuum
+      roomId: kitchen
     - deviceId: TUYA-bfb5c321632e97e066ua7v
       friendlyId: fancoil-office
       roomId: office
@@ -363,6 +372,9 @@ telemetry:
           - plug-tv
           - plug-office
           - plug-freezer
+          - plug-rainwater-pump
+          - plug-dishwasher
+          - plug-vacuum
         properties: 
           - voltage
           - current
