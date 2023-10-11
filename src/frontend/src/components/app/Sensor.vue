@@ -10,6 +10,8 @@
         </p>
         <p class="fw-bold fs-4 mb-1">
             {{ device.temperature }} &deg;C
+            <!--{{ device.pressure }} hPa 
+            {{ device.humidity }}&#37;-->
         </p>
         {{ getAgo(device.lastSeen) }}
       </div>
@@ -30,5 +32,5 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/card.css';
+@import '../../assets/card.css';
 </style>

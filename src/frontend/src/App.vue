@@ -1,16 +1,21 @@
 <template>
   <div id="wrapper">
     <Icons />
-    <Navigation />
+    <Navigation v-if="$route.meta.navigation" />
     <main class="p-3">
       <router-view></router-view>
+      <!--<router-view v-slot="{ Component, route }">        
+        <transition :name="route.meta.transition">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>-->
     </main>
   </div>
 </template>
 
 <script>
-import Icons from './components/Icons.vue'
-import Navigation from './components/Navigation.vue'
+import Icons from './components/common/Icons.vue'
+import Navigation from './components/common/Navigation.vue'
 export default {
   components: { Icons, Navigation }
 }
@@ -47,4 +52,12 @@ main {
   width: -moz-available;
   width: fill-available;
 }
+/*.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}*/
 </style>

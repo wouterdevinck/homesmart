@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import api from '../api'
+import api from '../../api'
 export default {
   props: ['device'],
   methods: {
@@ -34,5 +34,5 @@ export default {
 </script>
 
 <style scoped>
-@import '../assets/card.css';
+@import '../../assets/card.css';
 </style>

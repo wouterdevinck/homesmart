@@ -53,38 +53,55 @@ home:
   rooms:
     - id: livingroom
       name: Living
+      type: livingroom
     - id: kitchen
       name: Keuken
+      type: kitchen
     - id: kidsroom
       name: Kinderkamer
+      type: bedroom
     - id: bedroom
       name: Slaapkamer
+      type: bedroom
     - id: tine
       name: Tine's crib
+      type: office
     - id: office
       name: Bureau
-    - id: hallway
-      name: Hal
-    - id: garage
-      name: Garage
-    - id: laundry
-      name: Wasruimte
-    - id: basement
-      name: Kelder
-    - id: shaft
-      name: Koker
-    - id: toilet
-      name: WC
+      type: office
     - id: bathroom
       name: Badkamer
-    - id: attic
-      name: Zolder
+      type: bathroom
+    - id: hallway
+      name: Hal
+      type: hallway
+    - id: toilet
+      name: WC
+      type: toilet
+    - id: garage
+      name: Garage
+      type: garage
     - id: storage
       name: Berging
+      type: storage
+    - id: laundry
+      name: Wasruimte
+      type: laundry
     - id: outside
       name: Buiten
+      type: outside
     - id: shed
       name: Tuinhuis
+      type: shed
+    - id: attic
+      name: Zolder
+      type: attic
+    - id: basement
+      name: Kelder
+      type: basement
+    - id: shaft
+      name: Koker
+      type: other
   devices:
     - deviceId: ZIGBEE-0x00158d0006d0ba73
       friendlyId: button-hallway
@@ -212,9 +229,21 @@ home:
     - deviceId: ZIGBEE-0xa4c1383dc2a0e3ea
       friendlyId: plug-office
       roomId: office
-    - deviceId: ZIGBEE-0xa4c1385567d073a9
+    - deviceId: ZIGBEE-0xa4c13859bde770fd
       friendlyId: plug-freezer
       roomId: storage
+    - deviceId: ZIGBEE-0xa4c138c05c91221b
+      friendlyId: plug-rainwater-pump
+      roomId: garage
+    - deviceId: ZIGBEE-0xa4c138a935df171a
+      friendlyId: plug-dishwasher
+      roomId: kitchen
+    - deviceId: ZIGBEE-0xa4c138b4f04bfd71
+      friendlyId: plug-vacuum
+      roomId: kitchen
+    - deviceId: ZIGBEE-0xa4c138a5763339d3
+      friendlyId: plug-aquarium
+      roomId: livingroom
     - deviceId: TUYA-bfb5c321632e97e066ua7v
       friendlyId: fancoil-office
       roomId: office
@@ -346,6 +375,10 @@ telemetry:
           - plug-tv
           - plug-office
           - plug-freezer
+          - plug-rainwater-pump
+          - plug-dishwasher
+          - plug-vacuum
+          - plug-aquarium
         properties: 
           - voltage
           - current
