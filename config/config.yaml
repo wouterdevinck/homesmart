@@ -241,6 +241,9 @@ home:
     - deviceId: ZIGBEE-0xa4c138b4f04bfd71
       friendlyId: plug-vacuum
       roomId: kitchen
+    - deviceId: ZIGBEE-0xa4c138a5763339d3
+      friendlyId: plug-aquarium
+      roomId: livingroom
     - deviceId: TUYA-bfb5c321632e97e066ua7v
       friendlyId: fancoil-office
       roomId: office
@@ -375,6 +378,7 @@ telemetry:
           - plug-rainwater-pump
           - plug-dishwasher
           - plug-vacuum
+          - plug-aquarium
         properties: 
           - voltage
           - current
