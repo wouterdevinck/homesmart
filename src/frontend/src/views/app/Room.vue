@@ -54,7 +54,7 @@ export default {
       return this.devices.some(device => device.type == 'shutter')
     },
     hasEnergy() {
-      return this.devices.some(device => (device.type == 'outlet' && device.energy) || device.type == 'solar')
+      return this.devices.some(device => (device.type == 'outlet' && device.energy != undefined) || device.type == 'solar')
     }
   },
   created () {
