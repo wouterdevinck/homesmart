@@ -1,12 +1,14 @@
 <template>
-  <Temperature v-for="temperature in devices.filter(x => x.type == 'temperature')" :key="temperature.deviceId" :device="temperature" />
+  <Sensor v-for="sensor in devices.filter(x => x.type == 'temperature')" :key="sensor.deviceId" :device="sensor" />
+  <Thermostat v-for="thermostat in devices.filter(x => x.type == 'fancoil' || x.type == 'trv')" :key="thermostat.deviceId" :device="thermostat" />
 </template>
   
 <script>
-import Temperature from '../../components/dashboard/Temperature.vue'
+import Sensor from '../../components/app/Sensor.vue'
+import Thermostat from '../../components/app/Thermostat.vue'
 import { mapState } from 'vuex'
 export default {
-  components: { Temperature },
+  components: { Sensor, Thermostat },
   computed: {
     ...mapState({
       allDevices: state => state.devices.all

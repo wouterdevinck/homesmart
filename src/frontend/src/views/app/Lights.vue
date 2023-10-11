@@ -3,7 +3,7 @@
 </template>
   
 <script>
-import Light from '../../components/dashboard/Light.vue'
+import Light from '../../components/app/Light.vue'
 import { mapState } from 'vuex'
 export default {
   components: { Light },

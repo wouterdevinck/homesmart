@@ -1,12 +1,12 @@
 <template>
-  <Outlet v-for="outlet in devices.filter(x => x.type == 'outlet')" :key="outlet.deviceId" :device="outlet" />
+  <Plug v-for="outlet in devices.filter(x => x.type == 'outlet')" :key="outlet.deviceId" :device="outlet" />
 </template>
   
 <script>
-import Outlet from '../../components/dashboard/Outlet.vue'
+import Plug from '../../components/app/Plug.vue'
 import { mapState } from 'vuex'
 export default {
-  components: { Outlet },
+  components: { Plug },
   computed: {
     ...mapState({
       allDevices: state => state.devices.all
