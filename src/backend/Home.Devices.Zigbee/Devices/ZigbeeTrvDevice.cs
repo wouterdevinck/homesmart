@@ -71,39 +71,39 @@ namespace Home.Devices.Zigbee.Devices {
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
             if (Math.Abs(Battery - update.Battery) >= Tolerance) {
                 Battery = update.Battery;
-                NotifyObservers(nameof(Battery), Battery);
+                NotifyObservers(nameof(Battery), Battery, isRetainedUpdate);
             }
             if (LastSeen != update.LastSeen) {
                 LastSeen = update.LastSeen;
-                NotifyObservers(nameof(LastSeen), LastSeen);
+                NotifyObservers(nameof(LastSeen), LastSeen, isRetainedUpdate);
             }
             var locked = update.ChildLock == "LOCK";
             if (Locked != locked) {
                 Locked = locked;
-                NotifyObservers(nameof(Locked), Locked);
+                NotifyObservers(nameof(Locked), Locked, isRetainedUpdate);
             }
             if (Math.Abs(Temperature - update.LocalTemperature) >= Tolerance) {
                 Temperature = update.LocalTemperature;
-                NotifyObservers(nameof(Temperature), Temperature);
+                NotifyObservers(nameof(Temperature), Temperature, isRetainedUpdate);
             }
             if (Math.Abs(RequestedTemperature - update.RequestedTemperature) >= Tolerance) {
                 RequestedTemperature = update.RequestedTemperature;
-                NotifyObservers(nameof(RequestedTemperature), RequestedTemperature);
+                NotifyObservers(nameof(RequestedTemperature), RequestedTemperature, isRetainedUpdate);
             }
             if (ValvePosition != update.ValvePosition) {
                 ValvePosition = update.ValvePosition;
-                NotifyObservers(nameof(ValvePosition), ValvePosition);
+                NotifyObservers(nameof(ValvePosition), ValvePosition, isRetainedUpdate);
             }
             // Note: mode "auto" not used/supported
             var on = update.SystemMode == "heat" && Reachable;
             if (On != on) {
                 On = on;
-                NotifyObservers(nameof(On), On);
+                NotifyObservers(nameof(On), On, isRetainedUpdate);
             }
             var heating = update.RunningState == "heat" && Reachable;
             if (IsHeating != heating) {
                 IsHeating = heating;
-                NotifyObservers(nameof(IsHeating), IsHeating);
+                NotifyObservers(nameof(IsHeating), IsHeating, isRetainedUpdate);
             }
         }
 

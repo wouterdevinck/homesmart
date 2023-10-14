@@ -66,23 +66,23 @@ namespace Home.Devices.SolarEdge {
                 try {
                     _logger.LogInformation("Updating totals");
                     var totals = await _api.GetTotals();
-                    if (LifeTimeEnergy != totals.LifeTimeData.Energy) {
+                    if (Math.Abs(LifeTimeEnergy - totals.LifeTimeData.Energy) >= Tolerance) {
                         LifeTimeEnergy = totals.LifeTimeData.Energy;
                         NotifyObservers(nameof(LifeTimeEnergy), LifeTimeEnergy, totals.LastUpdateTime);
                     }
-                    if (LastYearEnergy != totals.LastYearData.Energy) {
+                    if (Math.Abs(LastYearEnergy - totals.LastYearData.Energy) >= Tolerance) {
                         LastYearEnergy = totals.LastYearData.Energy;
                         NotifyObservers(nameof(LastYearEnergy), LastYearEnergy, totals.LastUpdateTime);
                     }
-                    if (LastMonthEnergy != totals.LastMonthData.Energy) {
+                    if (Math.Abs(LastMonthEnergy - totals.LastMonthData.Energy) >= Tolerance) {
                         LastMonthEnergy = totals.LastMonthData.Energy;
                         NotifyObservers(nameof(LastMonthEnergy), LastMonthEnergy, totals.LastUpdateTime);
                     }
-                    if (LastDayEnergy != totals.LastDayData.Energy) {
+                    if (Math.Abs(LastDayEnergy - totals.LastDayData.Energy) >= Tolerance) {
                         LastDayEnergy = totals.LastDayData.Energy;
                         NotifyObservers(nameof(LastDayEnergy), LastDayEnergy, totals.LastUpdateTime);
                     }
-                    if (CurrentPower != totals.CurrentPower.Power) {
+                    if (Math.Abs(CurrentPower - totals.CurrentPower.Power) >= Tolerance) {
                         CurrentPower = totals.CurrentPower.Power;
                         NotifyObservers(nameof(CurrentPower), CurrentPower, totals.LastUpdateTime);
                     }

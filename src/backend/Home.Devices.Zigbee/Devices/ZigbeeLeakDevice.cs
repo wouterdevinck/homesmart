@@ -24,15 +24,15 @@ namespace Home.Devices.Zigbee.Devices {
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
             if (Math.Abs(Battery - update.Battery) >= Tolerance) {
                 Battery = update.Battery;
-                NotifyObservers(nameof(Battery), Battery);
+                NotifyObservers(nameof(Battery), Battery, isRetainedUpdate);
             }
             if (Leak != update.WaterLeak) {
                 Leak = update.WaterLeak;
-                NotifyObservers(nameof(Leak), Leak);
+                NotifyObservers(nameof(Leak), Leak, isRetainedUpdate);
             }
             if (LastSeen != update.LastSeen) {
                 LastSeen = update.LastSeen;
-                NotifyObservers(nameof(LastSeen), LastSeen);
+                NotifyObservers(nameof(LastSeen), LastSeen, isRetainedUpdate);
             }
         }
 

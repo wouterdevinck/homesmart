@@ -32,25 +32,23 @@ namespace Home.Devices.Zigbee.Devices {
             var locked = update.ChildLock == "LOCK";
             if (Locked != locked) {
                 Locked = locked;
-                NotifyObservers(nameof(Locked), Locked);
+                NotifyObservers(nameof(Locked), Locked, isRetainedUpdate);
             }
-            if (!isRetainedUpdate) { // TODO Use this to update the values, without writing them to telemetry
-                if (Math.Abs(Current - update.Current) >= Tolerance) {
-                    Current = update.Current;
-                    NotifyObservers(nameof(Current), Current);
-                }
-                if (Math.Abs(Power - update.Power) >= Tolerance) {
-                    Power = update.Power;
-                    NotifyObservers(nameof(Power), Power);
-                }
-                if (Math.Abs(Voltage - update.Voltage) >= Tolerance) {
-                    Voltage = update.Voltage;
-                    NotifyObservers(nameof(Voltage), Voltage);
-                }
-                if (Math.Abs(Energy - update.Energy) >= Tolerance) {
-                    Energy = update.Energy;
-                    NotifyObservers(nameof(Energy), Energy);
-                }
+            if (Math.Abs(Current - update.Current) >= Tolerance) {
+                Current = update.Current;
+                NotifyObservers(nameof(Current), Current, isRetainedUpdate);
+            }
+            if (Math.Abs(Power - update.Power) >= Tolerance) {
+                Power = update.Power;
+                NotifyObservers(nameof(Power), Power, isRetainedUpdate);
+            }
+            if (Math.Abs(Voltage - update.Voltage) >= Tolerance) {
+                Voltage = update.Voltage;
+                NotifyObservers(nameof(Voltage), Voltage, isRetainedUpdate);
+            }
+            if (Math.Abs(Energy - update.Energy) >= Tolerance) {
+                Energy = update.Energy;
+                NotifyObservers(nameof(Energy), Energy, isRetainedUpdate);
             }
         }
 

@@ -30,23 +30,23 @@ namespace Home.Devices.Zigbee.Devices {
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
             if (Math.Abs(Battery - update.Battery) >= Tolerance) {
                 Battery = update.Battery;
-                NotifyObservers(nameof(Battery), Battery);
+                NotifyObservers(nameof(Battery), Battery, isRetainedUpdate);
             }
             if (Math.Abs(Humidity - update.Humidity) >= Tolerance) {
                 Humidity = update.Humidity;
-                NotifyObservers(nameof(Humidity), Humidity);
+                NotifyObservers(nameof(Humidity), Humidity, isRetainedUpdate);
             }
             if (Math.Abs(Pressure - update.Pressure) >= Tolerance) {
                 Pressure = update.Pressure;
-                NotifyObservers(nameof(Pressure), Pressure);
+                NotifyObservers(nameof(Pressure), Pressure, isRetainedUpdate);
             }
             if (Math.Abs(Temperature - update.Temperature) >= Tolerance) {
                 Temperature = update.Temperature;
-                NotifyObservers(nameof(Temperature), Temperature);
+                NotifyObservers(nameof(Temperature), Temperature, isRetainedUpdate);
             }
             if (LastSeen != update.LastSeen) {
                 LastSeen = update.LastSeen;
-                NotifyObservers(nameof(LastSeen), LastSeen);
+                NotifyObservers(nameof(LastSeen), LastSeen, isRetainedUpdate);
             }
         }
 

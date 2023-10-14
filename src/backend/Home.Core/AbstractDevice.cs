@@ -9,6 +9,8 @@ namespace Home.Core {
     [Device]
     public abstract partial class AbstractDevice : IDevice {
 
+        protected double Tolerance = 0.01;
+
         [DeviceProperty]
         public string Name { get; protected set; }
 
@@ -45,12 +47,20 @@ namespace Home.Core {
             RoomId = dm?.RoomId;
         }
 
+        protected void NotifyObservers(string property, object value, DateTime timestamp, bool retained) {
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp, retained));
+        }
+
         protected void NotifyObservers(string property, object value, DateTime timestamp) {
-            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp));
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp, false));
+        }
+
+        protected void NotifyObservers(string property, object value, bool retained) {
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, DateTime.UtcNow, retained));
         }
 
         protected void NotifyObservers(string property, object value) {
-            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, DateTime.UtcNow));
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, DateTime.UtcNow, false));
         }
 
         public bool HasId(string id) {

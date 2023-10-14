@@ -14,7 +14,6 @@ namespace Home.Devices.Zigbee {
     public abstract partial class ZigbeeDevice : AbstractDevice {
         
         private readonly IManagedMqttClient _mqtt;
-        protected double Tolerance = 0.01;
         protected ZigbeeConfiguration Configuration;
 
         [DeviceProperty]

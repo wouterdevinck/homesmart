@@ -36,7 +36,7 @@ namespace Home.Telemetry {
             foreach(var device in Devices) {
                 var properties = _configuration.Data.Where(x => x.DeviceIds.Contains(device.Key)).SelectMany(x => x.Properties);
                 device.Value.DeviceUpdate += (s, e) => {
-                    if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase))) {
+                    if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase)) && !e.Retained) {
                         using var writeApi = _client.GetWriteApi();
                         var point = PointData.Measurement(e.Property)
                             .Tag("device", device.Key)
@@ -70,7 +70,7 @@ namespace Home.Telemetry {
         }
 
         // Note: RelativeTime implements a subset of duration https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/
-        //    Not all unit specifiers are implemented and neiter are combinations of multiple units.
+        //    Not all unit specifiers are implemented and neither are combinations of multiple units.
 
         private string TimeRangeToFlux(TimeRange range) {
             var str = new StringBuilder("start: ");

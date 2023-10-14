@@ -46,11 +46,11 @@ namespace Home.Devices.Zigbee.Devices {
             var on = update.State == "ON" && Reachable;
             if (On != on) {
                 On = on;
-                NotifyObservers(nameof(On), On);
+                NotifyObservers(nameof(On), On, isRetainedUpdate);
             }
             if (LastSeen != update.LastSeen) {
                 LastSeen = update.LastSeen;
-                NotifyObservers(nameof(LastSeen), LastSeen);
+                NotifyObservers(nameof(LastSeen), LastSeen, isRetainedUpdate);
             }
         }
 
