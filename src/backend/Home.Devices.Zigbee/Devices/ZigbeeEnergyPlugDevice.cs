@@ -25,6 +25,9 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public double Energy { get; private set; }
 
+        //[DeviceProperty]
+        public bool Active => Current > 0;
+
         public ZigbeeEnergyPlugDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, model, mqtt, configuration) {}
 
         public override void ProcessZigbeeUpdate(DeviceUpdate update, bool isRetainedUpdate) {
@@ -34,9 +37,13 @@ namespace Home.Devices.Zigbee.Devices {
                 Locked = locked;
                 NotifyObservers(nameof(Locked), Locked, isRetainedUpdate);
             }
-            if (Math.Abs(Current - update.Current) >= Tolerance) {
+            if (Math.Abs(Current - update.Current) >= Tolerance || update.Current == 0 && Current > 0) {
+                var activeBefore = Active;
                 Current = update.Current;
                 NotifyObservers(nameof(Current), Current, isRetainedUpdate);
+                if (Active != activeBefore) {
+                    NotifyObservers(nameof(Active), Active, isRetainedUpdate);
+                }
             }
             if (Math.Abs(Power - update.Power) >= Tolerance) {
                 Power = update.Power;

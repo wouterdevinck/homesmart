@@ -49,6 +49,9 @@
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff(device)" :disabled="!device.reachable || device.locked">
           </div>
+          <div class="info" v-if="device.active != undefined">
+            <span class="label">Active:</span> {{ device.active }}&#37;
+          </div>
         </div> 
         <div v-if="device.type == 'leak'">
           <h6 class="card-subtitle mb-2 text-muted">Water leak sensor</h6>
@@ -110,7 +113,7 @@
               {{ device.lifeTimeEnergy }} kWh <span class="explain">lifetime</span>
           </p>
           <p class="fw-bold fs-4 mb-1" v-if="device.lastYearEnergy != undefined">
-              {{ device.lastYearEnergy }}kWh <span class="explain">last year</span>
+              {{ device.lastYearEnergy }} kWh <span class="explain">last year</span>
           </p>
           <p class="fw-bold fs-4 mb-1" v-if="device.lastMonthEnergy != undefined">
               {{ device.lastMonthEnergy }} kWh <span class="explain">last month</span>
