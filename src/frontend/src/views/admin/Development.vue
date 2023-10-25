@@ -50,7 +50,7 @@
             <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff(device)" :disabled="!device.reachable || device.locked">
           </div>
           <div class="info" v-if="device.active != undefined">
-            <span class="label">Active:</span> {{ device.active }}&#37;
+            <span class="label">Active:</span> {{ device.active }}
           </div>
         </div> 
         <div v-if="device.type == 'leak'">
