@@ -34,12 +34,14 @@ namespace Home.Automations {
             _logger.LogInformation("Automation starting");
             var device = Devices[_configuration.DeviceId];
             device.DeviceUpdate += async (s, e) => {
+                if (e.Retained) return;
                 if (e.Property.Equals(_configuration.Property, StringComparison.CurrentCultureIgnoreCase)) { 
                     if (_configuration.Value.Equals(e.Value.ToString(), StringComparison.CurrentCultureIgnoreCase)) {
                         _logger.LogInformation($"Automation: sending Opsgenie alert '{_configuration.Message}' to {_configuration.Responder}");
                         var req = new OpsgenieRequest {
                             Message = _configuration.Message,
-                            Responder = _configuration.Responder
+                            Responder = _configuration.Responder,
+                            Priority = _configuration.Priority
                         };
                         var json = JsonConvert.SerializeObject(req);
                         var data = new StringContent(json, Encoding.UTF8, "application/json");
@@ -71,7 +73,7 @@ namespace Home.Automations {
                 };
 
             [JsonProperty("priority")]
-            public string Priority => "P1";
+            public string Priority { get; set; }
 
             public class OpsgenieResponder {
 
@@ -94,6 +96,7 @@ namespace Home.Automations {
         public string Value { get; set; }
         public string ApiKey { get; set; }
         public string Responder { get; set; }
+        public string Priority { get; set; }
         public string Message { get; set; }
 
     }

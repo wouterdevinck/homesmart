@@ -326,7 +326,18 @@ automations:
         value: true
         apiKey: $opsgenieApiKey
         responder: Wouter
+        priority: P1
         message: "AQUARIUM LEAK"
+  - opsgenieAlarm:
+      description: Laundry done alert
+      configuration:
+        deviceId: plug-washing-machine
+        property: active
+        value: false
+        apiKey: $opsgenieApiKey
+        responder: Wouter
+        priority: P5
+        message: "De wasmachine is klaar"
 telemetry:
   influx:
     url: http://192.168.1.180:8086
