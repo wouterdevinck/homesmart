@@ -32,5 +32,8 @@
   },
   "navigationFallback": {
     "rewrite": "index.html"
+  },
+  "mimeTypes": {
+    ".webmanifest": "application/json"
   }
 }
