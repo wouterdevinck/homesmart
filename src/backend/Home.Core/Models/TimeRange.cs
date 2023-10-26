@@ -43,8 +43,11 @@ namespace Home.Core.Models {
 
     public class RelativeTime {
 
-        public double Value { get; private set; }
-        public TimeUnit Unit { get; private set; }
+        public double Value { get; }
+        public TimeUnit Unit { get; }
+
+        public static implicit operator RelativeTime(string time) => new(time);
+        public static implicit operator TimeSpan(RelativeTime time) => time.ToTimeSpan();
 
         public RelativeTime(double value, TimeUnit unit) {
             Value = value;
@@ -58,6 +61,21 @@ namespace Home.Core.Models {
 
         public override string ToString() {
             return $"{Value}{TimeUnitToString(Unit)}";
+        }
+
+        public TimeSpan ToTimeSpan() {
+            switch (Unit) {
+                case TimeUnit.Seconds:
+                    return TimeSpan.FromSeconds(Value);
+                case TimeUnit.Minutes:
+                    return TimeSpan.FromMinutes(Value);
+                case TimeUnit.Hours:
+                    return TimeSpan.FromHours(Value);
+                case TimeUnit.Days:
+                    return TimeSpan.FromDays(Value);
+                default:
+                    return TimeSpan.MinValue;
+            }
         }
 
         private string TimeUnitToString(TimeUnit unit) {

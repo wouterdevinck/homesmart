@@ -338,6 +338,7 @@ automations:
         responder: Wouter
         priority: P5
         message: "De wasmachine is klaar"
+        rateLimit: 15m
 telemetry:
   influx:
     url: http://192.168.1.180:8086

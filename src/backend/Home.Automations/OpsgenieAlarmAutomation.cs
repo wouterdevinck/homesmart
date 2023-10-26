@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Interfaces;
+using Home.Core.Models;
 
 namespace Home.Automations {
 
@@ -24,6 +25,8 @@ namespace Home.Automations {
         private readonly ILogger _logger;
         private readonly OpsgenieAlarmAutomationConfiguration _configuration;
 
+        private DateTime? _lastFired;
+
         public OpsgenieAlarmAutomation(ILogger logger, OpsgenieAlarmAutomationConfiguration configuration)
         : base(new List<string> { configuration.DeviceId }) {
             _logger = logger;
@@ -37,6 +40,14 @@ namespace Home.Automations {
                 if (e.Retained) return;
                 if (e.Property.Equals(_configuration.Property, StringComparison.CurrentCultureIgnoreCase)) { 
                     if (_configuration.Value.Equals(e.Value.ToString(), StringComparison.CurrentCultureIgnoreCase)) {
+                        if (_configuration.RateLimit != null) {
+                            var now = DateTime.UtcNow;
+                            if (_lastFired != null && now - _lastFired < _configuration.RateLimit) {
+                                _logger.LogInformation($"Automation: blocking Opsgenie alert '{_configuration.Message}' due to rate limit");
+                                return;
+                            }
+                            _lastFired = now;
+                        }
                         _logger.LogInformation($"Automation: sending Opsgenie alert '{_configuration.Message}' to {_configuration.Responder}");
                         var req = new OpsgenieRequest {
                             Message = _configuration.Message,
@@ -98,6 +109,7 @@ namespace Home.Automations {
         public string Responder { get; set; }
         public string Priority { get; set; }
         public string Message { get; set; }
+        public RelativeTime RateLimit { get; set; }
 
     }
 
