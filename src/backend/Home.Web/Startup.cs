@@ -36,6 +36,7 @@ namespace Home.Web {
             SomfyDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
             OpsgenieAlarmAutomation.Descriptor,
+            DimmerHeatingAutomation.Descriptor,
             InfluxDbTelemetry.Descriptor,
             AzureRemote.Descriptor
         });

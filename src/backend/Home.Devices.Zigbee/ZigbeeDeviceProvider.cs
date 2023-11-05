@@ -42,7 +42,7 @@ namespace Home.Devices.Zigbee {
 
         private IDevice DeviceFactory(DeviceModel model) {
             return model.Definition.Model switch {
-                "324131092621" => new ZigbeeSwitchDevice(_home, model, _mqtt, _configuration),
+                "324131092621" => new ZigbeeDimmerDevice(_home, model, _mqtt, _configuration),
                 "046677552343" => new ZigbeePlugDevice(_home, model, _mqtt, _configuration),
                 "HG08673" => new ZigbeeEnergyPlugDevice(_home, model, _mqtt, _configuration),
                 "WXKG11LM" => new ZigbeeButtonDevice(_home, model, _mqtt, _configuration),

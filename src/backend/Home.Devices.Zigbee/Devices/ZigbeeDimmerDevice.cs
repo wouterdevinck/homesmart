@@ -9,9 +9,14 @@ using MQTTnet.Extensions.ManagedClient;
 namespace Home.Devices.Zigbee.Devices {
 
     [Device]
-    public partial class ZigbeeButtonDevice : ZigbeeDevice, IPushButton, IBatteryDevice {
+    public partial class ZigbeeDimmerDevice : ZigbeeDevice, IDimmer, IBatteryDevice {
 
-        public event EventHandler SinglePress;
+        public event EventHandler On;
+        public event EventHandler Up;
+        public event EventHandler Down;
+        public event EventHandler Off;
+
+        // TODO Support pressing and holding buttons with release events and action_duration property
 
         [DeviceProperty]
         public double Battery { get; private set; }
@@ -19,7 +24,7 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public string Action { get; private set; }
 
-        public ZigbeeButtonDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : 
+        public ZigbeeDimmerDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : 
             base(home, model, mqtt, configuration) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Switch);
         }
@@ -33,9 +38,14 @@ namespace Home.Devices.Zigbee.Devices {
                 Action = update.Action;
                 NotifyObservers(nameof(Action), Action, isRetainedUpdate);
                 if (!isRetainedUpdate) {
-                    if ((Model == "WXKG11LM" && update.Action == "single") ||
-                        (Model == "E1812" && update.Action == "on")) {
-                        SinglePress?.Invoke(this, EventArgs.Empty);
+                    if (update.Action is "on_press_release" or "on-press" or "on-hold-release") {
+                        On?.Invoke(this, EventArgs.Empty);
+                    } else if (update.Action is "up_press_release" or "up-press" or "up-hold-release") {
+                        Up?.Invoke(this, EventArgs.Empty);
+                    } else if (update.Action is "down_press_release" or "down-press" or "down-hold-release") {
+                        Down?.Invoke(this, EventArgs.Empty);
+                    } else if (update.Action is "off_press_release" or "off-press" or "off-hold-release") {
+                        Off?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }

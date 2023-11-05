@@ -259,6 +259,9 @@ home:
     - deviceId: ZIGBEE-0x18fc260000084fd9
       friendlyId: trv-bathroom
       roomId: bathroom
+    - deviceId: ZIGBEE-0x0017880104f7dd5d
+      friendlyId: dimmer-bathroom
+      roomId: bathroom
     - deviceId: SOMFY-BRIDGE
       friendlyId: somfy-bridge
       roomId: livingroom
@@ -339,6 +342,11 @@ automations:
         priority: P5
         message: "De wasmachine is klaar"
         rateLimit: 15m
+  - dimmerHeating:
+      description: Remote heater bathroom
+      configuration:
+        dimmerId: dimmer-bathroom
+        heaterId: trv-bathroom
 telemetry:
   influx:
     url: http://192.168.1.180:8086
