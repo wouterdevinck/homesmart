@@ -12,7 +12,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
 
@@ -45,3 +45,11 @@ jobs:
 
     - name: Build the factory image
       run: ./build.sh factory
+
+    - name: Create a GitHub release when tagged
+      if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "edgeos/*.upg,edgeos/*.img.gz"
+        omitBody: true
+    
