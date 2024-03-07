@@ -8,3 +8,8 @@ dist
 config-local.yaml
 secrets.yaml
 local.settings.json
+*.upg
+*.img.gz
+edgeos/manifest.json
+edgeos/docker-compose.yml
+tmp
