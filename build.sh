@@ -1,10 +1,20 @@
 #!/bin/bash
 set -e
 
-TAG="wouterdevinck/homesmart:$(git describe --tags --dirty)"
+EDGEOS_VERSION="0.7.0-3-ga753405"
+
+VERSION="$(git describe --tags --dirty)"
+TAG="wouterdevinck/homesmart:$VERSION"
+
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+EDGEOS_DIR="$SCRIPT_DIR/edgeos"
+EDGEOS_DOCKER_TAG_BUNDLER="wouterdevinck/edgeos-bundler:$EDGEOS_VERSION"
+EDGEOS_BUNDLER_ARGS="-v $EDGEOS_DIR:/workdir -v /var/run/docker.sock:/var/run/docker.sock -u $(id -u $USER):$(getent group docker | cut -d: -f3)"
+EDGEOS_BUNDLER="docker run --rm $EDGEOS_BUNDLER_ARGS $EDGEOS_DOCKER_TAG_BUNDLER"
 
 function printUsage {
-  echo "Usage: $0 all|version|build|run|push|lf|swa"
+  echo "Usage: $0 all|version|build|run|push|lf|swa|bundle|factory"
   echo ""
   echo "   all     - Build, push and deploy."
   echo "   version - Print current version number."
@@ -12,7 +22,9 @@ function printUsage {
   echo "   run     - Run Docker image locally."
   echo "   push    - Push to Docker Hub."
   echo "   lf      - Fix line endings."
-  echo "   swa     - Deploy static web application."
+  echo "   swa     - Build and deploy Azure static web application."
+  echo "   bundle  - EdgeOS upgrade package."
+  echo "   factory - Build EdgeOS factory image."
   echo ""
 }
 
@@ -69,8 +81,39 @@ case $1 in
 
 "swa")
 
+  # Build and deploy Azure Static Web Application (SWA)
   swa build
   swa deploy --deployment-token $2 --env production --api-location src/backend/Home.Remote.Functions/bin/Release/net7.0/publish
+
+  ;;
+
+"bundle"|"factory")
+
+  # Fill in version numbers
+  jq \
+    --arg v $VERSION \
+    --arg ev $EDGEOS_VERSION \
+    '.app.version=$v|.edgeos.version=$ev' \
+    $EDGEOS_DIR/manifest-template.json \
+    > $EDGEOS_DIR/manifest.json
+  TAG=$TAG yq e \
+    '.services.homesmart.image=strenv(TAG)' \
+    $EDGEOS_DIR/docker-compose-template.yml \
+    > $EDGEOS_DIR/docker-compose.yml
+
+  ;;&
+
+"bundle")
+
+  # Build EdgeOS upgrade package
+  $EDGEOS_BUNDLER create-upgrade
+
+  ;;
+
+"factory")
+
+  # Build full EdgeOS disk image
+  $EDGEOS_BUNDLER create-image
 
   ;;
 
