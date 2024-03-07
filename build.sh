@@ -43,9 +43,8 @@ case $1 in
 "build")
 
   # Build image for all architectures
-  docker build -t $TAG-amd64 .
-  docker build --build-arg ARCH=arm32v7 -t $TAG-arm32v7 .
-  docker build --build-arg ARCH=arm64v8 -t $TAG-arm64v8 .
+  docker buildx build --load --build-arg ARCH=amd64 -t $TAG-amd64 .
+  docker buildx build --load --build-arg ARCH=arm64v8 -t $TAG-arm64v8 .
 
   ;;
 
@@ -60,11 +59,10 @@ case $1 in
 
   # Push all image versions
   docker push $TAG-amd64
-  docker push $TAG-arm32v7
   docker push $TAG-arm64v8
 
   # Combine all into a multi-arch image and push
-  docker manifest create $TAG --amend $TAG-amd64 --amend $TAG-arm32v7 --amend $TAG-arm64v8
+  docker manifest create $TAG --amend $TAG-amd64 --amend $TAG-arm64v8
   docker manifest push $TAG
 
   ;;
