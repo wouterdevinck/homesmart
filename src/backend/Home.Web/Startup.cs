@@ -11,6 +11,7 @@ using Home.Devices.Zigbee;
 using Home.Devices.SolarEdge;
 using Home.Devices.Tuya;
 using Home.Devices.Somfy;
+using Home.Devices.Unifi;
 using Home.Remote;
 using Home.Telemetry;
 using Home.Web.Notifications;
@@ -34,6 +35,7 @@ namespace Home.Web {
             SolarEdgeDeviceProvider.Descriptor,
             TuyaDeviceProvider.Descriptor,
             SomfyDeviceProvider.Descriptor,
+            UnifiDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
             OpsgenieAlarmAutomation.Descriptor,
             DimmerHeatingAutomation.Descriptor,

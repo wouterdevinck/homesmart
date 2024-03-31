@@ -49,6 +49,11 @@ deviceProviders:
         key: $tuyaApiKeyFancoilKidsroom
   somfy:
     ip: 192.168.2.12
+  unifi:
+    ip: unifi
+    site: default
+    username: api
+    password: $unifiPassword
 home:
   rooms:
     - id: livingroom
@@ -166,6 +171,12 @@ home:
     - deviceId: ZIGBEE-0x00158d00091a41b8
       friendlyId: sensor-incubator
       roomId: kitchen
+    - deviceId: ZIGBEE-0x00158d00091c22e3
+      friendlyId: sensor-small-incubator
+      roomId: kitchen
+    - deviceId: ZIGBEE-0x00158d00091c22e3
+      friendlyId: sensor-rack
+      roomId: attic
     - deviceId: ZIGBEE-0x00158d0006c4af92
       friendlyId: leak-aquarium
       roomId: livingroom
@@ -310,6 +321,39 @@ home:
     - deviceId: SOMFY-REMOTE-9620325
       friendlyId: somfy-timer
       roomId: kitchen
+    - deviceId: UNIFI-PROTECT-f4:e2:c6:77:80:f3
+      friendlyId: camera-back
+      roomId: outside
+    - deviceId: UNIFI-PROTECT-f4:e2:c6:77:80:25
+      friendlyId: camera-2
+      roomId: outside
+    - deviceId: UNIFI-PROTECT-f4:e2:c6:77:80:b2
+      friendlyId: camera-3
+      roomId: outside
+    - deviceId: UNIFI-NETWORK-646b87cf68e8c417eb9be4de
+      friendlyId: network-udm
+      roomId: attic
+    - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be511
+      friendlyId: network-switch-office
+      roomId: office
+    - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be515
+      friendlyId: network-ap-hallway
+      roomId: hallway
+    - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be514
+      friendlyId: network-switch-garage
+      roomId: garage
+    - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be512
+      friendlyId: network-switch-livingroom
+      roomId: livingroom
+    - deviceId: UNIFI-NETWORK-65de63da9204f15f54fc8416
+      friendlyId: network-switch-poe
+      roomId: attic
+    - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be513
+      friendlyId: network-ap-office
+      roomId: office
+    - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be519
+      friendlyId: network-ap-livingroom
+      roomId: livingroom
 automations:
   - pushOnOff:
       description: Pushbutton hallway
@@ -374,6 +418,8 @@ telemetry:
           - sensor-outside
           - sensor-shed
           - sensor-incubator
+          - sensor-small-incubator
+          - sensor-rack
         properties: 
           - temperature
           - humidity

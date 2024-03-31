@@ -10,6 +10,7 @@ namespace Home.Core {
         public const string Signify = "Signify Netherlands B.V.";
         public const string Jaga = "Jaga";
         public const string Somfy = "Somfy";
+        public const string Ubiquiti = "Ubiquiti";
         public const string Diy = "DIY";
 
         public const string VersionNotAvailable = "n/a";
@@ -22,6 +23,7 @@ namespace Home.Core {
                 "_TZ3210_ttkgurpb" => "Miboxer",
                 Jaga => Jaga,
                 Somfy => Somfy,
+                Ubiquiti => Ubiquiti,
                 Diy => Diy,
                 _ => manufacturer
             };
@@ -45,7 +47,10 @@ namespace Home.Core {
             Solar,
             Fancoil,
             Trv,
-            Shutter
+            Shutter,
+            Camera,
+            NetworkAccessPoint,
+            NetworkSwitch
         }
 
         public static string GetTypeString(DeviceType type) {
@@ -60,6 +65,9 @@ namespace Home.Core {
                 DeviceType.Fancoil => "fancoil",
                 DeviceType.Trv => "trv",
                 DeviceType.Shutter => "shutter",
+                DeviceType.Camera => "camera",
+                DeviceType.NetworkAccessPoint => "wifi",
+                DeviceType.NetworkSwitch => "networkswitch",
                 _ => "device"
             };
         }

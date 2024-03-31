@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Home.Devices.SolarEdge\Home.Devices.SolarEdge.csproj" />
     <ProjectReference Include="..\Home.Devices.Tuya\Home.Devices.Tuya.csproj" />
     <ProjectReference Include="..\Home.Devices.Somfy\Home.Devices.Somfy.csproj" />
+    <ProjectReference Include="..\Home.Devices.Unifi\Home.Devices.Unifi.csproj" />
     <ProjectReference Include="..\Home.Remote\Home.Remote.csproj" />
     <ProjectReference Include="..\Home.Telemetry\Home.Telemetry.csproj" />
     <ProjectReference Include="..\Home.Automations\Home.Automations.csproj" />

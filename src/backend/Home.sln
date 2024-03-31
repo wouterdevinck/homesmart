@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Remote.Functions", "Ho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Devices.Somfy", "Home.Devices.Somfy\Home.Devices.Somfy.csproj", "{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Devices.Unifi", "Home.Devices.Unifi\Home.Devices.Unifi.csproj", "{27729980-E695-40C7-B6F6-C39F03C7F2CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,18 @@ Global
 		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x64.Build.0 = Release|Any CPU
 		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{33B7FC99-33B1-4CC2-8FDD-3F9F563526DB}.Release|x86.Build.0 = Release|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Debug|x64.Build.0 = Debug|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Release|x64.ActiveCfg = Release|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Release|x64.Build.0 = Release|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{27729980-E695-40C7-B6F6-C39F03C7F2CF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
