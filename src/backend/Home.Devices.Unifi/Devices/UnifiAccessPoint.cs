@@ -4,9 +4,9 @@ using Home.Devices.Unifi.Models;
 
 namespace Home.Devices.Unifi.Devices {
 
-    public class UnifiAccessPoint : UnifiDevice {
+    public class UnifiAccessPoint : UnifiNetworkDevice {
 
-        public UnifiAccessPoint(HomeConfigurationModel home, DeviceModel model) : base(home, model, $"UNIFI-NETWORK-{model.Id}") {
+        public UnifiAccessPoint(HomeConfigurationModel home, NetworkDeviceModel device) : base(home, device) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.NetworkAccessPoint);
 
         }

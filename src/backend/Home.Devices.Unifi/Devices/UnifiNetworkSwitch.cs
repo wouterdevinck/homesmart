@@ -4,9 +4,9 @@ using Home.Devices.Unifi.Models;
 
 namespace Home.Devices.Unifi.Devices {
 
-    public class UnifiNetworkSwitch : UnifiDevice {
+    public class UnifiNetworkSwitch : UnifiNetworkDevice {
 
-        public UnifiNetworkSwitch(HomeConfigurationModel home, DeviceModel model) : base(home, model, $"UNIFI-NETWORK-{model.Id}") {
+        public UnifiNetworkSwitch(HomeConfigurationModel home, NetworkDeviceModel device) : base(home, device) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.NetworkSwitch);
 
         }

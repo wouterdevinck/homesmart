@@ -31,7 +31,7 @@ namespace Home.Devices.Unifi {
             _api = new UnifiApiClient(_configuration.Ip, _configuration.Site, _configuration.Username, _configuration.Password);
         }
 
-        private UnifiDevice NetworkDeviceFactory(DeviceModel model) {
+        private UnifiDevice NetworkDeviceFactory(NetworkDeviceModel model) {
             return model.Model switch {
                 "UDMPRO" => new UnifiConsole(_home, model),
                 "USMINI" => new UnifiNetworkSwitch(_home, model),
@@ -39,6 +39,10 @@ namespace Home.Devices.Unifi {
                 "UAL6" => new UnifiAccessPoint(_home, model),
                 _ => null
             };
+        }
+
+        private UnifiDevice ProtectDeviceFactory(ProtectDeviceModel model, IEnumerable<ClientModel> clients) {
+            return new UnifiCamera(_home, model, clients.FirstOrDefault());
         }
 
         public override async Task ConnectAsync() {
@@ -51,9 +55,11 @@ namespace Home.Devices.Unifi {
         private async Task TryConnectAsync() {
             _logger.LogInformation($"Connecting to site {_configuration.Site}");
             try {
+                if (!await _api.LoginAsync()) throw new Exception("Authentication error");
                 var devices = await _api.GetDevicesAsync();
+                var clients = await _api.GetClientsAsync();
                 _devices.AddRange(devices.NetworkDevices.Select(NetworkDeviceFactory));
-                _devices.AddRange(devices.ProtectDevices.Select(x => new UnifiCamera(_home, x)));
+                _devices.AddRange(devices.ProtectDevices.GroupJoin(clients, x => x.Mac, x => x.Mac, ProtectDeviceFactory));
                 NotifyObservers(_devices);
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");

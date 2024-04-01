@@ -9,7 +9,7 @@ namespace Home.Devices.Unifi.Models {
         public List<NetworkDeviceModel> NetworkDevices { get; set; }
 
         [JsonProperty("protect_devices")]
-        public List<NetworkDeviceModel> ProtectDevices { get; set; }
+        public List<ProtectDeviceModel> ProtectDevices { get; set; }
 
     }
 

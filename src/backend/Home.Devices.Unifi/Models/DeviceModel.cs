@@ -10,6 +10,9 @@ namespace Home.Devices.Unifi.Models {
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("mac")]
+        public string Mac { get; set; }
+
         [JsonProperty("model")]
         public string Model { get; set; }
 

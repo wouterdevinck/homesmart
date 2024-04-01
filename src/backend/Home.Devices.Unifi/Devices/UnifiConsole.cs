@@ -4,9 +4,9 @@ using Home.Devices.Unifi.Models;
 
 namespace Home.Devices.Unifi.Devices {
 
-    public class UnifiConsole : UnifiDevice {
+    public class UnifiConsole : UnifiNetworkDevice {
 
-        public UnifiConsole(HomeConfigurationModel home, DeviceModel model) : base(home, model, $"UNIFI-NETWORK-{model.Id}") {
+        public UnifiConsole(HomeConfigurationModel home, NetworkDeviceModel device) : base(home, device) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Hub);
 
         }
