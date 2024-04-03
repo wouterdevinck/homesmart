@@ -10,7 +10,7 @@ namespace Home.Devices.Unifi.Devices {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Camera);
             Ip = client?.Ip;
             UplinkMac = device.UplinkMac;
-            UplinkPort = client?.UplinkPort;
+            if (client != null) UplinkPort = client.UplinkPort;
         }
 
     }

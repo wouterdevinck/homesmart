@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
+using Newtonsoft.Json;
 
 namespace Home.Core {
 
@@ -38,6 +40,11 @@ namespace Home.Core {
         [DeviceProperty]
         public bool Reachable { get; protected set; }
 
+        private readonly List<IRelatedDevice<IDevice>> _relatedDevices;
+
+       // [JsonIgnore]
+        public IEnumerable<IRelatedDevice<IDevice>> RelatedDevices => _relatedDevices;
+
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;
 
         public AbstractDevice(HomeConfigurationModel home, string id) {
@@ -45,6 +52,7 @@ namespace Home.Core {
             var dm = home.Devices?.SingleOrDefault(x => x.DeviceId == id);
             FriendlyId = dm?.FriendlyId ?? id;
             RoomId = dm?.RoomId;
+            _relatedDevices = new List<IRelatedDevice<IDevice>>();
         }
 
         protected void NotifyObservers(string property, object value, DateTime timestamp, bool retained) {
@@ -61,6 +69,10 @@ namespace Home.Core {
 
         protected void NotifyObservers(string property, object value) {
             DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, DateTime.UtcNow, false));
+        }
+
+        public void AddRelatedDevice(IRelatedDevice<IDevice> related) {
+            _relatedDevices.Add(related);
         }
 
         public bool HasId(string id) {

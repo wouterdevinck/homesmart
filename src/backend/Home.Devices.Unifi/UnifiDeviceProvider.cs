@@ -6,7 +6,9 @@ using Home.Core;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
+using Home.Core.Devices;
 using Home.Core.Interfaces;
+using Home.Core.Relationships;
 using Home.Devices.Unifi.Devices;
 using Home.Devices.Unifi.Models;
 using Microsoft.Extensions.Logging;
@@ -58,8 +60,15 @@ namespace Home.Devices.Unifi {
                 if (!await _api.LoginAsync()) throw new Exception("Authentication error");
                 var devices = await _api.GetDevicesAsync();
                 var clients = await _api.GetClientsAsync();
-                _devices.AddRange(devices.NetworkDevices.Select(NetworkDeviceFactory));
-                _devices.AddRange(devices.ProtectDevices.GroupJoin(clients, x => x.Mac, x => x.Mac, ProtectDeviceFactory));
+                var allDevices = devices.NetworkDevices.Select(NetworkDeviceFactory).ToList();
+                allDevices.AddRange(devices.ProtectDevices.GroupJoin(clients, x => x.Mac, x => x.Mac, ProtectDeviceFactory));
+                foreach (var protectDevice in allDevices.Where(protectDevice => !string.IsNullOrEmpty(protectDevice.UplinkMac))) {
+                    if (allDevices.SingleOrDefault(x => x.Mac == protectDevice.UplinkMac) is INetworkSwitch sw) {
+                        protectDevice.AddRelatedDevice(new ParentNetworkSwitch {Device = sw, SwitchPort = protectDevice.UplinkPort});
+                    }
+                }
+                // TODO Links to dream machine not found - due to multiple MAC addresses?
+                _devices.AddRange(allDevices);
                 NotifyObservers(_devices);
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");

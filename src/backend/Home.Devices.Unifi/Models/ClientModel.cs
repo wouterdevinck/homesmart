@@ -11,7 +11,7 @@ namespace Home.Devices.Unifi.Models {
         public string Ip { get; set; }
 
         [JsonProperty("sw_port")]
-        public string UplinkPort { get; set; }
+        public int UplinkPort { get; set; }
 
     }
 

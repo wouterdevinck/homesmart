@@ -8,7 +8,7 @@ namespace Home.Devices.Unifi.Models {
         public string Mac { get; set; }
 
         [JsonProperty("uplink_remote_port")]
-        public string Port { get; set; }
+        public int Port { get; set; }
 
     }
 
