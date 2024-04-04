@@ -31,6 +31,7 @@ namespace Home.Devices.Unifi {
 
         public async Task<bool> LoginAsync() {
             var result = await _http.PostAsJsonAsync("api/auth/login", new LoginRequest(_username, _password));
+            // var contents = await result.Content.ReadAsStringAsync();
             return result.IsSuccessStatusCode;
         }
 
@@ -46,6 +47,14 @@ namespace Home.Devices.Unifi {
             return JsonConvert.DeserializeObject<List<ClientModel>>(json);
         }
 
+        public async Task<bool> SetSwitchPortPowerEnabledAsync(string id, int port, bool enabled) {
+            // TODO May need to re-authenticate?
+            // if (!await LoginAsync()) throw new Exception("Authentication error");
+            var res = await _http.PutAsJsonAsync($"proxy/network/api/s/{_site}/rest/device/{id}", new PortOverrideRequest(port, enabled));
+            var contents = await res.Content.ReadAsStringAsync();
+            return true; // TODO
+        }
+
         public void Dispose() {
             _http.Dispose();
         }
@@ -53,15 +62,3 @@ namespace Home.Devices.Unifi {
     }
 
 }
-
-/*
-PUT https://unifi/proxy/network/api/s/default/rest/device/65de63da9204f15f54fc8416
-   {
-       "port_overrides": [
-           {
-               "port_idx": 4,
-               "poe_mode": "off|auto"
-           }
-       ]
-   }
- */

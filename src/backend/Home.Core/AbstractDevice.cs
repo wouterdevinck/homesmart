@@ -42,7 +42,7 @@ namespace Home.Core {
 
         private readonly List<IRelatedDevice<IDevice>> _relatedDevices;
 
-       // [JsonIgnore]
+        [JsonIgnore]
         public IEnumerable<IRelatedDevice<IDevice>> RelatedDevices => _relatedDevices;
 
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;

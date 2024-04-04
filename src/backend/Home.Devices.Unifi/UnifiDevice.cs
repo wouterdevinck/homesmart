@@ -6,7 +6,8 @@ using Newtonsoft.Json;
 
 namespace Home.Devices.Unifi {
 
-    public class UnifiDevice : AbstractDevice {
+    [Device]
+    public partial class UnifiDevice : AbstractDevice {
 
         [DeviceProperty]
         public string Ip { get; protected set; }

@@ -4,8 +4,6 @@ namespace Home.Core.Devices {
 
     public interface INetworkSwitch : IDevice {
 
-
-
     }
 
 }

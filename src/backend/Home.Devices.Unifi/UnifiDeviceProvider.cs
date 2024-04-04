@@ -37,7 +37,7 @@ namespace Home.Devices.Unifi {
             return model.Model switch {
                 "UDMPRO" => new UnifiConsole(_home, model),
                 "USMINI" => new UnifiNetworkSwitch(_home, model),
-                "USM8P60" => new UnifiNetworkSwitch(_home, model),
+                "USM8P60" => new UnifiPoeNetworkSwitch(_home, model, _api),
                 "UAL6" => new UnifiAccessPoint(_home, model),
                 _ => null
             };
@@ -62,12 +62,11 @@ namespace Home.Devices.Unifi {
                 var clients = await _api.GetClientsAsync();
                 var allDevices = devices.NetworkDevices.Select(NetworkDeviceFactory).ToList();
                 allDevices.AddRange(devices.ProtectDevices.GroupJoin(clients, x => x.Mac, x => x.Mac, ProtectDeviceFactory));
-                foreach (var protectDevice in allDevices.Where(protectDevice => !string.IsNullOrEmpty(protectDevice.UplinkMac))) {
-                    if (allDevices.SingleOrDefault(x => x.Mac == protectDevice.UplinkMac) is INetworkSwitch sw) {
-                        protectDevice.AddRelatedDevice(new ParentNetworkSwitch {Device = sw, SwitchPort = protectDevice.UplinkPort});
+                foreach (var device in allDevices.Where(protectDevice => !string.IsNullOrEmpty(protectDevice.UplinkMac))) {
+                    if (allDevices.SingleOrDefault(x => x.Mac == device.UplinkMac) is INetworkSwitch sw) {
+                        device.AddRelatedDevice(new ParentNetworkSwitch {Device = sw, SwitchPort = device.UplinkPort});
                     }
                 }
-                // TODO Links to dream machine not found - due to multiple MAC addresses?
                 _devices.AddRange(allDevices);
                 NotifyObservers(_devices);
             } catch (Exception ex) {
