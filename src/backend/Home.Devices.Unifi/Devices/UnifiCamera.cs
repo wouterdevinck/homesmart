@@ -35,6 +35,7 @@ namespace Home.Devices.Unifi.Devices {
             } else {
                 throw new NotImplementedException();
             }
+            // TODO Notify change
         }
 
         [DeviceCommand]
@@ -44,6 +45,7 @@ namespace Home.Devices.Unifi.Devices {
             } else {
                 throw new NotImplementedException();
             }
+            // TODO Notify change
         }
 
     }

@@ -11,7 +11,6 @@ namespace Home.Devices.Unifi.Devices {
 
         public UnifiNetworkSwitch(HomeConfigurationModel home, NetworkDeviceModel device) : base(home, device) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.NetworkSwitch);
-
         }
 
     }
