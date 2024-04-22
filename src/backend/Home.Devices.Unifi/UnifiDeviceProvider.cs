@@ -69,14 +69,15 @@ namespace Home.Devices.Unifi {
                 }
                 _devices.AddRange(allDevices);
                 NotifyObservers(_devices);
+                await _api.ConnectWebSocketAsync();
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");
             }
         }
 
-        public override Task DisconnectAsync() {
+        public override async Task DisconnectAsync() {
             _logger.LogInformation("Disconnecting");
-            return Task.CompletedTask;
+            await _api.DisconnectWebSocketAsync();
         }
 
         public override IEnumerable<IDevice> GetDevices() {

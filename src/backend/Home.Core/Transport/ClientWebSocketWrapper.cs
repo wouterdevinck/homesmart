@@ -2,14 +2,15 @@
 
 using System;
 using System.IO;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Home.Devices.Somfy {
+namespace Home.Core.Transport {
 
-    internal class ClientWebSocketWrapper : IDisposable {
+    public class ClientWebSocketWrapper : IDisposable {
 
         private readonly ClientWebSocket _webSocket;
 
@@ -30,9 +31,11 @@ namespace Home.Devices.Somfy {
 
         public delegate void MessageArrivedDelegate(string message);
 
-        public ClientWebSocketWrapper(Uri addressUri) {
+        public ClientWebSocketWrapper(Uri addressUri, bool verifySsl = true, CookieContainer cookies = null) {
             _webSocket = new ClientWebSocket();
             _webSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+            if (!verifySsl) _webSocket.Options.RemoteCertificateValidationCallback += (_, _, _, _) => true;
+            if(cookies != null) _webSocket.Options.Cookies = cookies;
             //_serializer = new JsonSerializer {
             //    NullValueHandling = NullValueHandling.Ignore
             //};
@@ -107,7 +110,9 @@ namespace Home.Devices.Somfy {
             WebSocketReceiveResult webSocketReceiveResult;
             do {
                 webSocketReceiveResult = await _webSocket.ReceiveAsync(receivedDataBuffer, _cancellationToken).ConfigureAwait(false);
-                await memoryStream.WriteAsync(receivedDataBuffer.Array, receivedDataBuffer.Offset, webSocketReceiveResult.Count, _cancellationToken).ConfigureAwait(false);
+                if (receivedDataBuffer.Array != null)
+                    await memoryStream.WriteAsync(receivedDataBuffer.Array, receivedDataBuffer.Offset,
+                        webSocketReceiveResult.Count, _cancellationToken).ConfigureAwait(false);
             }
             while (!webSocketReceiveResult.EndOfMessage);
             return webSocketReceiveResult;

@@ -7,6 +7,7 @@ using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
+using Home.Core.Transport;
 using Home.Devices.Somfy.Devices;
 using Home.Devices.Somfy.Models;
 using Microsoft.Extensions.Logging;

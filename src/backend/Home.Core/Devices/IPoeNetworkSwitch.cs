@@ -4,8 +4,8 @@ namespace Home.Core.Devices {
 
     public interface IPoeNetworkSwitch : INetworkSwitch {
 
-        Task TurnPortPowerOnAsync(int port);
-        Task TurnPortPowerOffAsync(int port);
+        Task<bool> TurnPortPowerOnAsync(int port);
+        Task<bool> TurnPortPowerOffAsync(int port);
 
     }
 

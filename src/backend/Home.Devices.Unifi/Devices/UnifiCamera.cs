@@ -14,13 +14,14 @@ namespace Home.Devices.Unifi.Devices {
     public partial class UnifiCamera : UnifiDevice, ICamera {
 
         [DeviceProperty] 
-        public bool On { get; set; } // TODO Get switch port state
+        public bool On { get; set; }
 
         public UnifiCamera(HomeConfigurationModel home, ProtectDeviceModel device, ClientModel client) : base(home, device, $"UNIFI-PROTECT-{device.Id}") {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Camera);
             Ip = client?.Ip;
             UplinkMac = device.UplinkMac;
             if (client != null) UplinkPort = client.UplinkPort;
+            On = Reachable; 
         }
 
         [DeviceCommand]
@@ -31,21 +32,25 @@ namespace Home.Devices.Unifi.Devices {
         [DeviceCommand]
         public async Task TurnOnAsync() {
             if (RelatedDevices.SingleOrDefault(x => x is ParentNetworkSwitch && x.Device is IPoeNetworkSwitch) is ParentNetworkSwitch { Device: IPoeNetworkSwitch device, SwitchPort: var port }) {
-                await device.TurnPortPowerOnAsync(port);
+                if (await device.TurnPortPowerOnAsync(port)) {
+                    On = true;
+                    NotifyObservers(nameof(On), On);
+                }
             } else {
                 throw new NotImplementedException();
             }
-            // TODO Notify change
         }
 
         [DeviceCommand]
         public async Task TurnOffAsync() {
             if (RelatedDevices.SingleOrDefault(x => x is ParentNetworkSwitch && x.Device is IPoeNetworkSwitch) is ParentNetworkSwitch { Device: IPoeNetworkSwitch device, SwitchPort: var port }) {
-                await device.TurnPortPowerOffAsync(port);
+                if (await device.TurnPortPowerOffAsync(port)) {
+                    On = false;
+                    NotifyObservers(nameof(On), On);
+                }
             } else {
                 throw new NotImplementedException();
             }
-            // TODO Notify change
         }
 
     }

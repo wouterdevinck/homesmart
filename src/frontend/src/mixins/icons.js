@@ -2,18 +2,6 @@ export default {
   methods: {
     getDeviceIcon: function(device) {
       switch(device.type) {
-        case "media":
-          return "film"
-        case "settop":
-          return "hdd"
-        case "console":
-          return "controller"
-        case "audio":
-          return "speaker"
-        case "tv":
-          return "tv"
-        case "remote":
-          return "calculator"
         case "light":
           return "lightbulb"
         case "switch":
@@ -26,6 +14,20 @@ export default {
           return "droplet"
         case "hub":
           return "hdd-network"
+        case "solar":
+          return "sun"
+        case "fancoil":
+          return "fire"
+        case "trv":
+          return "fire"
+        case "shutter":
+          return "list"
+        case "camera":
+          return "camera-video"
+        case "wifi":
+          return "wifi"
+        case "networkswitch":
+          return "ethernet"
         default:
           return "hdd"
       }

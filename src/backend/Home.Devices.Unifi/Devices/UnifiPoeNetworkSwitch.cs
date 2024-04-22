@@ -18,17 +18,13 @@ namespace Home.Devices.Unifi.Devices {
         }
 
         [DeviceCommand]
-        public async Task TurnPortPowerOnAsync(int port) {
-            await _api.SetSwitchPortPowerEnabledAsync(_id, port, true);
-            // TODO Error check
-            // TODO Notify change
+        public async Task<bool> TurnPortPowerOnAsync(int port) {
+            return await _api.SetSwitchPortPowerEnabledAsync(_id, port, true);
         }
 
         [DeviceCommand]
-        public async Task TurnPortPowerOffAsync(int port) {
-            await _api.SetSwitchPortPowerEnabledAsync(_id, port, false); 
-            // TODO Error check
-            // TODO Notify change
+        public async Task<bool> TurnPortPowerOffAsync(int port) {
+            return await _api.SetSwitchPortPowerEnabledAsync(_id, port, false);
         }
 
     }

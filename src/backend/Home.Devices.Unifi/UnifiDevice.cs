@@ -25,7 +25,7 @@ namespace Home.Devices.Unifi {
             Manufacturer = Helpers.Ubiquiti.HarmonizeManufacturer();
             Version = device.Version;
             Name = device.Name;
-            Model = device.Name;
+            Model = device.Model;
             Reachable = device.Online;
             Mac = device.Mac;
         }

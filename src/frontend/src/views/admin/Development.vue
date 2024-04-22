@@ -10,9 +10,11 @@
     <option value="lights">Lights</option>
     <option value="sensors">Sensors</option>
     <option value="shutters">Shutters</option>
+    <option value="network">Network</option>
+    <option value="cameras">Cameras</option>
   </select>
   <div class="card-columns">
-    <div class="card mb-1 p-2" v-for="device in devices.filter(device => (selectedRoom == 'all' || device.roomId == selectedRoom) && (selectedType == 'all' || (selectedType == 'heating' && (device.type == 'trv' || device.type == 'fancoil')) || (selectedType == 'plugs' && device.type == 'outlet') || (selectedType == 'lights' && device.type == 'light') || (selectedType == 'sensors' && (device.type == 'temperature' || device.type == 'leak')) || (selectedType == 'shutters' && device.type == 'shutter')))">
+    <div class="card mb-1 p-2" v-for="device in devices.filter(device => (selectedRoom == 'all' || device.roomId == selectedRoom) && (selectedType == 'all' || (selectedType == 'heating' && (device.type == 'trv' || device.type == 'fancoil')) || (selectedType == 'plugs' && device.type == 'outlet') || (selectedType == 'lights' && device.type == 'light') || (selectedType == 'sensors' && (device.type == 'temperature' || device.type == 'leak')) || (selectedType == 'shutters' && device.type == 'shutter') || (selectedType == 'network' && (device.type == 'wifi' || device.type == 'networkswitch')) || (selectedType == 'cameras' && device.type == 'camera')))">
       <div class="card-body">
         <span :class="device.reachable ? 'online' : 'offline'" v-if="device.reachable != undefined" class="trafficlight">
           <svg class="bi me-2" width="16" height="16">
@@ -167,6 +169,18 @@
             <button type="button" class="btn btn-outline-primary" @click="up($event, device)">Up</button>
             <button type="button" class="btn btn-outline-danger" @click="stop($event, device)">Stop</button>
             <button type="button" class="btn btn-outline-primary" @click="down($event, device)">Down</button>
+          </div>
+        </div>
+        <div v-if="device.type == 'wifi'">
+          <h6 class="card-subtitle mb-2 text-muted">Access point</h6>
+        </div>
+        <div v-if="device.type == 'networkswitch'">
+          <h6 class="card-subtitle mb-2 text-muted">Network switch</h6>
+        </div>
+        <div v-if="device.type == 'camera'">
+          <h6 class="card-subtitle mb-2 text-muted">Camera</h6>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff(device)">
           </div>
         </div>
         <div class="info">
