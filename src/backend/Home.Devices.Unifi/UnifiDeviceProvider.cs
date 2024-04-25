@@ -17,6 +17,12 @@ namespace Home.Devices.Unifi {
 
     public class UnifiDeviceProvider : AbstractDeviceProvider, IDisposable {
 
+        // TODO before merging
+        //  * Re-authenticate when token expires
+        //  * Update on state of camera based on events with hold-off period
+        //  * Memory leak? High traffic volume websocket.
+        //  * Testing - e.g. name change not coming through
+
         public static Descriptor Descriptor = new("unifi", typeof(UnifiDeviceProvider), typeof(UnifiConfiguration), DescriptorType.Provider);
 
         private readonly List<UnifiDevice> _devices;
@@ -35,16 +41,16 @@ namespace Home.Devices.Unifi {
 
         private UnifiDevice NetworkDeviceFactory(NetworkDeviceModel model) {
             return model.Model switch {
-                "UDMPRO" => new UnifiConsole(_home, model),
-                "USMINI" => new UnifiNetworkSwitch(_home, model),
-                "USM8P60" => new UnifiPoeNetworkSwitch(_home, model, _api),
-                "UAL6" => new UnifiAccessPoint(_home, model),
+                "UDMPRO" => new UnifiConsoleDevice(_home, model),
+                "USMINI" => new UnifiNetworkSwitchDevice(_home, model),
+                "USM8P60" => new UnifiPoeNetworkSwitchDevice(_home, model, _api),
+                "UAL6" => new UnifiAccessPointDevice(_home, model),
                 _ => null
             };
         }
 
         private UnifiDevice ProtectDeviceFactory(ProtectDeviceModel model, IEnumerable<ClientModel> clients) {
-            return new UnifiCamera(_home, model, clients.FirstOrDefault());
+            return new UnifiCameraDevice(_home, model, clients.FirstOrDefault());
         }
 
         public override async Task ConnectAsync() {
@@ -69,7 +75,33 @@ namespace Home.Devices.Unifi {
                 }
                 _devices.AddRange(allDevices);
                 NotifyObservers(_devices);
-                await _api.ConnectWebSocketAsync();
+                _api.ConnectionClosed += async () => {
+                    _logger.LogInformation("WebSocket closed");
+                    await Task.Delay(5000);
+                    _logger.LogInformation("WebSocket reconnecting");
+                    await _api.ConnectWebSocketAsync();
+                };
+                _api.ConnectionError += (ex) => {
+                    _logger.LogError($"WebSocket error - {ex.Message}");
+                };
+                _api.Connected += async () => {
+                    _logger.LogInformation("WebSocket connected");
+                };
+                _api.NetworkDeviceUpdate += (_, device) => {
+                    (_devices.SingleOrDefault(x => (x as UnifiNetworkDevice)?.LocalId == device.Id) as UnifiNetworkDevice)?.ProcessUpdate(device);
+                };
+                _api.ProtectDeviceUpdate += (_, device) => {
+                    (_devices.SingleOrDefault(x => (x as UnifiCameraDevice)?.LocalId == device.Id) as UnifiCameraDevice)?.ProcessUpdate(device);
+                };
+                _api.ClientDeviceUpdate += (_, client) => {
+                    (_devices.SingleOrDefault(x => (x as UnifiCameraDevice)?.Mac == client.Mac) as UnifiCameraDevice)?.ProcessUpdate(client);
+                };
+                try {
+                    _logger.LogInformation("WebSocket connecting");
+                    await _api.ConnectWebSocketAsync();
+                } catch (Exception ex) {
+                    _logger.LogError($"WebSocket connectasync error - {ex.Message}");
+                }
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");
             }

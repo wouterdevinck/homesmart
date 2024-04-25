@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Home.Core.Transport;
 using Home.Devices.Unifi.Models;
-using Home.Devices.Unifi.Notifications;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -25,6 +24,15 @@ namespace Home.Devices.Unifi {
         private readonly string _site;
         private readonly string _username;
         private readonly string _password;
+
+        public event EventHandler<NetworkDeviceModel> NetworkDeviceUpdate;
+        public event EventHandler<ProtectDeviceModel> ProtectDeviceUpdate;
+        public event EventHandler<ClientModel> ClientDeviceUpdate;
+
+        public event Action ConnectionClosed;
+        public event Action<Exception> ConnectionError;
+        public event Action<Exception> ConnectError;
+        public event Action Connected;
 
         public UnifiApiClient(string ip, string site, string username, string password) {
             _ip = ip;
@@ -44,35 +52,29 @@ namespace Home.Devices.Unifi {
         public async Task ConnectWebSocketAsync() {
             _ws = new ClientWebSocketWrapper(new Uri($"wss://{_ip}/proxy/network/wss/s/{_site}/events?clients=v2&critical_notifications=true"), false, _cookieJar);
             _ws.MessageArrived += (msg) => {
-                var notif = JsonConvert.DeserializeObject<NotificationModel>(msg);
-                if (notif.IsUnifiDevice) {
-
+                var notification = JsonConvert.DeserializeObject<NotificationModel>(msg);
+                if (notification.IsUnifiNetwork) {
+                    foreach (var model in notification.GetData<NetworkDeviceModel>()) {
+                        NetworkDeviceUpdate?.Invoke(this, model);
+                    }
+                } else if (notification.IsUnifiProtect) {
+                    foreach (var model in notification.GetData<ProtectDeviceModel>()) {
+                        ProtectDeviceUpdate?.Invoke(this, model);
+                    }
+                } else if (notification.IsClient) {
+                    foreach (var model in notification.GetData<ClientModel>()) {
+                        ClientDeviceUpdate?.Invoke(this, model);
+                    }
                 }
             };
-            _ws.ConnectionClosed += async () => {
-                //_logger.LogInformation("WebSocket closed");
-                //foreach (var device in _devices) {
-                //    (device as SomfyDevice)?.UpdateAvailability(false);
-                //}
-                //await Task.Delay(5000);
-                //_logger.LogInformation("WebSocket reconnecting");
-                //await ConnectWebSocketAsync();
-            };
-            _ws.ConnectionError += (ex) => {
-                //_logger.LogError($"WebSocket error - {ex.Message}");
-            };
+            _ws.ConnectionClosed += () => ConnectionClosed?.Invoke();
+            _ws.ConnectionError += (ex) => ConnectionError?.Invoke(ex);
             try {
-                //_logger.LogInformation("WebSocket connecting");
                 await _ws.ConnectAsync();
             } catch (Exception ex) {
-                //_logger.LogError($"WebSocket connectasync error - {ex.Message}");
+                ConnectError?.Invoke(ex);
             }
-            if (_ws.IsConnected) {
-                //_logger.LogInformation("WebSocket connected");
-                //foreach (var device in _devices) {
-                //    (device as SomfyDevice)?.UpdateAvailability(true);
-                //}
-            }
+            if (_ws.IsConnected) Connected?.Invoke();
         }
 
         public async Task DisconnectWebSocketAsync() {

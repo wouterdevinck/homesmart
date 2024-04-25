@@ -6,11 +6,10 @@ using Home.Devices.Unifi.Models;
 namespace Home.Devices.Unifi.Devices {
 
     [Device]
-    public partial class UnifiAccessPoint : UnifiNetworkDevice {
+    public partial class UnifiAccessPointDevice : UnifiNetworkDevice {
 
-        public UnifiAccessPoint(HomeConfigurationModel home, NetworkDeviceModel device) : base(home, device) {
+        public UnifiAccessPointDevice(HomeConfigurationModel home, NetworkDeviceModel device) : base(home, device) {
             Type = Helpers.GetTypeString(Helpers.DeviceType.NetworkAccessPoint);
-
         }
 
     }

@@ -13,6 +13,22 @@ namespace Home.Devices.Unifi {
             UplinkPort = device.Uplink.Port;
         }
 
+        public void ProcessUpdate(NetworkDeviceModel update) {
+            if (Ip != update.Ip) {
+                Ip = update.Ip;
+                NotifyObservers(nameof(Ip), Ip);
+            }
+            if (UplinkMac != update.Uplink.Mac) {
+                UplinkMac = update.Uplink.Mac;
+                NotifyObservers(nameof(UplinkMac), UplinkMac);
+            }
+            if (UplinkPort != update.Uplink.Port) {
+                UplinkPort = update.Uplink.Port;
+                NotifyObservers(nameof(UplinkPort), UplinkPort);
+            }
+            base.ProcessUpdate(update);
+        }
+
     }
 
 }

@@ -7,24 +7,22 @@ using Home.Devices.Unifi.Models;
 namespace Home.Devices.Unifi.Devices {
 
     [Device]
-    public partial class UnifiPoeNetworkSwitch : UnifiNetworkSwitch, IPoeNetworkSwitch {
+    public partial class UnifiPoeNetworkSwitchDevice : UnifiNetworkSwitchDevice, IPoeNetworkSwitch {
 
-        private readonly string _id;
         private readonly UnifiApiClient _api;
 
-        public UnifiPoeNetworkSwitch(HomeConfigurationModel home, NetworkDeviceModel device, UnifiApiClient api) : base(home, device) {
-            _id = device.Id;
+        public UnifiPoeNetworkSwitchDevice(HomeConfigurationModel home, NetworkDeviceModel device, UnifiApiClient api) : base(home, device) {
             _api = api;
         }
 
         [DeviceCommand]
         public async Task<bool> TurnPortPowerOnAsync(int port) {
-            return await _api.SetSwitchPortPowerEnabledAsync(_id, port, true);
+            return await _api.SetSwitchPortPowerEnabledAsync(LocalId, port, true);
         }
 
         [DeviceCommand]
         public async Task<bool> TurnPortPowerOffAsync(int port) {
-            return await _api.SetSwitchPortPowerEnabledAsync(_id, port, false);
+            return await _api.SetSwitchPortPowerEnabledAsync(LocalId, port, false);
         }
 
     }

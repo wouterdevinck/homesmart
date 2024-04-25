@@ -11,17 +11,17 @@ using Home.Devices.Unifi.Models;
 namespace Home.Devices.Unifi.Devices {
 
     [Device]
-    public partial class UnifiCamera : UnifiDevice, ICamera {
+    public partial class UnifiCameraDevice : UnifiDevice, ICamera {
 
         [DeviceProperty] 
         public bool On { get; set; }
 
-        public UnifiCamera(HomeConfigurationModel home, ProtectDeviceModel device, ClientModel client) : base(home, device, $"UNIFI-PROTECT-{device.Id}") {
+        public UnifiCameraDevice(HomeConfigurationModel home, ProtectDeviceModel device, ClientModel client) : base(home, device, $"UNIFI-PROTECT-{device.Id}") {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Camera);
             Ip = client?.Ip;
             UplinkMac = device.UplinkMac;
             if (client != null) UplinkPort = client.UplinkPort;
-            On = Reachable; 
+            On = Reachable;  // TODO - cache state
         }
 
         [DeviceCommand]
@@ -50,6 +50,25 @@ namespace Home.Devices.Unifi.Devices {
                 }
             } else {
                 throw new NotImplementedException();
+            }
+        }
+
+        public void ProcessUpdate(ProtectDeviceModel update) {
+            if (UplinkMac != update.UplinkMac) {
+                UplinkMac = update.UplinkMac;
+                NotifyObservers(nameof(UplinkMac), UplinkMac);
+            }
+            base.ProcessUpdate(update);
+        }
+
+        public void ProcessUpdate(ClientModel update) {
+            if (Ip != update.Ip) {
+                Ip = update.Ip;
+                NotifyObservers(nameof(Ip), Ip);
+            }
+            if (UplinkPort != update.UplinkPort) {
+                UplinkPort = update.UplinkPort;
+                NotifyObservers(nameof(UplinkPort), UplinkPort);
             }
         }
 
