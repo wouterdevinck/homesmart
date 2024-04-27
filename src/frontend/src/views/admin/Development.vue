@@ -207,6 +207,12 @@
         <div class="info" v-if="device.battery != undefined">
           <span class="label">Battery:</span> {{ device.battery }}&#37;
         </div>
+        <div class="info" v-if="device.ip != undefined">
+          <span class="label">IP:</span> {{ device.ip }}
+        </div>
+        <div class="info" v-if="device.mac != undefined">
+          <span class="label">MAC:</span> {{ device.mac }}
+        </div>
       </div>
     </div>
   </div>

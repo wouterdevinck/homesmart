@@ -17,7 +17,7 @@ namespace Home.Core.Transport {
         // private readonly JsonSerializer _serializer;
 
         private CancellationTokenSource _cancellationTokenSource;
-        private CancellationToken _cancellationToken;
+        private readonly CancellationToken _cancellationToken;
 
         private readonly Uri _addressUri;
 
@@ -67,7 +67,7 @@ namespace Home.Core.Transport {
         public async Task ConnectAsync() {
             try {
                 await _webSocket.ConnectAsync(_addressUri, _cancellationToken).ConfigureAwait(false);
-                Task task = Task.Run(this.RunAsync, _cancellationToken);
+                _ = Task.Run(RunAsync, _cancellationToken);
             } catch (Exception ex) {
                 RaiseConnectionError(ex);
                 RaiseConnectionClosed();
@@ -78,7 +78,7 @@ namespace Home.Core.Transport {
             try {
                 const int maxMessageSize = 2048;
                 var receivedDataBuffer = new ArraySegment<byte>(new byte[maxMessageSize]);
-                var memoryStream = new MemoryStream();
+                using var memoryStream = new MemoryStream();
                 while (IsConnected && !_cancellationToken.IsCancellationRequested) {
                     var webSocketReceiveResult = await ReadMessage(receivedDataBuffer, memoryStream).ConfigureAwait(false);
                     if (webSocketReceiveResult.MessageType != WebSocketMessageType.Close) {

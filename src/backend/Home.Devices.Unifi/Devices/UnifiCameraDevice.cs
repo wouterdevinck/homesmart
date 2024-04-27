@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Attributes;
@@ -13,15 +14,25 @@ namespace Home.Devices.Unifi.Devices {
     [Device]
     public partial class UnifiCameraDevice : UnifiDevice, ICamera {
 
-        [DeviceProperty] 
-        public bool On { get; set; }
+        private readonly TimeSpan _transitionTime = TimeSpan.FromSeconds(90);
+
+        private readonly Mutex _mutex;
+        private DateTime _desiredOnTime;
+        private bool _desiredOn; // TODO Use Twin.cs
+
+        [DeviceProperty]
+        public bool On {
+            get => _desiredOn;
+            set => throw new NotImplementedException(); // Used in auto-generated Update method
+        }
 
         public UnifiCameraDevice(HomeConfigurationModel home, ProtectDeviceModel device, ClientModel client) : base(home, device, $"UNIFI-PROTECT-{device.Id}") {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Camera);
             Ip = client?.Ip;
             UplinkMac = device.UplinkMac;
             if (client != null) UplinkPort = client.UplinkPort;
-            On = Reachable;  // TODO - cache state
+            _desiredOn = Reachable;
+            _mutex = new Mutex();
         }
 
         [DeviceCommand]
@@ -33,7 +44,10 @@ namespace Home.Devices.Unifi.Devices {
         public async Task TurnOnAsync() {
             if (RelatedDevices.SingleOrDefault(x => x is ParentNetworkSwitch && x.Device is IPoeNetworkSwitch) is ParentNetworkSwitch { Device: IPoeNetworkSwitch device, SwitchPort: var port }) {
                 if (await device.TurnPortPowerOnAsync(port)) {
-                    On = true;
+                    _mutex.WaitOne();
+                    _desiredOnTime = DateTime.Now;
+                    _desiredOn = true;
+                    _mutex.ReleaseMutex();
                     NotifyObservers(nameof(On), On);
                 }
             } else {
@@ -45,7 +59,10 @@ namespace Home.Devices.Unifi.Devices {
         public async Task TurnOffAsync() {
             if (RelatedDevices.SingleOrDefault(x => x is ParentNetworkSwitch && x.Device is IPoeNetworkSwitch) is ParentNetworkSwitch { Device: IPoeNetworkSwitch device, SwitchPort: var port }) {
                 if (await device.TurnPortPowerOffAsync(port)) {
-                    On = false;
+                    _mutex.WaitOne();
+                    _desiredOnTime = DateTime.Now;
+                    _desiredOn = false;
+                    _mutex.ReleaseMutex();
                     NotifyObservers(nameof(On), On);
                 }
             } else {
@@ -57,6 +74,12 @@ namespace Home.Devices.Unifi.Devices {
             if (UplinkMac != update.UplinkMac) {
                 UplinkMac = update.UplinkMac;
                 NotifyObservers(nameof(UplinkMac), UplinkMac);
+            }
+            if (_desiredOn != update.Online) {
+                if (_desiredOnTime < DateTime.Now - _transitionTime) {
+                    _desiredOn = update.Online;
+                    NotifyObservers(nameof(On), On);
+                }
             }
             base.ProcessUpdate(update);
         }

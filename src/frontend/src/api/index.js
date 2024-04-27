@@ -45,8 +45,11 @@ export default {
     start()
   },
 
-  sendDeviceCommand(deviceId, command, payload = {}) {
-    axios.post(`${url}/api/v1/devices/${deviceId}/commands/${command}`, payload)
+  sendDeviceCommand(deviceId, command, payload = {}, error = undefined) {
+    axios.post(`${url}/api/v1/devices/${deviceId}/commands/${command}`, payload).catch(function (ex) {
+      console.log(ex)
+      if(error) error()
+    })
   }
 
 }

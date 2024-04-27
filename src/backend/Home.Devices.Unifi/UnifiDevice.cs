@@ -25,7 +25,7 @@ namespace Home.Devices.Unifi {
         public string LocalId { get; protected set; }
 
         public UnifiDevice(HomeConfigurationModel home, DeviceModel device, string id) : base(home, id) {
-            LocalId = id;
+            LocalId = device.Id;
             Manufacturer = Helpers.Ubiquiti.HarmonizeManufacturer();
             Version = device.Version;
             Name = device.Name;

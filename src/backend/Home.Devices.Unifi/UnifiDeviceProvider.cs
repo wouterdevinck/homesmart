@@ -19,9 +19,6 @@ namespace Home.Devices.Unifi {
 
         // TODO before merging
         //  * Re-authenticate when token expires
-        //  * Update on state of camera based on events with hold-off period
-        //  * Memory leak? High traffic volume websocket.
-        //  * Testing - e.g. name change not coming through
 
         public static Descriptor Descriptor = new("unifi", typeof(UnifiDeviceProvider), typeof(UnifiConfiguration), DescriptorType.Provider);
 
@@ -84,7 +81,7 @@ namespace Home.Devices.Unifi {
                 _api.ConnectionError += (ex) => {
                     _logger.LogError($"WebSocket error - {ex.Message}");
                 };
-                _api.Connected += async () => {
+                _api.Connected += () => {
                     _logger.LogInformation("WebSocket connected");
                 };
                 _api.NetworkDeviceUpdate += (_, device) => {
