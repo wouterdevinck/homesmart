@@ -2,21 +2,23 @@
 
 using System;
 using System.IO;
+using System.Net;
 using System.Net.WebSockets;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Home.Devices.Somfy {
+namespace Home.Core.Transport {
 
-    internal class ClientWebSocketWrapper : IDisposable {
+    public class ClientWebSocketWrapper : IDisposable {
 
         private readonly ClientWebSocket _webSocket;
 
         // private readonly JsonSerializer _serializer;
 
         private CancellationTokenSource _cancellationTokenSource;
-        private CancellationToken _cancellationToken;
+        private readonly CancellationToken _cancellationToken;
 
         private readonly Uri _addressUri;
 
@@ -30,9 +32,11 @@ namespace Home.Devices.Somfy {
 
         public delegate void MessageArrivedDelegate(string message);
 
-        public ClientWebSocketWrapper(Uri addressUri) {
+        public ClientWebSocketWrapper(Uri addressUri, bool verifySsl = true, CookieContainer cookies = null) {
             _webSocket = new ClientWebSocket();
             _webSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+            if (!verifySsl) _webSocket.Options.RemoteCertificateValidationCallback += (_, _, _, _) => true;
+            if(cookies != null) _webSocket.Options.Cookies = cookies;
             //_serializer = new JsonSerializer {
             //    NullValueHandling = NullValueHandling.Ignore
             //};
@@ -64,8 +68,9 @@ namespace Home.Devices.Somfy {
         public async Task ConnectAsync() {
             try {
                 await _webSocket.ConnectAsync(_addressUri, _cancellationToken).ConfigureAwait(false);
-                Task task = Task.Run(this.RunAsync, _cancellationToken);
+                _ = Task.Run(RunAsync, _cancellationToken);
             } catch (Exception ex) {
+                if (ex.Message.Contains("401")) throw new AuthenticationException();
                 RaiseConnectionError(ex);
                 RaiseConnectionClosed();
             }
@@ -75,7 +80,7 @@ namespace Home.Devices.Somfy {
             try {
                 const int maxMessageSize = 2048;
                 var receivedDataBuffer = new ArraySegment<byte>(new byte[maxMessageSize]);
-                var memoryStream = new MemoryStream();
+                using var memoryStream = new MemoryStream();
                 while (IsConnected && !_cancellationToken.IsCancellationRequested) {
                     var webSocketReceiveResult = await ReadMessage(receivedDataBuffer, memoryStream).ConfigureAwait(false);
                     if (webSocketReceiveResult.MessageType != WebSocketMessageType.Close) {
@@ -107,7 +112,9 @@ namespace Home.Devices.Somfy {
             WebSocketReceiveResult webSocketReceiveResult;
             do {
                 webSocketReceiveResult = await _webSocket.ReceiveAsync(receivedDataBuffer, _cancellationToken).ConfigureAwait(false);
-                await memoryStream.WriteAsync(receivedDataBuffer.Array, receivedDataBuffer.Offset, webSocketReceiveResult.Count, _cancellationToken).ConfigureAwait(false);
+                if (receivedDataBuffer.Array != null)
+                    await memoryStream.WriteAsync(receivedDataBuffer.Array, receivedDataBuffer.Offset,
+                        webSocketReceiveResult.Count, _cancellationToken).ConfigureAwait(false);
             }
             while (!webSocketReceiveResult.EndOfMessage);
             return webSocketReceiveResult;

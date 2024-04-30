@@ -52,11 +52,11 @@ jobs:
         name: upgrade
         path: edgeos/*.upg
 
-    - name: Store the factory image artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: factory-image
-        path: edgeos/*.img.gz
+#   - name: Store the factory image artifact
+#     uses: actions/upload-artifact@v4
+#     with:
+#       name: factory-image
+#       path: edgeos/*.img.gz
 
     - name: Create a GitHub release when tagged
       if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')

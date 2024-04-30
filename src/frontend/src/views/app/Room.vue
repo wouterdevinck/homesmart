@@ -23,6 +23,10 @@
         <svg class="bi m-1" width="24" height="24"><use xlink:href="#lightning-charge"/></svg>
         <div class="label">Energie</div>
       </router-link>
+      <router-link to="cameras" class="btn btn-light w-100" active-class="active" v-if="hasCameras">
+        <svg class="bi m-1" width="24" height="24"><use xlink:href="#camera-video"/></svg>
+        <div class="label">Cameras</div>
+      </router-link>
     </div>
     <router-view></router-view>
   </div>
@@ -55,6 +59,9 @@ export default {
     },
     hasEnergy() {
       return this.devices.some(device => (device.type == 'outlet' && device.energy != undefined) || device.type == 'solar')
+    },
+    hasCameras() {
+      return this.devices.some(device => device.type == 'camera')
     }
   },
   created () {
@@ -80,6 +87,8 @@ export default {
           page = 'shutters'
         } else if (this.hasEnergy) {
           page = 'energy'
+        } else if (this.hasCameras) {
+          page = 'cameras'
         }
         if (page) {
           let path = `/rooms/${this.$route.params.id}/${page}`

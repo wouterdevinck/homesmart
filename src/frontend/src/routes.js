@@ -24,6 +24,10 @@ export const routes = [
         path: 'energy',
         meta: { subPage: true },
         component: () => import('./views/app/Energy.vue')
+      },{
+        path: 'cameras',
+        meta: { subPage: true },
+        component: () => import('./views/app/Cameras.vue')
       }
     ]
   }, { 

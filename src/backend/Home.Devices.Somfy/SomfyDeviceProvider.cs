@@ -7,6 +7,7 @@ using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
+using Home.Core.Transport;
 using Home.Devices.Somfy.Devices;
 using Home.Devices.Somfy.Models;
 using Microsoft.Extensions.Logging;
@@ -98,6 +99,7 @@ namespace Home.Devices.Somfy {
                 _logger.LogInformation("WebSocket connecting");
                 await _client.ConnectAsync();
             } catch (Exception ex) {
+                // TODO This will never happen - test removing this try/catch
                 _logger.LogError($"WebSocket connectasync error - {ex.Message}");
             }
             if (_client.IsConnected) {

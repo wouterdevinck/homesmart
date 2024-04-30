@@ -18,6 +18,8 @@ namespace Home.Core.Interfaces {
         string Version { get; }
         bool Reachable { get; }
 
+        IEnumerable<IRelatedDevice<IDevice>> RelatedDevices { get; }
+
         bool HasId(string id);
 
         Task InvokeCommand(string command, Dictionary<string, object> args = null);
