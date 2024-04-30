@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,6 +70,7 @@ namespace Home.Core.Transport {
                 await _webSocket.ConnectAsync(_addressUri, _cancellationToken).ConfigureAwait(false);
                 _ = Task.Run(RunAsync, _cancellationToken);
             } catch (Exception ex) {
+                if (ex.Message.Contains("401")) throw new AuthenticationException();
                 RaiseConnectionError(ex);
                 RaiseConnectionClosed();
             }

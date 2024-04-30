@@ -17,9 +17,6 @@ namespace Home.Devices.Unifi {
 
     public class UnifiDeviceProvider : AbstractDeviceProvider, IDisposable {
 
-        // TODO before merging
-        //  * Re-authenticate when token expires
-
         public static Descriptor Descriptor = new("unifi", typeof(UnifiDeviceProvider), typeof(UnifiConfiguration), DescriptorType.Provider);
 
         private readonly List<UnifiDevice> _devices;
@@ -60,14 +57,13 @@ namespace Home.Devices.Unifi {
         private async Task TryConnectAsync() {
             _logger.LogInformation($"Connecting to site {_configuration.Site}");
             try {
-                if (!await _api.LoginAsync()) throw new Exception("Authentication error");
                 var devices = await _api.GetDevicesAsync();
                 var clients = await _api.GetClientsAsync();
                 var allDevices = devices.NetworkDevices.Select(NetworkDeviceFactory).ToList();
                 allDevices.AddRange(devices.ProtectDevices.GroupJoin(clients, x => x.Mac, x => x.Mac, ProtectDeviceFactory));
                 foreach (var device in allDevices.Where(protectDevice => !string.IsNullOrEmpty(protectDevice.UplinkMac))) {
                     if (allDevices.SingleOrDefault(x => x.Mac == device.UplinkMac) is INetworkSwitch sw) {
-                        device.AddRelatedDevice(new ParentNetworkSwitch {Device = sw, SwitchPort = device.UplinkPort});
+                        device.AddRelatedDevice(new ParentNetworkSwitch { Device = sw, SwitchPort = device.UplinkPort });
                     }
                 }
                 _devices.AddRange(allDevices);
@@ -93,12 +89,8 @@ namespace Home.Devices.Unifi {
                 _api.ClientDeviceUpdate += (_, client) => {
                     (_devices.SingleOrDefault(x => (x as UnifiCameraDevice)?.Mac == client.Mac) as UnifiCameraDevice)?.ProcessUpdate(client);
                 };
-                try {
-                    _logger.LogInformation("WebSocket connecting");
-                    await _api.ConnectWebSocketAsync();
-                } catch (Exception ex) {
-                    _logger.LogError($"WebSocket connectasync error - {ex.Message}");
-                }
+                _logger.LogInformation("WebSocket connecting");
+                await _api.ConnectWebSocketAsync();
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");
             }

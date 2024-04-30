@@ -99,6 +99,7 @@ namespace Home.Devices.Somfy {
                 _logger.LogInformation("WebSocket connecting");
                 await _client.ConnectAsync();
             } catch (Exception ex) {
+                // TODO This will never happen - test removing this try/catch
                 _logger.LogError($"WebSocket connectasync error - {ex.Message}");
             }
             if (_client.IsConnected) {
