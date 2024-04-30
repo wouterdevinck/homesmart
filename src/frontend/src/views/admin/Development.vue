@@ -180,7 +180,7 @@
         <div v-if="device.type == 'camera'">
           <h6 class="card-subtitle mb-2 text-muted">Camera</h6>
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff(device)">
+            <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff(device)" :disabled="device.busy">
           </div>
         </div>
         <div class="info">
