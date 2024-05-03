@@ -50,7 +50,7 @@ deviceProviders:
   somfy:
     ip: 192.168.2.12
   unifi:
-    ip: unifi
+    ip: 192.168.1.1
     site: default
     username: api
     password: $unifiPassword
@@ -171,7 +171,7 @@ home:
     - deviceId: ZIGBEE-0x00158d00091a41b8
       friendlyId: sensor-incubator
       roomId: kitchen
-    - deviceId: ZIGBEE-0x00158d00091c22e3
+    - deviceId: ZIGBEE-0x00158d00091c2645
       friendlyId: sensor-small-incubator
       roomId: kitchen
     - deviceId: ZIGBEE-0x00158d00091c22e3
