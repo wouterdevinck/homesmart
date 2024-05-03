@@ -36,7 +36,7 @@ namespace Home.Devices.Hue {
             _devices.AddRange(await GetAllDevices());
             _logger.LogInformation($"Loaded {_devices.Count()} devices.");
             NotifyObservers(_devices);
-            _hue.OnEventStreamMessage += events => {
+            _hue.OnEventStreamMessage += (_, events) => {
                 foreach (var hueEvent in events) {
                     if (hueEvent.Type == "update") {
                         foreach (var data in hueEvent.Data) {
@@ -60,7 +60,7 @@ namespace Home.Devices.Hue {
                     }
                 }
             };
-            _hue.StartEventStream();
+            await _hue.StartEventStream();
         }
 
         public override Task DisconnectAsync() {
