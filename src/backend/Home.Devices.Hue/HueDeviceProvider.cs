@@ -15,6 +15,11 @@ namespace Home.Devices.Hue {
 
     public class HueDeviceProvider : AbstractDeviceProvider {
 
+        // TODO test
+        //   colortemp correct?
+        //   on at full brightness test
+        //   commands
+
         public static Descriptor Descriptor = new("hue", typeof(HueDeviceProvider), typeof(HueConfiguration), DescriptorType.Provider);
 
         private readonly HomeConfigurationModel _home;
@@ -40,6 +45,7 @@ namespace Home.Devices.Hue {
                 foreach (var hueEvent in events) {
                     if (hueEvent.Type == "update") {
                         foreach (var data in hueEvent.Data) {
+                            // TODO Software version updates
                             _logger.LogInformation($"Received event of type {data.Type} for {data.IdV1}.");
                             if (data.Type == "light" || data.Type == "zigbee_connectivity" || data.Type == "device_power" || data.Type == "relative_rotary" || data.Type == "button") {
                                 var dev = _devices.SingleOrDefault(x => (x as HueDevice).HueDeviceId == data.Owner.Rid) as HueDevice;
@@ -60,7 +66,7 @@ namespace Home.Devices.Hue {
                     }
                 }
             };
-            await _hue.StartEventStream();
+            _ = _hue.StartEventStream(); // TOOD Reconnect when disconnected?
         }
 
         public override Task DisconnectAsync() {

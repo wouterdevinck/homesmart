@@ -12,17 +12,13 @@ using HueApi.Models.Requests;
 
 namespace Home.Devices.Hue.Common {
 
+    // TODO Fold into light?
+
     [Device]
     public abstract partial class HueOnOffDevice : HueDevice, IOnOffDevice {
 
-        protected HueOnOffDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, $"HUE-LIGHT-{zigbee.MacAddress}") {
-            Name = device.Metadata.Name;
-            Reachable = zigbee.Status == ConnectivityStatus.connected;
+        protected HueOnOffDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, device, zigbee, $"HUE-LIGHT-{zigbee.MacAddress}") {
             On = light.On.IsOn && Reachable;
-            Manufacturer = device.ProductData.ManufacturerName.HarmonizeManufacturer();
-            Model = device.ProductData.ModelId.HarmonizeModel();
-            Version = device.ProductData.SoftwareVersion;
-            if (string.IsNullOrEmpty(Version) || Version == "0.0.0") Version = Helpers.VersionNotAvailable;
             HueApiId = light.Id;
         }
 

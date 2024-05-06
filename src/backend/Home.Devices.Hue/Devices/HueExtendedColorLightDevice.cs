@@ -11,6 +11,8 @@ using HueApi.Models.Requests;
 
 namespace Home.Devices.Hue.Devices {
 
+    // TODO Ledstrip office should not have temp
+
     [Device]
     public partial class HueExtendedColorLightDevice : HueColorTemperatureLightDevice, IColorLight {
         

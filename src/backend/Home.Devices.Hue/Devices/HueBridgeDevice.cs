@@ -10,11 +10,7 @@ namespace Home.Devices.Hue.Devices {
     [Device]
     public partial class HueBridgeDevice : HueDevice {
 
-        public HueBridgeDevice(Bridge bridge, Device device, LocalHueApi hue, HomeConfigurationModel home) : base(hue, bridge.Id, home, $"HUE-BRIDGE-{bridge.ExtensionData["bridge_id"]}") {
-            Name = device.Metadata.Name;
-            Manufacturer = device.ProductData.ManufacturerName.HarmonizeManufacturer();
-            Model = device.ProductData.ModelId;
-            Version = device.ProductData.SoftwareVersion;
+        public HueBridgeDevice(Bridge bridge, Device device, LocalHueApi hue, HomeConfigurationModel home) : base(hue, bridge.Id, home, device, null, $"HUE-BRIDGE-{bridge.BridgeId.ToUpper()}") {
             Reachable = true;
             Type = Helpers.GetTypeString(Helpers.DeviceType.Hub);
             HueApiId = bridge.Id;

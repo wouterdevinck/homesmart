@@ -8,6 +8,8 @@ using HueApi.Models;
 
 namespace Home.Devices.Hue.Devices {
 
+    // TODO Remove?
+
     [Device]
     public partial class HueDimmableLightDevice : HueLightDevice {
         
