@@ -17,10 +17,12 @@ namespace Home.Devices.Hue.Devices {
     public partial class HueExtendedColorLightDevice : HueColorTemperatureLightDevice, IColorLight {
         
         public HueExtendedColorLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
-            ColorXy = new ColorXy {
-                X = light.Color.Xy.X,
-                Y = light.Color.Xy.Y
-            };
+            if (light.Color != null) {
+                ColorXy = new ColorXy {
+                    X = light.Color.Xy.X,
+                    Y = light.Color.Xy.Y
+                };
+            }
         }
 
         [DeviceProperty]
@@ -36,8 +38,8 @@ namespace Home.Devices.Hue.Devices {
             }
         }
 
-        public new void ProcessUpdate(Dictionary<string, JsonElement> data) {
-            if (data.TryGetValue("color", out JsonElement value)) {
+        public new void ProcessUpdate(string type, Dictionary<string, JsonElement> data) {
+            if (type == "light" && data.TryGetValue("color", out JsonElement value)) {
                 var xy = value.GetProperty("xy");
                 var c = new ColorXy {
                     X = xy.GetProperty("x").GetDouble(),
@@ -48,7 +50,7 @@ namespace Home.Devices.Hue.Devices {
                     NotifyObservers(nameof(ColorXy), ColorXy);
                 }
             }
-            base.ProcessUpdate(data);
+            base.ProcessUpdate(type, data);
         }
 
     }

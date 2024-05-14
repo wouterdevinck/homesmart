@@ -15,7 +15,7 @@ namespace Home.Devices.Hue.Devices {
     public partial class HueColorTemperatureLightDevice : HueLightDevice, IColorTemperatureLight {
         
         public HueColorTemperatureLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
-            ColorTemperature = light.ColorTemperature.Mirek ?? 0;
+            if (light.ColorTemperature != null) ColorTemperature = light.ColorTemperature.Mirek ?? 0;
         }
 
         [DeviceProperty]
@@ -31,8 +31,8 @@ namespace Home.Devices.Hue.Devices {
             }
         }
 
-        public new void ProcessUpdate(Dictionary<string, JsonElement> data) {
-            if (data.TryGetValue("color_temperature", out JsonElement value)) {
+        public new void ProcessUpdate(string type, Dictionary<string, JsonElement> data) {
+            if (type == "light" && data.TryGetValue("color_temperature", out JsonElement value)) {
                 if (value.GetProperty("mirek_valid").GetBoolean()) {
                     var ct = value.GetProperty("mirek").GetInt32();
                     if (ColorTemperature != ct) {
@@ -46,7 +46,7 @@ namespace Home.Devices.Hue.Devices {
                     }
                 }
             }
-            base.ProcessUpdate(data);
+            base.ProcessUpdate(type, data);
         }
 
     }

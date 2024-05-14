@@ -53,15 +53,16 @@ namespace Home.Devices.Hue.Common {
             return TurnOnAsync();
         }
 
-        public void ProcessUpdate(Dictionary<string, JsonElement> data) {
-            if (data.TryGetValue("on", out JsonElement value)) {
+        public new void ProcessUpdate(string type, Dictionary<string, JsonElement> data) {
+            var reachableBefore = Reachable;
+            if (type == "light" && data.TryGetValue("on", out JsonElement value)) {
                 var on = value.GetProperty("on").GetBoolean();
                 if (On != on) {
                     On = on;
                     NotifyObservers(nameof(On), On);
                 }
             }
-            if (data.TryGetValue("status", out JsonElement statusValue)) {
+            if (type == "zigbee_connectivity" && data.TryGetValue("status", out JsonElement statusValue)) {
                 var r = statusValue.GetString() == "connected";
                 if (Reachable != r) {
                     Reachable = r;
@@ -70,22 +71,22 @@ namespace Home.Devices.Hue.Common {
                         On = false;
                         NotifyObservers(nameof(On), On);
                     }
-                    if (Reachable) {
-                        Hue.GetLightAsync(HueApiId).ContinueWith(x => {
-                            if (!x.Result.HasErrors) {
-                                var on = x.Result.Data.SingleOrDefault().On.IsOn;
-                                if (On != on) {
-                                    On = on;
-                                    NotifyObservers(nameof(On), On);
-                                }
-                            }
-                        });
-                        // TODO Can brightness also update in the scenario? E.g. power on behavior with full brightness?
-                    }
                 }
             }
+            base.ProcessUpdate(type, data);
+            if (!reachableBefore && Reachable) {
+                Hue.GetLightAsync(HueApiId).ContinueWith(x => {
+                    if (!x.Result.HasErrors) {
+                        var on = x.Result.Data.SingleOrDefault()?.On.IsOn;
+                        if (on != null && On != on) {
+                            On = on.Value;
+                            NotifyObservers(nameof(On), On);
+                        }
+                    }
+                });
+                // TODO Can brightness also update in the scenario? E.g. power on behavior with full brightness?
+            }
         }
-
     }
 
 }

@@ -15,8 +15,8 @@ namespace Home.Devices.Hue.Devices {
         
         public HueDimmableLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {}
 
-        public new void ProcessUpdate(Dictionary<string, JsonElement> data) {
-            base.ProcessUpdate(data);
+        public new void ProcessUpdate(string type, Dictionary<string, JsonElement> data) {
+            base.ProcessUpdate(type, data);
         }
 
     }

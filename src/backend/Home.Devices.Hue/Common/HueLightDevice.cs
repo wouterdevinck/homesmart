@@ -16,7 +16,7 @@ namespace Home.Devices.Hue.Common {
     public abstract partial class HueLightDevice : HueOnOffDevice, IDimmableLight {
 
         public HueLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
-            Brightness = light.Dimming.Brightness.MapToByte();
+            if (light.Dimming != null) Brightness = light.Dimming.Brightness.MapToByte();
             Type = Helpers.GetTypeString(Helpers.DeviceType.Light);
         }
 
@@ -33,15 +33,15 @@ namespace Home.Devices.Hue.Common {
             }
         }
 
-        public new void ProcessUpdate(Dictionary<string, JsonElement> data) {
-            if (data.TryGetValue("dimming", out JsonElement value)) {
+        public new void ProcessUpdate(string type, Dictionary<string, JsonElement> data) {
+            if (type == "light" && data.TryGetValue("dimming", out JsonElement value)) {
                 var bri = value.GetProperty("brightness").GetDouble().MapToByte();
                 if (Brightness != bri) {
                     Brightness = bri;
                     NotifyObservers(nameof(Brightness), Brightness);
                 }
             }
-            base.ProcessUpdate(data);
+            base.ProcessUpdate(type, data);
         }
 
     }

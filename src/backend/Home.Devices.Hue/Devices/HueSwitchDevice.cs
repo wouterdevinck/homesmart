@@ -25,31 +25,21 @@ namespace Home.Devices.Hue.Devices {
 
         public HueSwitchDevice(List<ButtonResource> _, List<RelativeRotaryResource> __, Device device, ZigbeeConnectivity zigbee, DevicePower pwr, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, device, zigbee, $"HUE-SENSOR-{zigbee.MacAddress}") {
             Type = Helpers.GetTypeString(Helpers.DeviceType.Switch);
-            Battery = (double)pwr.PowerState.BatteryLevel;
+            if (pwr.PowerState is { BatteryLevel: not null }) Battery = (double)pwr.PowerState.BatteryLevel;
             // TODO Implement buttons
         }
 
-        public void ProcessUpdate(Guid id, Dictionary<string, JsonElement> data) {
-            if (data.TryGetValue("relative_rotary", out JsonElement rotaryValue)) {
-                // TODO
-            }
-            if (data.TryGetValue("button", out JsonElement buttonValue)) {
-                // TODO
-            }
-            if (data.TryGetValue("status", out JsonElement statusValue)) { // TODO Move to device?
-                var r = statusValue.GetString() == "connected";
-                if (Reachable != r) {
-                    Reachable = r;
-                    NotifyObservers(nameof(Reachable), Reachable);
-                }
-            }
-            if (data.TryGetValue("power_state", out JsonElement powerValue)) {
+        public new void ProcessUpdate(string type, Dictionary<string, JsonElement> data) {
+            // if (type == "relative_rotary" && data.TryGetValue("relative_rotary", out JsonElement rotaryValue)) {}
+            // if (type == "button" && data.TryGetValue("button", out JsonElement buttonValue)) {}
+            if (type == "device_power" && data.TryGetValue("power_state", out JsonElement powerValue)) {
                 var pwr = powerValue.Deserialize<PowerState>();
-                if(pwr != null && pwr.BatteryLevel != Battery) {
-                    Battery = (double)(pwr.BatteryLevel);
+                if(pwr.BatteryLevel != null && Math.Abs(Battery - (double)pwr.BatteryLevel) >= Tolerance) {
+                    if (pwr.BatteryLevel != null) Battery = (double)(pwr.BatteryLevel);
                     NotifyObservers(nameof(Battery), Battery);
                 }
             }
+            base.ProcessUpdate(type, data);
         }
 
     }
