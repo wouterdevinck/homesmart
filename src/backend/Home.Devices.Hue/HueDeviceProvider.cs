@@ -48,8 +48,8 @@ namespace Home.Devices.Hue {
                     //if (data.Type != "light" && data.Type != "zigbee_connectivity" && data.Type != "device_power" && data.Type != "relative_rotary" && data.Type != "button" && data.Type != "device_software_update") continue;
                     if (_devices.SingleOrDefault(x => data.Owner != null && ((HueDevice)x).HueDeviceId == data.Owner.Rid) is not HueDevice dev) continue;
                     var type = dev.GetType();
-                    if (type == typeof(HueDimmableLightDevice)) {
-                        (dev as HueDimmableLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    if (type == typeof(HueLightDevice)) {
+                        (dev as HueLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
                     } else if (type == typeof(HueColorTemperatureLightDevice)) {
                         (dev as HueColorTemperatureLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
                     } else if (type == typeof(HueExtendedColorLightDevice)) {
@@ -102,7 +102,7 @@ namespace Home.Devices.Hue {
                     var zgb = zigbee.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "zigbee_connectivity").Rid);
                     if (light == null || zgb == null) continue;
                     if (light.Dimming != null && light.ColorTemperature == null && light.Color == null) {
-                        result.Add(new HueDimmableLightDevice(light, device, zgb, _hue, _home));
+                        result.Add(new HueLightDevice(light, device, zgb, _hue, _home));
                     } else if (light.Dimming != null && light.ColorTemperature != null && light.Color == null) {
                         result.Add(new HueColorTemperatureLightDevice(light, device, zgb, _hue, _home));
                     } else if (light.Dimming != null && light.ColorTemperature != null && light.Color != null) {

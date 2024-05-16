@@ -13,10 +13,9 @@ namespace Home.Devices.Hue.Common {
     public abstract class HueDevice : AbstractDevice {
         
         protected readonly LocalHueApi Hue;
-        protected Guid HueApiId;
 
         [JsonIgnore]
-        public Guid HueDeviceId { get; private set; } // TODO same as HueApiId?
+        public Guid HueDeviceId { get; }
 
         protected HueDevice(LocalHueApi hue, Guid hueDeviceId, HomeConfigurationModel home, Device device, ZigbeeConnectivity zigbee, string id) : base(home, id) {
             Hue = hue;

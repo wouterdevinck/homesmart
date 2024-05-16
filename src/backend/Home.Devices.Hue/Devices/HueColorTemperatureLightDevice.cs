@@ -24,7 +24,7 @@ namespace Home.Devices.Hue.Devices {
         [DeviceCommand]
         public async Task SetColorTemperatureAsync(int ct) {
             var req = new UpdateLight().SetColor(ct);
-            var result = await Hue.UpdateLightAsync(HueApiId, req);
+            var result = await Hue.UpdateLightAsync(HueLightApiId, req);
             if (!result.HasErrors) {
                 ColorTemperature = ct;
                 NotifyObservers(nameof(ColorTemperature), ColorTemperature);

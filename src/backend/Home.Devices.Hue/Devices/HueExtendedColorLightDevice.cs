@@ -31,7 +31,7 @@ namespace Home.Devices.Hue.Devices {
         [DeviceCommand]
         public async Task SetColorXyAsync(ColorXy c) {
             var req = new UpdateLight().SetColor(c.X, c.Y);
-            var result = await Hue.UpdateLightAsync(HueApiId, req);
+            var result = await Hue.UpdateLightAsync(HueLightApiId, req);
             if (!result.HasErrors) {
                 ColorXy = c;
                 NotifyObservers(nameof(ColorXy), ColorXy);

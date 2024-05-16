@@ -13,7 +13,6 @@ namespace Home.Devices.Hue.Devices {
         public HueBridgeDevice(Bridge bridge, Device device, LocalHueApi hue, HomeConfigurationModel home) : base(hue, bridge.Id, home, device, null, $"HUE-BRIDGE-{bridge.BridgeId.ToUpper()}") {
             Reachable = true;
             Type = Helpers.GetTypeString(Helpers.DeviceType.Hub);
-            HueApiId = bridge.Id;
         }
 
     }
