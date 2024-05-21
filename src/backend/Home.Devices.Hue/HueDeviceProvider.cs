@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 using Home.Core;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 using Home.Devices.Hue.Devices;
+using HueApi;
 using Microsoft.Extensions.Logging;
-using Q42.HueApi;
 
 namespace Home.Devices.Hue {
 
@@ -22,14 +20,7 @@ namespace Home.Devices.Hue {
         private readonly ILogger _logger;
         private readonly HueConfiguration _configuration; 
         private readonly List<IDevice> _devices;
-        private HueClient _hue;
-        private Timer _timer;
-        private DateTime _backOffTime;
-
-        private const string TypePlug = "On/Off plug-in unit";
-        private const string TypeDimmable = "Dimmable light";
-        private const string TypeColorTemperature = "Color temperature light";
-        private const string TypeExtendedColor = "Extended color light";
+        private LocalHueApi _hue;
 
         public HueDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
             _home = home;
@@ -39,43 +30,35 @@ namespace Home.Devices.Hue {
         }
 
         public override async Task ConnectAsync() {
-
             _logger.LogInformation($"Connecting");
-
-            // Discover bridges
-            var locator = new HttpBridgeLocator();
-            var bridges = (await locator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
-            if (bridges.Count == 0) {
-                var mdnsLocator = new MdnsBridgeLocator();
-                bridges = (await mdnsLocator.LocateBridgesAsync(TimeSpan.FromMinutes(1))).ToList();
-            }
-            if (bridges.Count > 1) throw new Exception("Multiple bridges found, not supported");
-            if (bridges.Count == 0) throw new Exception("No bridges found");
-            var bridgeInfo = bridges.Single();
-
-            // Connect to bridge
-            _hue = new LocalHueClient(bridgeInfo.IpAddress);
-            _hue.Initialize(_configuration.ApiKey);
-
-            // Get all devices from the bridge
+            _hue = new LocalHueApi(_configuration.Ip, _configuration.ApiKey);
             _devices.AddRange(await GetAllDevices());
-
-            // Notify for each device
+            _logger.LogInformation($"Loaded {_devices.Count()} devices.");
             NotifyObservers(_devices);
-
-            // Periodically check if new devices have been added
-            _backOffTime = DateTime.Now + TimeSpan.FromMilliseconds(_configuration.Polling.BackOffInterval);
-            _timer = new Timer(_configuration.Polling.MinPollInterval);
-            _timer.Elapsed += OnUpdate;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
-
+            _hue.OnEventStreamMessage += (_, events) => {
+                foreach (var data in events.Where(hueEvent => hueEvent.Type == "update").SelectMany(hueEvent => hueEvent.Data)) {
+                    _logger.LogInformation($"Received event of type {data.Type} for {data.IdV1}.");
+                    if (_devices.SingleOrDefault(x => data.Owner != null && ((HueDevice)x).HueDeviceId == data.Owner.Rid) is not HueDevice dev) continue;
+                    var type = dev.GetType();
+                    if (type == typeof(HueLightDevice)) {
+                        (dev as HueLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueTemperatureLightDevice)) {
+                        (dev as HueTemperatureLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueColorLightDevice)) {
+                        (dev as HueColorLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueSwitchDevice)) {
+                        (dev as HueSwitchDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueBridgeDevice)) {
+                        (dev as HueBridgeDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    }
+                }
+            };
+            _ = _hue.StartEventStream();
         }
 
         public override Task DisconnectAsync() {
             _logger.LogInformation("Disconnecting");
-            _timer.Enabled = false;
-            _timer.Dispose();
+            _hue.StopEventStream();
             _devices.Clear();
             _hue = null;
             return Task.CompletedTask;
@@ -86,69 +69,47 @@ namespace Home.Devices.Hue {
         }
 
         private async Task<List<IDevice>> GetAllDevices() {
-            var devices = new List<IDevice>();
-
-            // Bridges
-            var bridge = await _hue.GetBridgeAsync();
-            devices.Add(new HueBridgeDevice(bridge, _hue, _home));
-
-            // Lights and plugs
-            var lights = await _hue.GetLightsAsync();
-            devices.AddRange(lights.Select(x => (IDevice)(x.Type switch {
-                TypePlug => new HuePlugDevice(x, _hue, _home),
-                TypeDimmable => new HueDimmableLightDevice(x, _hue, _home),
-                TypeColorTemperature => new HueColorTemperatureLightDevice(x, _hue, _home),
-                TypeExtendedColor => new HueExtendedColorLightDevice(x, _hue, _home),
-                _ => null
-            })).Where(x => x is not null));
-
-            // Switches
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            var sensors = (await _hue.GetSensorsAsync()).Where(x => x.Capabilities != null);
-            devices.AddRange(sensors.Select(x => new HueSwitchDevice(x, _hue, _home) as IDevice));
-
-            return devices;
-        }
-
-        private async void OnUpdate(object source, ElapsedEventArgs e) {
-
-            // Back off exponentially
-            if (DateTime.Now >= _backOffTime) {
-                _timer.Interval = Math.Min(_timer.Interval * _configuration.Polling.BackOffFactor, _configuration.Polling.MaxPollInterval);
-                _backOffTime = DateTime.Now + TimeSpan.FromMilliseconds(_configuration.Polling.BackOffInterval);
+            var result = new List<IDevice>();
+            var devicesResp = await _hue.GetDevicesAsync();
+            var bridgesResp = await _hue.GetBridgeAsync();
+            var lightsResp = await _hue.GetLightsAsync();
+            var buttonsResp = await _hue.GetButtonsAsync();
+            var rotaryResp = await _hue.GetRelativeRotaryAsync();
+            var zigbeeResp = await _hue.GetZigbeeConnectivityAsync();
+            var powerResp = await _hue.GetDevicePowersAsync();
+            if (devicesResp.HasErrors || bridgesResp.HasErrors || lightsResp.HasErrors || buttonsResp.HasErrors || rotaryResp.HasErrors || zigbeeResp.HasErrors || powerResp.HasErrors) return result;
+            var devices = devicesResp.Data;
+            var bridge = bridgesResp.Data.SingleOrDefault();
+            var lights = lightsResp.Data;
+            var buttons = buttonsResp.Data;
+            var rotary = rotaryResp.Data;
+            var zigbee = zigbeeResp.Data;
+            var power = powerResp.Data;
+            foreach (var device in devices) {
+                if (device.Services == null) continue;
+                var types = device.Services.Select(x => x.Rtype).ToList();
+                if (types.Contains("bridge")) {
+                    result.Add(new HueBridgeDevice(bridge, device, _hue, _home));
+                } else if (types.Count(x => x == "light") == 1) {
+                    var light = lights.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "light").Rid);
+                    var zgb = zigbee.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "zigbee_connectivity").Rid);
+                    if (light == null || zgb == null) continue;
+                    if (light.Dimming != null && light.ColorTemperature == null && light.Color == null) {
+                        result.Add(new HueLightDevice(light, device, zgb, _hue, _home));
+                    } else if (light.Dimming != null && light.ColorTemperature != null && light.Color == null) {
+                        result.Add(new HueTemperatureLightDevice(light, device, zgb, _hue, _home));
+                    } else if (light.Dimming != null && light.ColorTemperature != null && light.Color != null) {
+                        result.Add(new HueColorLightDevice(light, device, zgb, _hue, _home));
+                    }
+                } else if (types.Contains("button")) {
+                    var btns = buttons.Where(x => device.Services.Where(x => x.Rtype == "button").Select(y => y.Rid).Contains(x.Id)).ToList();
+                    var rot = rotary.Where(x => device.Services.Where(x => x.Rtype == "relative_rotary").Select(y => y.Rid).Contains(x.Id)).ToList();
+                    var zgb = zigbee.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "zigbee_connectivity").Rid);
+                    var pwr = power.SingleOrDefault(x => x.Id == device.Services.Single(x => x.Rtype == "device_power").Rid);
+                    result.Add(new HueSwitchDevice(btns, rot, device, zgb, pwr, _hue, _home));
+                }
             }
-
-            // Get all devices and calculate the delta
-            var allDevices = await GetAllDevices();
-            var devices = _devices.ToList();
-            var newDevices = allDevices.Where(x => devices.All(y => y.DeviceId != x.DeviceId)).ToList();
-            var existingDevices = allDevices.Where(x => devices.Any(y => y.DeviceId == x.DeviceId)).ToList();
-            var updatedDevices = existingDevices.Where(x => !x.Equals(devices.Single(y => y.DeviceId == x.DeviceId))).ToList();
-
-            // Update the repository
-            _devices.AddRange(newDevices);
-            foreach (var device in updatedDevices) {
-                _devices.Single(x => x.DeviceId == device.DeviceId).Update(device);
-            }
-
-            // Notify for new devices
-            NotifyObservers(newDevices);
-
-            // In case there were any updates, go back to faster polling
-            if (updatedDevices.Any() || newDevices.Any()) {
-                FastUpdate();
-            }
-
-            // Log some info
-            _logger.LogInformation($"Polled Hue bridge at {DateTime.Now}. " +
-                $"Total of {allDevices.Count} devices, {newDevices.Count} new and {updatedDevices.Count} updated. " +
-                $"Next poll in {_timer.Interval}ms. ");
-
-        }
-
-        private void FastUpdate() {
-            _timer.Interval = _configuration.Polling.MinPollInterval;
-            _backOffTime = DateTime.Now + TimeSpan.FromMilliseconds(_configuration.Polling.BackOffInterval);
+            return result;
         }
 
     }
