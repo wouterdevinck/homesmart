@@ -8,7 +8,7 @@ using HueApi;
 using HueApi.Models;
 using Newtonsoft.Json;
 
-namespace Home.Devices.Hue.Common {
+namespace Home.Devices.Hue {
 
     public abstract class HueDevice : AbstractDevice {
         

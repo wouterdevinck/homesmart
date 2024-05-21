@@ -7,12 +7,11 @@ using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
-using Home.Devices.Hue.Utilities;
 using HueApi;
 using HueApi.Models;
 using HueApi.Models.Requests;
 
-namespace Home.Devices.Hue.Common {
+namespace Home.Devices.Hue.Devices {
 
     [Device]
     public partial class HueLightDevice : HueDevice, IDimmableLight {
@@ -23,10 +22,10 @@ namespace Home.Devices.Hue.Common {
         public bool On { get; protected set; }
         
         [DeviceProperty]
-        public byte Brightness { get; protected set; }
+        public double Brightness { get; protected set; }
 
         public HueLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, device, zigbee, $"HUE-LIGHT-{zigbee.MacAddress}") {
-            if (light.Dimming != null) Brightness = light.Dimming.Brightness.MapToByte();
+            if (light.Dimming != null) Brightness = light.Dimming.Brightness;
             Type = Helpers.GetTypeString(Helpers.DeviceType.Light);
             On = light.On.IsOn && Reachable;
             HueLightApiId = light.Id;
@@ -61,8 +60,8 @@ namespace Home.Devices.Hue.Common {
         }
 
         [DeviceCommand]
-        public async Task SetBrightnessAsync(byte bri) {
-            var req = new UpdateLight().SetBrightness(bri.MapFromByte());
+        public async Task SetBrightnessAsync(double bri) {
+            var req = new UpdateLight().SetBrightness(bri);
             var result = await Hue.UpdateLightAsync(HueLightApiId, req);
             if (!result.HasErrors) {
                 Brightness = bri;
@@ -80,35 +79,37 @@ namespace Home.Devices.Hue.Common {
                 }
             }
             if (type == "light" && data.TryGetValue("dimming", out JsonElement briValue)) {
-                var bri = briValue.GetProperty("brightness").GetDouble().MapToByte();
-                if (Brightness != bri) {
+                var bri = briValue.GetProperty("brightness").GetDouble();
+                if (Math.Abs(Brightness - bri) >= Tolerance) {
                     Brightness = bri;
                     NotifyObservers(nameof(Brightness), Brightness);
                 }
             }
-            if (type == "zigbee_connectivity" && data.TryGetValue("status", out JsonElement statusValue)) {
-                var r = statusValue.GetString() == "connected";
-                if (Reachable != r) {
-                    Reachable = r;
-                    NotifyObservers(nameof(Reachable), Reachable);
-                    if (!Reachable && On) {
-                        On = false;
-                        NotifyObservers(nameof(On), On);
-                    }
-                }
-            }
             base.ProcessUpdate(type, data);
+            if (reachableBefore && !Reachable && On) {
+                On = false;
+                NotifyObservers(nameof(On), On);
+            }
             if (!reachableBefore && Reachable) {
                 Hue.GetLightAsync(HueLightApiId).ContinueWith(x => {
                     if (!x.Result.HasErrors) {
-                        var on = x.Result.Data.SingleOrDefault()?.On.IsOn;
-                        if (on != null && On != on) {
-                            On = on.Value;
-                            NotifyObservers(nameof(On), On);
+                        var light = x.Result.Data.SingleOrDefault();
+                        if (light != null) {
+                            var on = light.On.IsOn;
+                            if (On != on) {
+                                On = on;
+                                NotifyObservers(nameof(On), On);
+                            }
+                            if (light.Dimming != null) {
+                                var bri = light.Dimming.Brightness; 
+                                if (Math.Abs(Brightness - bri) >= Tolerance) {
+                                    Brightness = bri;
+                                    NotifyObservers(nameof(Brightness), Brightness);
+                                }
+                            }
                         }
                     }
                 });
-                // TODO Can brightness also update in the scenario? E.g. power on behavior with full brightness?
             }
         }
         

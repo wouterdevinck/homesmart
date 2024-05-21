@@ -4,9 +4,9 @@ namespace Home.Core.Devices {
 
     public interface IDimmableLight : IOnOffDevice {
 
-        byte Brightness { get; }
+        double Brightness { get; }
 
-        Task SetBrightnessAsync(byte bri);
+        Task SetBrightnessAsync(double bri);
 
     }
 

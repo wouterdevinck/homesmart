@@ -10,13 +10,11 @@ using HueApi.Models;
 using HueApi.Models.Requests;
 
 namespace Home.Devices.Hue.Devices {
-
-    // TODO Ledstrip office should not have temp
-
+    
     [Device]
-    public partial class HueExtendedColorLightDevice : HueColorTemperatureLightDevice, IColorLight {
+    public partial class HueColorLightDevice : HueLightDevice, IColorLight {
         
-        public HueExtendedColorLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
+        public HueColorLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(light, device, zigbee, hue, home) {
             if (light.Color != null) {
                 ColorXy = new ColorXy {
                     X = light.Color.Xy.X,

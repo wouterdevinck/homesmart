@@ -6,7 +6,6 @@ using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
-using Home.Devices.Hue.Common;
 using Home.Devices.Hue.Devices;
 using HueApi;
 using Microsoft.Extensions.Logging;
@@ -14,11 +13,6 @@ using Microsoft.Extensions.Logging;
 namespace Home.Devices.Hue {
 
     public class HueDeviceProvider : AbstractDeviceProvider {
-
-        // TODO test
-        //   colortemp correct?
-        //   on at full brightness test
-        //   commands
 
         public static Descriptor Descriptor = new("hue", typeof(HueDeviceProvider), typeof(HueConfiguration), DescriptorType.Provider);
 
@@ -43,21 +37,20 @@ namespace Home.Devices.Hue {
             NotifyObservers(_devices);
             _hue.OnEventStreamMessage += (_, events) => {
                 foreach (var data in events.Where(hueEvent => hueEvent.Type == "update").SelectMany(hueEvent => hueEvent.Data)) {
-                    // TODO Software version updates
                     _logger.LogInformation($"Received event of type {data.Type} for {data.IdV1}.");
-                    //if (data.Type != "light" && data.Type != "zigbee_connectivity" && data.Type != "device_power" && data.Type != "relative_rotary" && data.Type != "button" && data.Type != "device_software_update") continue;
                     if (_devices.SingleOrDefault(x => data.Owner != null && ((HueDevice)x).HueDeviceId == data.Owner.Rid) is not HueDevice dev) continue;
                     var type = dev.GetType();
                     if (type == typeof(HueLightDevice)) {
                         (dev as HueLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
-                    } else if (type == typeof(HueColorTemperatureLightDevice)) {
-                        (dev as HueColorTemperatureLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
-                    } else if (type == typeof(HueExtendedColorLightDevice)) {
-                        (dev as HueExtendedColorLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueTemperatureLightDevice)) {
+                        (dev as HueTemperatureLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueColorLightDevice)) {
+                        (dev as HueColorLightDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
                     } else if (type == typeof(HueSwitchDevice)) {
                         (dev as HueSwitchDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
+                    } else if (type == typeof(HueBridgeDevice)) {
+                        (dev as HueBridgeDevice)?.ProcessUpdate(data.Type, data.ExtensionData);
                     }
-                    // TODO Bridge, e.g. sw version
                 }
             };
             _ = _hue.StartEventStream();
@@ -104,9 +97,9 @@ namespace Home.Devices.Hue {
                     if (light.Dimming != null && light.ColorTemperature == null && light.Color == null) {
                         result.Add(new HueLightDevice(light, device, zgb, _hue, _home));
                     } else if (light.Dimming != null && light.ColorTemperature != null && light.Color == null) {
-                        result.Add(new HueColorTemperatureLightDevice(light, device, zgb, _hue, _home));
+                        result.Add(new HueTemperatureLightDevice(light, device, zgb, _hue, _home));
                     } else if (light.Dimming != null && light.ColorTemperature != null && light.Color != null) {
-                        result.Add(new HueExtendedColorLightDevice(light, device, zgb, _hue, _home));
+                        result.Add(new HueColorLightDevice(light, device, zgb, _hue, _home));
                     }
                 } else if (types.Contains("button")) {
                     var btns = buttons.Where(x => device.Services.Where(x => x.Rtype == "button").Select(y => y.Rid).Contains(x.Id)).ToList();

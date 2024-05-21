@@ -5,7 +5,6 @@ using Home.Core;
 using Home.Core.Attributes;
 using Home.Core.Configuration.Models;
 using Home.Core.Devices;
-using Home.Devices.Hue.Common;
 using HueApi;
 using HueApi.Models;
 
