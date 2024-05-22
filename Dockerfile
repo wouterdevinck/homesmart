@@ -1,16 +1,16 @@
 ARG ARCH=amd64
 
-FROM node:16.13.2-bullseye-slim AS build-frontend
+FROM node:20.13.1-bullseye-slim AS build-frontend
 WORKDIR /app
 COPY src/frontend ./
 RUN npm install && npm run build
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0.101 AS build-backend
+FROM mcr.microsoft.com/dotnet/sdk:8.0.203 AS build-backend
 WORKDIR /app
 COPY src/backend ./
 RUN dotnet publish -c Release -o out /p:UseAppHost=false Home.Web
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.1-bullseye-slim-${ARCH} AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0.3-bookworm-slim-${ARCH} AS runtime
 RUN apt-get update && \ 
     apt-get install -y --no-install-recommends \
       curl && \
