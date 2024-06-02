@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Home.Core\Home.Core.csproj" />
-    <PackageReference Include="InfluxDB.Client" Version="4.10.0" />
+    <PackageReference Include="InfluxDB.Client" Version="4.15.0" />
   </ItemGroup>
 
 </Project>
