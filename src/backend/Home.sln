@@ -32,6 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Devices.Unifi", "Home.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F3766578-22D7-4C0F-911E-4695F16CB9B3}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\CHANGELOG.md = ..\..\CHANGELOG.md
 		..\..\config\config-local.yaml = ..\..\config\config-local.yaml
 		..\..\config\config.yaml = ..\..\config\config.yaml
 		..\..\config\secrets.yaml = ..\..\config\secrets.yaml
