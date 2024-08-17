@@ -4,7 +4,7 @@ namespace Home.Devices.Zigbee.Models.Requests {
 
     public class ModeRequest : IZigbeeRequest {
 
-        [JsonProperty("system_mode")]
+        [JsonProperty("operating_mode")]
         public string Mode { get; set; }
 
         public ModeRequest(string mode) {
