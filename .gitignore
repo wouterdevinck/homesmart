@@ -9,7 +9,9 @@ config-local.yaml
 secrets.yaml
 local.settings.json
 *.upg
-*.img.gz
-edgeos/manifest.json
-edgeos/docker-compose.yml
+*.img
+*.gz
+config/manifest.json
+config/docker-compose.yml
 tmp
+*.fd
