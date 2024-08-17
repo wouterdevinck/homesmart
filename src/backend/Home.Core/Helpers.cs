@@ -20,6 +20,7 @@ namespace Home.Core {
                 "IKEA of Sweden" => "IKEA",
                 "Philips" => "Philips",
                 Signify => "Philips",
+                "Aqara" => "Xiaomi",
                 "_TZ3210_ttkgurpb" => "Miboxer",
                 Jaga => Jaga,
                 Somfy => Somfy,

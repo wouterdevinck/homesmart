@@ -24,7 +24,7 @@ namespace Home.Devices.Zigbee.Models {
 
         public string Version {
             get {
-                if (Definition.Manufacturer == "Xiaomi") {
+                if (Definition.Manufacturer == "Xiaomi" || Definition.Manufacturer == "Aqara") {
                     return VersionDate;
                 }
                 return VersionBuild;
@@ -36,7 +36,7 @@ namespace Home.Devices.Zigbee.Models {
 
         public string Model {
             get {
-                if (Definition.Manufacturer == "Xiaomi" || Definition.Manufacturer == "IKEA") {
+                if (Definition.Manufacturer == "Xiaomi" || Definition.Manufacturer == "Aqara" || Definition.Manufacturer == "IKEA") {
                     return Definition.Model;
                 }
                 return ModelId;
