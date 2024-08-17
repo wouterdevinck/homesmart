@@ -1,14 +1,15 @@
 #!/bin/bash
 set -e
 
-EDGEOS_VERSION="0.7.0-3-ga753405"
+EDGEOS_VERSION="0.9.0"
+EDGEOS_NAME="Homesmart"
 
 VERSION="$(git describe --tags --dirty)"
 TAG="wouterdevinck/homesmart:$VERSION"
 
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-EDGEOS_DIR="$SCRIPT_DIR/edgeos"
+EDGEOS_DIR="$SCRIPT_DIR/config"
 EDGEOS_DOCKER_TAG_BUNDLER="wouterdevinck/edgeos-bundler:$EDGEOS_VERSION"
 EDGEOS_BUNDLER_ARGS="-v $EDGEOS_DIR:/workdir -v /var/run/docker.sock:/var/run/docker.sock -u $(id -u $USER):$(getent group docker | cut -d: -f3)"
 EDGEOS_BUNDLER="docker run --rm $EDGEOS_BUNDLER_ARGS $EDGEOS_DOCKER_TAG_BUNDLER"
@@ -85,13 +86,14 @@ case $1 in
 
   ;;
 
-"bundle"|"factory")
+"bundle"|"factory"|"qemu")
 
   # Fill in version numbers
   jq \
     --arg v $VERSION \
     --arg ev $EDGEOS_VERSION \
-    '.app.version=$v|.edgeos.version=$ev' \
+    --arg n $EDGEOS_NAME \
+    '.app.name=$n|.app.version=$v|.edgeos.version=$ev' \
     $EDGEOS_DIR/manifest-template.json \
     > $EDGEOS_DIR/manifest.json
   TAG=$TAG yq e \
@@ -110,8 +112,31 @@ case $1 in
 
 "factory")
 
-  # Build full EdgeOS disk image
-  $EDGEOS_BUNDLER create-image
+  # Build full EdgeOS disk image for Raspberry Pi
+  $EDGEOS_BUNDLER create-image rpi4
+
+  ;;
+
+"qemu")
+
+  # Build full EdgeOS disk image for PC
+  $EDGEOS_BUNDLER create-image pc
+
+  # Disk path
+  DISK="$EDGEOS_DIR/$EDGEOS_NAME-pc-$VERSION.img"
+
+  # If no EFI NVRAM file, copy the default one
+  if [ ! -e OVMF_VARS.fd ]; then
+    cp /usr/share/OVMF/OVMF_VARS.fd .
+  fi
+
+  # Run PC variant in QEMU with EFI
+  qemu-system-x86_64 \
+    -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
+    -drive if=pflash,format=raw,file=OVMF_VARS.fd \
+    -drive file=$DISK,format=raw \
+    -m 4G \
+    -nographic
 
   ;;
 
