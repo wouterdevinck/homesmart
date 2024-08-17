@@ -47,14 +47,14 @@ namespace Home.Devices.Zigbee.Devices {
 
         [DeviceCommand]
         public async Task TurnOnAsync() {
-            await SendRequestAsync(new ModeRequest("heat"));
+            await SendRequestAsync(new ModeRequest("manual"));
             On = true;
             NotifyObservers(nameof(On), On);
         }
 
         [DeviceCommand]
         public async Task TurnOffAsync() {
-            await SendRequestAsync(new ModeRequest("off"));
+            await SendRequestAsync(new ModeRequest("pause"));
             On = false;
             NotifyObservers(nameof(On), On);
         }
@@ -94,8 +94,7 @@ namespace Home.Devices.Zigbee.Devices {
                 ValvePosition = update.ValvePosition;
                 NotifyObservers(nameof(ValvePosition), ValvePosition, isRetainedUpdate);
             }
-            // Note: mode "auto" not used/supported
-            var on = update.SystemMode == "heat" && Reachable;
+            var on = update.OperatingMode == "manual" && Reachable;
             if (On != on) {
                 On = on;
                 NotifyObservers(nameof(On), On, isRetainedUpdate);

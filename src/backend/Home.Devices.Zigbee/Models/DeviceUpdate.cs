@@ -61,7 +61,10 @@ namespace Home.Devices.Zigbee.Models {
 
         [JsonProperty("system_mode")]
         public string SystemMode { get; set; }
-        
+
+        [JsonProperty("operating_mode")]
+        public string OperatingMode { get; set; }
+
         // Not implemented
         //   "device_temperature"
         //   "indicator_mode":"off"
@@ -69,12 +72,17 @@ namespace Home.Devices.Zigbee.Models {
 
         // Not implemented for Bosch TRV
         //   * "boost": "OFF"
+        //   * "boost_heating": "OFF"
         //   * "display_brightness": 10
         //   * "display_ontime": 10
         //   * "display_orientation": "flipped"
         //   * "displayed_temperature": "measured"
         //   * "local_temperature_calibration": 0
         //   * "remote_temperature": 0
+        //   * "setpoint_change_source": "externally"
+        //   * "valve_adapt_process": false
+        //   * "valve_adapt_status": "success"
+        //   * "window_detection": "OFF"
         //   * "window_open": "OFF"
 
         // Not implemented for any device
