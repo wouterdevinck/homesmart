@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-EDGEOS_VERSION="0.9.0"
+EDGEOS_VERSION="0.9.2"
 EDGEOS_NAME="Homesmart"
 
 VERSION="$(git describe --tags --dirty)"
@@ -14,8 +14,10 @@ EDGEOS_DOCKER_TAG_BUNDLER="wouterdevinck/edgeos-bundler:$EDGEOS_VERSION"
 EDGEOS_BUNDLER_ARGS="-v $EDGEOS_DIR:/workdir -v /var/run/docker.sock:/var/run/docker.sock -u $(id -u $USER):$(getent group docker | cut -d: -f3)"
 EDGEOS_BUNDLER="docker run --rm $EDGEOS_BUNDLER_ARGS $EDGEOS_DOCKER_TAG_BUNDLER"
 
+QEMU_DISK_SIZE=20GB
+
 function printUsage {
-  echo "Usage: $0 all|version|build|run|push|lf|swa|bundle|factory"
+  echo "Usage: $0 all|version|build|run|push|lf|swa|bundle|factory|qemu"
   echo ""
   echo "   all     - Build, push and deploy."
   echo "   version - Print current version number."
@@ -26,6 +28,7 @@ function printUsage {
   echo "   swa     - Build and deploy Azure static web application."
   echo "   bundle  - EdgeOS upgrade package."
   echo "   factory - Build EdgeOS factory image."
+  echo "   qemu    - Run EdgeOS image in QEMU."
   echo ""
 }
 
@@ -120,10 +123,13 @@ case $1 in
 "qemu")
 
   # Build full EdgeOS disk image for PC
-  $EDGEOS_BUNDLER create-image pc
+  $EDGEOS_BUNDLER create-image pc -raw
 
   # Disk path
   DISK="$EDGEOS_DIR/$EDGEOS_NAME-pc-$VERSION.img"
+
+  # Make the disk image bigger
+  dd if=/dev/zero of=$DISK seek=$QEMU_DISK_SIZE obs=1MB count=0 > /dev/null 2>&1
 
   # If no EFI NVRAM file, copy the default one
   if [ ! -e OVMF_VARS.fd ]; then
@@ -136,8 +142,11 @@ case $1 in
     -drive if=pflash,format=raw,file=OVMF_VARS.fd \
     -drive file=$DISK,format=raw \
     -m 4G \
-    -nographic
-
+    -nographic \
+    -cpu host \
+    -smp 4 \
+    -enable-kvm
+    
   ;;
 
 *)
