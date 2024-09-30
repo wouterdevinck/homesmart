@@ -37,7 +37,6 @@ case $1 in
 "all")
   $0 build
   $0 push
-  $0 deploy
   ;;
 
 "version")
@@ -145,7 +144,9 @@ case $1 in
     -nographic \
     -cpu host \
     -smp 4 \
-    -enable-kvm
+    -enable-kvm \
+    -device e1000,netdev=net0 \
+    -netdev user,id=net0,hostfwd=tcp::7994-:7994,hostfwd=tcp::5000-:80,hostfwd=tcp::9000-:9000,hostfwd=tcp::1883-:1883,hostfwd=tcp::8080-:8080,hostfwd=tcp::8086-:8086
     
   ;;
 

@@ -5,17 +5,17 @@ services:
     ports:
       - 80:5000
     volumes:
-      - ./homesmart:/data
+      - homesmart:/data
     environment:
       - HOME_CONFIG=/data/config.yaml
       - HOME_SECRETS=/data/secrets.yaml
     restart: unless-stopped
   portainer:
-    image: portainer/portainer-ce:2.19.4
+    image: portainer/portainer-ce:2.21.2
     ports:
       - 9000:9000
     volumes:
-      - ./portainer:/data
+      - portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
   mosquitto:
@@ -23,24 +23,31 @@ services:
     ports:
       - 1883:1883
     volumes:
-      - ./mosquitto:/mosquitto
+      - mosquitto:/mosquitto
     restart: unless-stopped
   zigbee:
-    image: koenkk/zigbee2mqtt:1.36.0
+    image: koenkk/zigbee2mqtt:1.40.1
     ports:
       - 8080:8080
     volumes:
-      - ./zigbee:/app/data
+      - zigbee:/app/data
     environment:
       - TZ=Europe/Brussels
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     restart: unless-stopped
   influxdb:
-    image: influxdb:2.7.5
+    image: influxdb:2.7.10
     ports:
       - 8086:8086
     volumes:
-      - ./influx/data:/var/lib/influxdb2
-      - ./influx/config:/etc/influxdb2
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
     restart: unless-stopped
+volumes:
+  homesmart:
+  portainer:
+  mosquitto:
+  zigbee:
+  influxdb-data:
+  influxdb-config:
