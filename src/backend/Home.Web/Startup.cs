@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Home.Automations;
 using Home.Core;
 using Home.Core.Configuration;
@@ -28,7 +27,7 @@ namespace Home.Web {
         private static readonly string ConfigFilePath = Environment.GetEnvironmentVariable("HOME_CONFIG") ?? "config.yaml";
         private static readonly string SecretsFilePath = Environment.GetEnvironmentVariable("HOME_SECRETS") ?? "secrets.yaml";
 
-        private readonly ConfigurationReader _config = new(ConfigFilePath, SecretsFilePath, new List<Descriptor> {
+        private readonly ConfigurationReader _config = new(ConfigFilePath, SecretsFilePath, [
             HueDeviceProvider.Descriptor,
             LogoDeviceProvider.Descriptor,
             ZigbeeDeviceProvider.Descriptor,
@@ -41,7 +40,7 @@ namespace Home.Web {
             DimmerHeatingAutomation.Descriptor,
             InfluxDbTelemetry.Descriptor,
             AzureRemote.Descriptor
-        });
+        ]);
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddCors(options => {

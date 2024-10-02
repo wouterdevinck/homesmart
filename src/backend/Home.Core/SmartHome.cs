@@ -17,8 +17,8 @@ namespace Home.Core {
 
         private readonly ILogger<SmartHome> _logger;
         private readonly ConfigurationModel _configuration;
-        private readonly List<IDeviceProvider> _providers = new();
-        private readonly List<IAutomation> _automations = new();
+        private readonly List<IDeviceProvider> _providers = [];
+        private readonly List<IAutomation> _automations = [];
         private ITelemetry _telemetry;
         private IRemote _remote;
 
@@ -29,28 +29,32 @@ namespace Home.Core {
             // Consistency check
             if (config.ConfigurationModel.Home == null) {
                 config.ConfigurationModel.Home = new HomeConfigurationModel() {
-                    Devices = new(),
-                    Rooms = new()
+                    Devices = [],
+                    Rooms = []
                 };
             } else if (!config.ConfigurationModel.Home.CheckConsistency()) { 
                 throw new Exception("Config consistency error!");
             }
 
             // Device providers
-            foreach (var provider in _configuration.DeviceProviders) {
-                Add<IDeviceProvider, IProviderConfiguration>(
-                    "device provider",
-                    provider.Key,
-                    provider.Value,
-                    config.ProviderDescriptors,
-                    DescriptorType.Provider,
-                    loggerFactory,
-                    impl => {
-                        _providers.Add(impl);
-                        impl.DeviceDiscovered += (_, d) => DeviceDiscovered?.Invoke(this, d);
-                    },
-                    (l, c) => new object[] { _configuration.Home, l, c }
-                );
+            if (_configuration.DeviceProviders is { Count: > 0 }) {
+                foreach (var provider in _configuration.DeviceProviders) {
+                    Add<IDeviceProvider, IProviderConfiguration>(
+                        "device provider",
+                        provider.Key,
+                        provider.Value,
+                        config.ProviderDescriptors,
+                        DescriptorType.Provider,
+                        loggerFactory,
+                        impl => {
+                            _providers.Add(impl);
+                            impl.DeviceDiscovered += (_, d) => DeviceDiscovered?.Invoke(this, d);
+                        },
+                        (l, c) => [_configuration.Home, l, c]
+                    );
+                }
+            } else {
+                _logger.LogError("No device providers loaded. Check your configuration");
             }
 
             // Automation
@@ -69,7 +73,7 @@ namespace Home.Core {
                             _automations.Add(impl);
                             impl.Install(this);
                         },
-                        (l, c) => new object[] { l, c }
+                        (l, c) => [l, c]
                     );
                 }
             }
@@ -91,7 +95,7 @@ namespace Home.Core {
                         _telemetry = impl;
                         impl.Install(this);
                     },
-                    (l, c) => new object[] { l, c }
+                    (l, c) => [l, c]
                 );
             }
 
@@ -112,7 +116,7 @@ namespace Home.Core {
                         _remote = impl;
                         impl.Install(this);
                     },
-                    (l, c) => new object[] { l, c }
+                    (l, c) => [l, c]
                 );
             }
 

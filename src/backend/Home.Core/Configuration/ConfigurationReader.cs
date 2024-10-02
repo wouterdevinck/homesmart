@@ -14,21 +14,31 @@ namespace Home.Core.Configuration {
 
         public ConfigurationReader(string configPath, string secretsPath, List<Descriptor> providerDescriptors) {
 
-            // Secrets
-            var secretsYaml = File.ReadAllText(secretsPath);
-            var secretsDeserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .Build();
-            var secrets = secretsDeserializer.Deserialize<SecretsModel>(secretsYaml);
+            if (File.Exists(configPath) && File.Exists(secretsPath)) {
 
-            // Config
-            var configYaml = File.ReadAllText(configPath);
-            var configDeserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithNodeTypeResolver(new ConfigurationResolver(providerDescriptors))
-                .WithNodeDeserializer(inner => new SecretDeserializer(inner, secrets), s => s.InsteadOf<ScalarNodeDeserializer>())
-                .Build();
-            ConfigurationModel = configDeserializer.Deserialize<ConfigurationModel>(configYaml);
+                // Secrets
+                var secretsYaml = File.ReadAllText(secretsPath);
+                var secretsDeserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .Build();
+                var secrets = secretsDeserializer.Deserialize<SecretsModel>(secretsYaml);
+
+                // Config
+                var configYaml = File.ReadAllText(configPath);
+                var configDeserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .WithNodeTypeResolver(new ConfigurationResolver(providerDescriptors))
+                    .WithNodeDeserializer(inner => new SecretDeserializer(inner, secrets),
+                        s => s.InsteadOf<ScalarNodeDeserializer>())
+                    .Build();
+                ConfigurationModel = configDeserializer.Deserialize<ConfigurationModel>(configYaml);
+
+            } else {
+
+                // Blank configuration
+                ConfigurationModel = new ConfigurationModel();
+
+            }
 
             // Providers
             ProviderDescriptors = providerDescriptors;
