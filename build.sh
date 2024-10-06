@@ -146,7 +146,7 @@ case $1 in
     -smp 4 \
     -enable-kvm \
     -device e1000,netdev=net0 \
-    -netdev user,id=net0,hostfwd=tcp::7994-:7994,hostfwd=tcp::5000-:80,hostfwd=tcp::9000-:9000,hostfwd=tcp::1883-:1883,hostfwd=tcp::8080-:8080,hostfwd=tcp::8086-:8086
+    -netdev user,id=net0,hostfwd=tcp::7994-:7994,hostfwd=tcp::5050-:80,hostfwd=tcp::9000-:9000,hostfwd=tcp::1883-:1883,hostfwd=tcp::8080-:8080,hostfwd=tcp::8086-:8086
     
   ;;
 
