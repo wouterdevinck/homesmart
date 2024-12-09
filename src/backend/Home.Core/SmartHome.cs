@@ -36,6 +36,12 @@ namespace Home.Core {
                 throw new Exception("Config consistency error!");
             }
 
+            // Make sure there's a list of device providers
+            _configuration.DeviceProviders ??= new Dictionary<string, IProviderConfiguration>();
+
+            // Make sure the meta device provider is added
+            _configuration.DeviceProviders.TryAdd("meta", null);
+
             // Device providers
             if (_configuration.DeviceProviders is { Count: > 0 }) {
                 foreach (var provider in _configuration.DeviceProviders) {
@@ -123,8 +129,8 @@ namespace Home.Core {
         }
 
         private void Add<T, U>(string logTag, string tag, U config, List<Descriptor> providers, DescriptorType type, ILoggerFactory loggerFactory, Action<T> process, Func<ILogger, U, object[]> args) {
-            if (tag == null || config == null) {
-                _logger.LogError($"Failed to add {logTag}: tag or config could not be read");
+            if (tag == null) {
+                _logger.LogError($"Failed to add {logTag}: tag could not be read");
                 return;
             }
             var implType = providers.SingleOrDefault(x => x.Tag == tag && x.Type == type)?.ProviderType;

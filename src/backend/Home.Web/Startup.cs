@@ -6,6 +6,7 @@ using Home.Core.Interfaces;
 using Home.Core.Logging;
 using Home.Devices.Hue;
 using Home.Devices.Logo;
+using Home.Devices.Meta;
 using Home.Devices.Zigbee;
 using Home.Devices.SolarEdge;
 using Home.Devices.Tuya;
@@ -35,6 +36,7 @@ namespace Home.Web {
             TuyaDeviceProvider.Descriptor,
             SomfyDeviceProvider.Descriptor,
             UnifiDeviceProvider.Descriptor,
+            MetaDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
             OpsgenieAlarmAutomation.Descriptor,
             DimmerHeatingAutomation.Descriptor,
