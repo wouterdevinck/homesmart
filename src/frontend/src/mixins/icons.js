@@ -28,6 +28,8 @@ export default {
           return "wifi"
         case "networkswitch":
           return "ethernet"
+        case "watermeter":
+          return "droplet"
         default:
           return "hdd"
       }

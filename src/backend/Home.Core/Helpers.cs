@@ -11,6 +11,7 @@ namespace Home.Core {
         public const string Jaga = "Jaga";
         public const string Somfy = "Somfy";
         public const string Ubiquiti = "Ubiquiti";
+        public const string HomeWizard = "HomeWizard";
         public const string Diy = "DIY";
 
         public const string VersionNotAvailable = "n/a";
@@ -51,7 +52,8 @@ namespace Home.Core {
             Shutter,
             Camera,
             NetworkAccessPoint,
-            NetworkSwitch
+            NetworkSwitch,
+            Watermeter
         }
 
         public static string GetTypeString(DeviceType type) {
@@ -69,6 +71,7 @@ namespace Home.Core {
                 DeviceType.Camera => "camera",
                 DeviceType.NetworkAccessPoint => "wifi",
                 DeviceType.NetworkSwitch => "networkswitch",
+                DeviceType.Watermeter => "watermeter",
                 _ => "device"
             };
         }

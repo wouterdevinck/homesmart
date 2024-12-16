@@ -50,6 +50,10 @@ deviceProviders:
     site: default
     username: api
     password: $unifiPassword
+  homewizard:
+    pollingInterval: 5
+    devices:
+      - ip: 192.168.2.194
 home:
   rooms:
     - id: livingroom
@@ -350,6 +354,9 @@ home:
     - deviceId: UNIFI-NETWORK-646b892e68e8c417eb9be519
       friendlyId: network-ap-livingroom
       roomId: livingroom
+    - deviceId: HW-WATER-5c2faf1940c2
+      friendlyId: watermeter
+      roomId: garage  
 automations:
   - pushOnOff:
       description: Pushbutton hallway
@@ -455,6 +462,11 @@ telemetry:
         properties: 
           - temperature
           - requestedTemperature
+      - deviceIds: 
+          - watermeter
+        properties: 
+          - totalLiters
+          - litersPerMinute
 remote:
   azure:
     apiUrl: http://huis.wouterdevinck.be/api/v1/

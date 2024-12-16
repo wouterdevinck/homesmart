@@ -4,6 +4,7 @@ using Home.Core;
 using Home.Core.Configuration;
 using Home.Core.Interfaces;
 using Home.Core.Logging;
+using Home.Devices.HomeWizard;
 using Home.Devices.Hue;
 using Home.Devices.Logo;
 using Home.Devices.Meta;
@@ -37,6 +38,7 @@ namespace Home.Web {
             SomfyDeviceProvider.Descriptor,
             UnifiDeviceProvider.Descriptor,
             MetaDeviceProvider.Descriptor,
+            HomeWizardDeviceProvider.Descriptor,
             PushOnOffAutomation.Descriptor,
             OpsgenieAlarmAutomation.Descriptor,
             DimmerHeatingAutomation.Descriptor,
