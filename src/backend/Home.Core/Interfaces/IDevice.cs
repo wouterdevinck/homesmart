@@ -17,6 +17,8 @@ namespace Home.Core.Interfaces {
         string Model { get; }
         string Version { get; }
         bool Reachable { get; }
+        string AlternateName { get; }
+        string AlternateIcon { get; }
 
         IEnumerable<IRelatedDevice<IDevice>> RelatedDevices { get; }
 

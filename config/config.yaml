@@ -179,6 +179,8 @@ home:
     - deviceId: ZIGBEE-0x00178801085ff794
       friendlyId: plug
       roomId: livingroom
+      alternateName: Kerstboom
+      alternateIcon: tree
     - deviceId: LOGO-LIGHT-8256-1
       friendlyId: lights-hallway
       roomId: hallway

@@ -3,10 +3,10 @@
     <div class="card mb-3 p-3">
       <div class="card-body">
         <svg class="bi me-2" width="16" height="16">
-          <use xlink:href="#camera-video"/>
+          <use :xlink:href="'#' + (device.alternateIcon ?? 'camera-video')"/>
         </svg>
         <p class="name">
-          {{ device.name }}
+          {{ device.alternateName ?? device.name }}
         </p>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff" :disabled="device.busy">

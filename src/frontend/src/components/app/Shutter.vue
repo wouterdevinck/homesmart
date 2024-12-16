@@ -1,8 +1,10 @@
 <template>
     <div class="card mb-3 p-3">
       <div class="card-body" :class="{ unreachable: !device.reachable }">
-        <svg class="bi me-2" width="16" height="16"><use xlink:href="#archive"/></svg>
-        {{ device.name }}
+        <svg class="bi me-2" width="16" height="16">
+          <use :xlink:href="'#' + (device.alternateIcon ?? 'archive')"/>
+        </svg>
+        {{ device.alternateName ?? device.name }}
         <input type="range" class="form-range mb-3 mt-3" min="0" max="100" :value="device.position" v-if="device.position != undefined" @change="setPosition($event, device)">
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-outline-primary" @click="up($event, device)">Up</button>
