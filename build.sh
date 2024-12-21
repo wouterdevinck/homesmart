@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-EDGEOS_VERSION="0.9.2"
+EDGEOS_VERSION="0.9.3"
 EDGEOS_NAME="Homesmart"
 
 VERSION="$(git describe --tags --dirty)"
