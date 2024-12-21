@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Home.Core\Home.Core.csproj" />
+    <ProjectReference Include="..\Home.Devices.HomeWizard\Home.Devices.HomeWizard.csproj" />
     <ProjectReference Include="..\Home.Devices.Hue\Home.Devices.Hue.csproj" />
     <ProjectReference Include="..\Home.Devices.Logo\Home.Devices.Logo.csproj" />
     <ProjectReference Include="..\Home.Devices.Somfy\Home.Devices.Somfy.csproj" />

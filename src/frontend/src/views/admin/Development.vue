@@ -183,6 +183,15 @@
             <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff(device)" :disabled="device.busy">
           </div>
         </div>
+        <div v-if="device.type == 'watermeter'">
+          <h6 class="card-subtitle mb-2 text-muted">Solar inverter</h6>
+          <p class="fw-bold fs-4 mb-1">
+              {{ device.totalLiters }} <span class="explain">total liters</span>
+          </p>
+          <p class="fw-bold fs-4 mb-1">
+              {{ device.litersPerMinute }} <span class="explain">liters per minute</span>
+          </p>
+        </div>
         <div class="info">
           <span class="label">Manufacturer:</span> {{ device.manufacturer }}
         </div>
