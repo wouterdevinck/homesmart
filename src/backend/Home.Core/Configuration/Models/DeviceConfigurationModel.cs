@@ -7,6 +7,7 @@ namespace Home.Core.Configuration.Models {
         public string RoomId { get; set; }
         public string AlternateName { get; set; }
         public string AlternateIcon { get; set; }
+        public bool HideWhenUnreachable { get; set; }
 
     }
 

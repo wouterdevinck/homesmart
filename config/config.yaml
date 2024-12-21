@@ -185,6 +185,7 @@ home:
       roomId: livingroom
       alternateName: Kerstboom
       alternateIcon: tree
+      hideWhenUnreachable: true
     - deviceId: LOGO-LIGHT-8256-1
       friendlyId: lights-hallway
       roomId: hallway

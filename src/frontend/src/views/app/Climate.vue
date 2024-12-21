@@ -17,6 +17,7 @@ export default {
       var roomId = this.$route.params.id
       return this.allDevices.filter(device => device.roomId == roomId)
         .filter(device => device.type == 'fancoil' || device.type == 'trv' || device.type == 'temperature')
+        .filter(device => !(!device.reachable && device.hideWhenUnreachable))
     }
   },
   created () {

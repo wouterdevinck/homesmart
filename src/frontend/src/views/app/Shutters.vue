@@ -15,6 +15,7 @@ export default {
       var roomId = this.$route.params.id
       return this.allDevices.filter(device => device.roomId == roomId)
         .filter(device => device.type == 'shutter')
+        .filter(device => !(!device.reachable && device.hideWhenUnreachable))
     }
   },
   created () {

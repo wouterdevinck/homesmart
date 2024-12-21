@@ -10,15 +10,27 @@ Opinionated smart home automation software designed to run on a Raspberry Pi or 
 
 Support for devices is implemented through plugins called "device providers". The following devices providers are supported:
 
+### HomeWizard
+
+Support for some HomeWizard devices. Limited to water meter for now.
+
+Implemented by locally polling the REST API of the HomeWizard device.
+
+### Meta
+
+Support operations on the device running this software itself, like rebooting and upgrading.
+
+Implemented by calling the [EdgeOS](https://github.com/wouterdevinck/edgeos) REST API running on localhost.
+
 #### Philips Hue
 
 Support for select Philips Hue lights and switches, as well as for some IKEA Trådfri lights and other Hue compatible devices.
 
-Implemented by conenecting to the Hue bridge using the Hue REST API v2. Local push notifications are supported through server-sent events from the bridge.
+Implemented by connecting to the Hue bridge using the Hue REST API v2. Local push notifications are supported through server-sent events from the bridge.
 
 #### Siemens Logo!
 
-Support for swithing outputs on and off.
+Support for switching outputs on and off.
 
 Implemented by connecting to the Logo! PLC over the local network using Modbus TCP. Local polling is used to detect changes in the PLC state.
 
@@ -50,7 +62,7 @@ Implemented by connecting to the UniFi controller over the local network using t
 
 Support for Zigbee devices through the [Zigbee2MQTT](https://www.zigbee2mqtt.io/) project.
 
-Zigbee2MQTT running as separate Docker contaitner. Connection over MQTT, including support for local push notifications.
+Zigbee2MQTT running as separate Docker container. Connection over MQTT, including support for local push notifications.
 
 ### Supported automations
 
@@ -64,7 +76,7 @@ Time series data is stored in InfluxDB.
 
 ### Out-of-home access
 
-Support for accessing the system from outside the local network with the frondend running as an Azure Static Web App leveraging Azure IoT Hub, Azure Functions and Azure SignalR Service.
+Support for accessing the system from outside the local network with the frontend running as an Azure Static Web App leveraging Azure IoT Hub, Azure Functions and Azure SignalR Service.
 
 ## Implementation notes
 

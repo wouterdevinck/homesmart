@@ -48,6 +48,10 @@ namespace Home.Core {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string AlternateIcon { get; private set; }
 
+        [DeviceProperty]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool HideWhenUnreachable { get; private set; }
+
         private readonly List<IRelatedDevice<IDevice>> _relatedDevices;
 
         [JsonIgnore]
@@ -62,6 +66,7 @@ namespace Home.Core {
             RoomId = dm?.RoomId;
             AlternateName = dm?.AlternateName;
             AlternateIcon = dm?.AlternateIcon;
+            HideWhenUnreachable = dm?.HideWhenUnreachable ?? false;
             _relatedDevices = new List<IRelatedDevice<IDevice>>();
         }
 
