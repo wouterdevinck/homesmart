@@ -40,6 +40,14 @@ namespace Home.Core {
         [DeviceProperty]
         public bool Reachable { get; protected set; }
 
+        [DeviceProperty]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string AlternateName { get; private set; }
+
+        [DeviceProperty]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string AlternateIcon { get; private set; }
+
         private readonly List<IRelatedDevice<IDevice>> _relatedDevices;
 
         [JsonIgnore]
@@ -52,6 +60,8 @@ namespace Home.Core {
             var dm = home.Devices?.SingleOrDefault(x => x.DeviceId == id);
             FriendlyId = dm?.FriendlyId ?? id;
             RoomId = dm?.RoomId;
+            AlternateName = dm?.AlternateName;
+            AlternateIcon = dm?.AlternateIcon;
             _relatedDevices = new List<IRelatedDevice<IDevice>>();
         }
 

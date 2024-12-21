@@ -3,10 +3,10 @@
     <div class="card mb-3 p-3">
       <div class="card-body" :class="{ unreachable: !device.reachable }">
         <svg class="bi me-2" width="16" height="16">
-          <use xlink:href="#outlet"/>
+          <use :xlink:href="'#' + (device.alternateIcon ?? 'outlet')"/>
         </svg>
         <p class="name">
-          {{ device.name }}
+          {{ device.alternateName ?? device.name }}
         </p>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" :checked="device.on" @change="updateOnOff" :disabled="!device.reachable || device.locked">
