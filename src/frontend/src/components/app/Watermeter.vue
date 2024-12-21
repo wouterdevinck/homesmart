@@ -3,10 +3,10 @@
     <div class="card mb-3 p-3">
       <div class="card-body">
         <svg class="bi me-2" width="16" height="16">
-          <use xlink:href="#droplet"/>
+          <use :xlink:href="'#' + (device.alternateIcon ?? 'droplet')"/>
         </svg>
         <p class="name">
-          {{ device.name }}
+          {{ device.alternateName ?? device.name }}
         </p>
         <p class="fw-bold fs-4 mb-1">
           {{ device.totalLiters }} l
