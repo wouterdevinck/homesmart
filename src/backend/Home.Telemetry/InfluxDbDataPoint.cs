@@ -6,12 +6,31 @@ namespace Home.Telemetry {
 
     public class InfluxDbDataPoint : IDataPoint {
 
-        public DateTime Time { get; private set; }
-        public double Value { get; private set; }
+        public DateTime Time { get; }
+        public double Value { get; }
 
         public InfluxDbDataPoint(FluxRecord record) {
-            Time =  DateTime.Parse(record.Values["_time"].ToString());
-            Value = record.Values["_value"] as double? ?? 0;
+
+            record.Values.TryGetValue("_time", out var time);
+            record.Values.TryGetValue("_value", out var value);
+
+            if (time == null || !DateTime.TryParse(time.ToString(), out var dt)) {
+                throw new ArgumentException("Invalid date");
+            }
+
+            Time = dt.ToLocalTime();
+
+            if (value == null) {
+                Value = 0;
+            } else {
+                Value = value switch {
+                    double d => d,
+                    int i => i,
+                    long l => l,
+                    _ => 0
+                };
+            }
+
         }
 
     }
