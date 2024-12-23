@@ -15,6 +15,8 @@ namespace Home.Web.Services {
 
         public async Task StartAsync(CancellationToken cancellationToken) {
             await _home.ConnectAsync();
+
+            await _home.GetTelemetry().Export(); // TEMP test
         }
 
         public async Task StopAsync(CancellationToken cancellationToken) {

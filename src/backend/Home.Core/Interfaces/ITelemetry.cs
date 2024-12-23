@@ -10,6 +10,8 @@ namespace Home.Core.Interfaces {
         Task<IEnumerable<IDataPoint>> GetWindowDifference(string device, string point, TimeRange range, RelativeTime window);
         Task<IEnumerable<IDataPoint>> GetWindowMean(string device, string point, TimeRange range, RelativeTime window);
 
+        Task Export();
+
     }
 
 }
