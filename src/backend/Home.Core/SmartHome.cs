@@ -6,7 +6,6 @@ using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
-using Home.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Home.Core {
@@ -180,10 +179,6 @@ namespace Home.Core {
 
         public IRemote GetRemote() {
             return _remote;
-        }
-
-        public async Task<IEnumerable<IDataPoint>> GetDataAsync(string device, string point, TimeRange range) {
-            return await _telemetry.GetDataAsync(device, point, range);
         }
 
     }

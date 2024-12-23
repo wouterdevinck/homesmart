@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace Home.Web {
 
@@ -57,7 +59,10 @@ namespace Home.Web {
             });
             services.AddSingleton(_config);
             services.AddSingleton<ISmartHome, SmartHome>();
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers(options => {
+                var index = options.ValueProviderFactories.IndexOf(options.ValueProviderFactories.OfType<QueryStringValueProviderFactory>().Single());
+                options.ValueProviderFactories[index] = new CulturedQueryStringValueProviderFactory();
+            }).AddNewtonsoftJson();
             services.AddSignalR().AddNewtonsoftJsonProtocol(); ;
             services.AddHostedService<NotificationService>();
             services.AddHostedService<ConnectionService>();

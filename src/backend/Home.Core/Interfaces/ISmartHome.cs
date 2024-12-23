@@ -12,7 +12,6 @@ namespace Home.Core.Interfaces {
         IEnumerable<IAutomation> GetAutomations();
         ITelemetry GetTelemetry();
         IRemote GetRemote();
-        Task<IEnumerable<IDataPoint>> GetDataAsync(string device, string point, TimeRange range);
 
     }
 

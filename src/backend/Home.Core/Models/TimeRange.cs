@@ -6,8 +6,8 @@ namespace Home.Core.Models {
 
         public TimeRangeType Type { get; private set; }
 
-        public DateTime AbsoluteStart { get; private set; }
-        public DateTime? AbsoluteStop { get; private set; }
+        public DateTime AbsoluteStart { get; }
+        public DateTime? AbsoluteStop { get; }
 
         public long AbsoluteStartEpoch => (new DateTimeOffset(AbsoluteStart)).ToUnixTimeSeconds();
         public long? AbsoluteStopEpoch => AbsoluteStop == null ? null : (new DateTimeOffset((DateTime)AbsoluteStop)).ToUnixTimeSeconds();
@@ -39,87 +39,6 @@ namespace Home.Core.Models {
             RelativeStop = null;
         }
 
-    }
-
-    public class RelativeTime {
-
-        public double Value { get; }
-        public TimeUnit Unit { get; }
-
-        public static implicit operator RelativeTime(string time) => new(time);
-        public static implicit operator TimeSpan(RelativeTime time) => time.ToTimeSpan();
-
-        public RelativeTime(double value, TimeUnit unit) {
-            Value = value;
-            Unit = unit;
-        }
-
-        public RelativeTime(string str) {
-            Value = double.Parse(str.Substring(0, str.Length - 1));
-            Unit = StringToTimeUnit(str.Substring(str.Length - 1));
-        }
-
-        public override string ToString() {
-            return $"{Value}{TimeUnitToString(Unit)}";
-        }
-
-        public TimeSpan ToTimeSpan() {
-            switch (Unit) {
-                case TimeUnit.Seconds:
-                    return TimeSpan.FromSeconds(Value);
-                case TimeUnit.Minutes:
-                    return TimeSpan.FromMinutes(Value);
-                case TimeUnit.Hours:
-                    return TimeSpan.FromHours(Value);
-                case TimeUnit.Days:
-                    return TimeSpan.FromDays(Value);
-                default:
-                    return TimeSpan.MinValue;
-            }
-        }
-
-        private string TimeUnitToString(TimeUnit unit) {
-            switch (unit) {
-                case TimeUnit.Seconds:
-                    return "s";
-                case TimeUnit.Minutes:
-                    return "m";
-                case TimeUnit.Hours:
-                    return "h";
-                case TimeUnit.Days:
-                    return "d";
-                default:
-                    return string.Empty;
-            }
-        }
-
-        private TimeUnit StringToTimeUnit(string str) {
-            switch (str) {
-                case "s":
-                    return TimeUnit.Seconds;
-                case "m":
-                    return TimeUnit.Minutes;
-                case "h":
-                    return TimeUnit.Hours;
-                case "d":
-                    return TimeUnit.Days;
-                default:
-                    return TimeUnit.Hours;
-            }
-        }
-
-    }
-
-    public enum TimeUnit {
-        Seconds,
-        Minutes,
-        Hours,
-        Days,
-    }
-
-    public enum TimeRangeType {
-        Absolute,
-        Relative
     }
 
 }
