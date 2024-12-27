@@ -12,10 +12,13 @@ namespace Home.Telemetry {
                 "option location = timezone.location(name: \"Europe/Brussels\")\n" +
                 $"from(bucket:\"{bucket}\")\n" +
                 $" |> range({TimeRangeToFlux(range)})\n" +
+                //" |> fill(usePrevious: true)\n" + // https://stackoverflow.com/questions/72279580/influxdb-get-the-latest-data-even-if-it-is-not-in-the-time-range-provided
                 $" |> filter(fn: (r) => strings.toLower(v: r[\"_measurement\"]) == \"{point.ToLower()}\")\n" +
                 " |> filter(fn: (r) => r[\"_field\"] == \"value\")\n" +
                 $" |> filter(fn: (r) => strings.toLower(v: r[\"device\"]) == \"{device.ToLower()}\")\n";
         }
+
+        // |> drop(columns: ["_start", "_stop", "device", "_measurement", "_field"])
 
         public static string AllData(string bucket) {
             return

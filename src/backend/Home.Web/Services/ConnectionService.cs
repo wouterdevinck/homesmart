@@ -5,22 +5,14 @@ using Microsoft.Extensions.Hosting;
 
 namespace Home.Web.Services {
 
-    public class ConnectionService : IHostedService {
-
-        private readonly ISmartHome _home;
-
-        public ConnectionService(ISmartHome home) {
-            _home = home;
-        }
+    public class ConnectionService(ISmartHome home) : IHostedService {
 
         public async Task StartAsync(CancellationToken cancellationToken) {
-            await _home.ConnectAsync();
-
-            await _home.GetTelemetry().Export(); // TEMP test
+            await home.ConnectAsync();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken) {
-            await _home.DisconnectAsync();
+            await home.DisconnectAsync();
         }
 
     }

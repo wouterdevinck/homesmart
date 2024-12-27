@@ -18,7 +18,7 @@ namespace Home.Telemetry {
                 throw new ArgumentException("Invalid date");
             }
 
-            Time = dt.ToLocalTime();
+            Time = dt.ToUniversalTime();
 
             if (value == null) {
                 Value = 0;

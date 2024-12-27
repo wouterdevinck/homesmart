@@ -60,6 +60,7 @@ namespace Home.Devices.SolarEdge {
             _timer.Enabled = true;
         }
 
+        // BUG: Timezone correct?
         private async void OnUpdate(object source, ElapsedEventArgs e) {
             if (DateTime.Now.Minute % UpdateInterval == SafetyMargin) { 
                 _logger.LogInformation("Quarterly update of solar data started");

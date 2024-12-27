@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Configuration;
@@ -40,10 +38,10 @@ namespace Home.Telemetry {
                 device.Value.DeviceUpdate += (s, e) => {
                     if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase)) && !e.Retained) {
                         using var writeApi = _client.GetWriteApi();
-                        var point = PointData.Measurement(e.Property)
+                        var point = PointData.Measurement(e.Property) // BUG: This should be the point name, not the property name. Case is different.
                             .Tag("device", device.Key)
                             .Field("value", e.Value)
-                            .Timestamp(e.Timestamp.ToUniversalTime(), WritePrecision.Ms);
+                            .Timestamp(e.Timestamp.ToUniversalTime(), WritePrecision.Ms); // BUG: Timezone issues.
                         writeApi.WritePoint(point, _configuration.Bucket, _configuration.Organization);
                     }
                 };
@@ -66,6 +64,27 @@ namespace Home.Telemetry {
             return await GetData(FluxQuery.MeanWindow(_configuration.Bucket, device, point, range, window));
         }
 
+        public async Task<IEnumerable<DataPointMetadata>> GetMetadata() {
+            var metadata = new List<DataPointMetadata>();
+            var measurements = await GetStrings(FluxQuery.Measurements(_configuration.Bucket));
+            foreach (var measurement in measurements) {
+                var devices = await GetStrings(FluxQuery.Devices(_configuration.Bucket, measurement));
+                metadata.AddRange(devices.Select(x => new DataPointMetadata(x, measurement)));
+            }
+            return metadata;
+        }
+
+        public async Task ExportCsv(string path) {
+            var flux = FluxQuery.AllData(_configuration.Bucket);
+            var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
+            await using var file = new StreamWriter(path);
+            await file.WriteLineAsync("sep=;");
+            await file.WriteLineAsync("Time;Device;Point;Value");
+            foreach (var record in fluxTables.SelectMany(table => table.Records)) {
+                await file.WriteLineAsync($"{record.GetTime()};{record.GetValueByKey("device")};{record.GetValueByKey("_measurement")};{record.GetValueByKey("_value")}");
+            }
+        }
+
         private async Task<IEnumerable<IDataPoint>> GetData(string flux) {
             var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
             var table = fluxTables.SingleOrDefault();
@@ -80,20 +99,6 @@ namespace Home.Telemetry {
             return table.Records.Select(x => x.GetValueByKey("_value").ToString());
         }
 
-        public async Task Export() {
-            //var measurements = await GetStrings(FluxQuery.Measurements(_configuration.Bucket));
-            //foreach (var measurement in measurements) {
-            //    var devices = await GetStrings(FluxQuery.Devices(_configuration.Bucket, measurement));
-            //}
-            var flux = FluxQuery.AllData(_configuration.Bucket); //  + " |> first()"
-            var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
-            await using var file = new StreamWriter("export.csv");
-            await file.WriteLineAsync("sep=;");
-            await file.WriteLineAsync("Time;Device;Point;Value");
-            foreach (var record in fluxTables.SelectMany(table => table.Records)) {
-                await file.WriteLineAsync($"{record.GetTime()};{record.GetValueByKey("device")};{record.GetValueByKey("_measurement")};{record.GetValueByKey("_value")}");
-            }
-        }
     }
 
 }
