@@ -64,14 +64,19 @@ namespace Home.Telemetry {
             return await GetData(FluxQuery.MeanWindow(_configuration.Bucket, device, point, range, window));
         }
 
-        public async Task<IEnumerable<DataPointMetadata>> GetMetadata() {
-            var metadata = new List<DataPointMetadata>();
+        public async Task<IEnumerable<DataPointsMetadata>> GetMetadata() {
+            var temp = new Dictionary<string, List<string>>();
             var measurements = await GetStrings(FluxQuery.Measurements(_configuration.Bucket));
             foreach (var measurement in measurements) {
                 var devices = await GetStrings(FluxQuery.Devices(_configuration.Bucket, measurement));
-                metadata.AddRange(devices.Select(x => new DataPointMetadata(x, measurement)));
+                var point = measurement.ToLower();
+                foreach (var device in devices) {
+                    if(!temp.TryAdd(device, [point])) {
+                        temp[device].Add(point);
+                    }
+                }
             }
-            return metadata;
+            return temp.Select(x => new DataPointsMetadata(x.Key, x.Value.Distinct().ToList())).ToList();
         }
 
         public async Task ExportCsv(string path) {

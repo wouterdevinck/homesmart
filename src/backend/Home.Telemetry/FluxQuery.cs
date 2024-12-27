@@ -40,7 +40,7 @@ namespace Home.Telemetry {
         public static string AllData(string bucket) {
             return
                 FluxCommonBucket(bucket) +
-                " |> range(start: -10y)\n" +
+                " |> range(start: 0)\n" +
                 " |> filter(fn: (r) => r[\"_field\"] == \"value\")\n" +
                 FluxCommonDrop();
         }

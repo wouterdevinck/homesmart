@@ -70,7 +70,7 @@ namespace Home.Web.Controllers {
 
         [HttpGet]
         [Route("telemetry/metadata")]
-        public async Task<IEnumerable<DataPointMetadata>> TelemetryMetadata() {
+        public async Task<IEnumerable<DataPointsMetadata>> TelemetryMetadata() {
             return await home.GetTelemetry().GetMetadata();
         }
 
