@@ -25,54 +25,36 @@ namespace Home.Core.Models {
         }
 
         public TimeSpan ToTimeSpan() {
-            switch (Unit) {
-                case TimeUnit.Seconds:
-                    return TimeSpan.FromSeconds(Value);
-                case TimeUnit.Minutes:
-                    return TimeSpan.FromMinutes(Value);
-                case TimeUnit.Hours:
-                    return TimeSpan.FromHours(Value);
-                case TimeUnit.Days:
-                    return TimeSpan.FromDays(Value);
-                case TimeUnit.Weeks:
-                    return TimeSpan.FromDays(Value * 7);
-                default:
-                    return TimeSpan.MinValue;
-            }
+            return Unit switch {
+                TimeUnit.Seconds => TimeSpan.FromSeconds(Value),
+                TimeUnit.Minutes => TimeSpan.FromMinutes(Value),
+                TimeUnit.Hours => TimeSpan.FromHours(Value),
+                TimeUnit.Days => TimeSpan.FromDays(Value),
+                TimeUnit.Weeks => TimeSpan.FromDays(Value * 7),
+                _ => TimeSpan.MinValue
+            };
         }
 
         private string TimeUnitToString(TimeUnit unit) {
-            switch (unit) {
-                case TimeUnit.Seconds:
-                    return "s";
-                case TimeUnit.Minutes:
-                    return "m";
-                case TimeUnit.Hours:
-                    return "h";
-                case TimeUnit.Days:
-                    return "d";
-                case TimeUnit.Weeks:
-                    return "w";
-                default:
-                    return string.Empty;
-            }
+            return unit switch {
+                TimeUnit.Seconds => "s",
+                TimeUnit.Minutes => "m",
+                TimeUnit.Hours => "h",
+                TimeUnit.Days => "d",
+                TimeUnit.Weeks => "w",
+                _ => string.Empty
+            };
         }
 
         private TimeUnit StringToTimeUnit(string str) {
-            switch (str) {
-                case "s":
-                    return TimeUnit.Seconds;
-                case "m":
-                    return TimeUnit.Minutes;
-                case "h":
-                    return TimeUnit.Hours;
-                case "d":
-                    return TimeUnit.Days;
-                case "w":
-                    return TimeUnit.Weeks;
-                default:
-                    return TimeUnit.Hours;
-            }
+            return str switch {
+                "s" => TimeUnit.Seconds,
+                "m" => TimeUnit.Minutes,
+                "h" => TimeUnit.Hours,
+                "d" => TimeUnit.Days,
+                "w" => TimeUnit.Weeks,
+                _ => TimeUnit.Hours
+            };
         }
 
     }

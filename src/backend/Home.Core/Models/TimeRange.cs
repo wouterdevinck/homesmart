@@ -6,16 +6,16 @@ namespace Home.Core.Models {
 
         public TimeRangeType Type { get; private set; }
 
-        public DateTime AbsoluteStart { get; }
+        public DateTime? AbsoluteStart { get; }
         public DateTime? AbsoluteStop { get; }
 
-        public long AbsoluteStartEpoch => (new DateTimeOffset(AbsoluteStart)).ToUnixTimeSeconds();
+        public long AbsoluteStartEpoch => AbsoluteStart == null ? 0 : (new DateTimeOffset(AbsoluteStart.Value)).ToUnixTimeSeconds();
         public long? AbsoluteStopEpoch => AbsoluteStop == null ? null : (new DateTimeOffset((DateTime)AbsoluteStop)).ToUnixTimeSeconds();
 
         public RelativeTime RelativeStart { get; private set; }
         public RelativeTime RelativeStop { get; private set; }
 
-        public TimeRange(DateTime start, DateTime stop) {
+        public TimeRange(DateTime? start, DateTime? stop) {
             Type = TimeRangeType.Absolute;
             AbsoluteStart = start;
             AbsoluteStop = stop;

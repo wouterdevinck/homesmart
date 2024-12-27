@@ -87,9 +87,11 @@ namespace Home.Telemetry {
 
         private async Task<IEnumerable<IDataPoint>> GetData(string flux) {
             var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
-            var table = fluxTables.SingleOrDefault();
-            if (table == null) return new List<IDataPoint>();
-            return table.Records.Select(x => new InfluxDbDataPoint(x));
+            var data = new List<IDataPoint>();
+            foreach (var table in fluxTables) {
+                data.AddRange(table.Records.Select(x => new InfluxDbDataPoint(x)));
+            }
+            return data;
         }
 
         private async Task<IEnumerable<string>> GetStrings(string flux) {
