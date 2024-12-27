@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Configuration;
@@ -38,7 +38,7 @@ namespace Home.Telemetry {
                 device.Value.DeviceUpdate += (s, e) => {
                     if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase)) && !e.Retained) {
                         using var writeApi = _client.GetWriteApi();
-                        var point = PointData.Measurement(e.Property)
+                        var point = PointData.Measurement(e.Property) // Note: property name is used here instead of point name, the case is different.
                             .Tag("device", device.Key)
                             .Field("value", e.Value)
                             .Timestamp(e.Timestamp.ToUniversalTime(), WritePrecision.Ms);
@@ -53,65 +53,52 @@ namespace Home.Telemetry {
         }
 
         public async Task<IEnumerable<IDataPoint>> GetAllData(string device, string point, TimeRange range) {
-            return await GetData(FluxDataQuery(device, point, range));
+            return await GetData(FluxQuery.AllData(_configuration.Bucket, device, point, range));
         }
 
-        public Task<IEnumerable<IDataPoint>> GetWindowDifference(string device, string point, TimeRange range, RelativeTime window) {
-            var flux = FluxDataQueryWindow(device, point, range, window) +
-                " |> difference(nonNegative: true)\n";
-            return GetData(flux);
+        public async Task<IEnumerable<IDataPoint>> GetWindowDifference(string device, string point, TimeRange range, RelativeTime window) {
+            return await GetData(FluxQuery.DiffWindow(_configuration.Bucket, device, point, range, window));
         }
 
-        public Task<IEnumerable<IDataPoint>> GetWindowMean(string device, string point, TimeRange range, RelativeTime window) {
-            var flux = FluxDataQueryWindow(device, point, range, window) +
-                " |> yield(name: \"mean\")\n";
-            return GetData(flux);
+        public async Task<IEnumerable<IDataPoint>> GetWindowMean(string device, string point, TimeRange range, RelativeTime window) {
+            return await GetData(FluxQuery.MeanWindow(_configuration.Bucket, device, point, range, window));
+        }
+
+        public async Task<IEnumerable<DataPointMetadata>> GetMetadata() {
+            var metadata = new List<DataPointMetadata>();
+            var measurements = await GetStrings(FluxQuery.Measurements(_configuration.Bucket));
+            foreach (var measurement in measurements) {
+                var devices = await GetStrings(FluxQuery.Devices(_configuration.Bucket, measurement));
+                metadata.AddRange(devices.Select(x => new DataPointMetadata(x, measurement)));
+            }
+            return metadata;
+        }
+
+        public async Task ExportCsv(string path) {
+            var flux = FluxQuery.AllData(_configuration.Bucket);
+            var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
+            await using var file = new StreamWriter(path);
+            await file.WriteLineAsync("sep=;");
+            await file.WriteLineAsync("Time;Device;Point;Value");
+            foreach (var record in fluxTables.SelectMany(table => table.Records)) {
+                await file.WriteLineAsync($"{record.GetTime()};{record.GetValueByKey("device")};{record.GetValueByKey("_measurement")};{record.GetValueByKey("_value")}");
+            }
         }
 
         private async Task<IEnumerable<IDataPoint>> GetData(string flux) {
             var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
-            var table = fluxTables.SingleOrDefault();
-            if (table == null) return new List<IDataPoint>();
-            return table.Records.Select(x => new InfluxDbDataPoint(x));
-        }
-
-        private string FluxDataQuery(string device, string point, TimeRange range) {
-            return
-                "import \"strings\"\n" +
-                "import \"timezone\"\n" +
-                "option location = timezone.location(name: \"Europe/Brussels\")\n" +
-               $"from(bucket:\"{_configuration.Bucket}\")\n" +
-               $" |> range({TimeRangeToFlux(range)})\n" +
-               $" |> filter(fn: (r) => strings.toLower(v: r[\"_measurement\"]) == \"{point.ToLower()}\")\n" +
-                " |> filter(fn: (r) => r[\"_field\"] == \"value\")\n" +
-               $" |> filter(fn: (r) => strings.toLower(v: r[\"device\"]) == \"{device.ToLower()}\")\n";
-        }
-
-        private string FluxDataQueryWindow(string device, string point, TimeRange range, RelativeTime window) {
-            return FluxDataQuery(device, point, range) + 
-               $" |> aggregateWindow(every: duration(v: \"{window}\"), fn: last, createEmpty: false)\n";
-        }
-
-        // Note: RelativeTime implements a subset of duration https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/
-        //    Not all unit specifiers are implemented and neither are combinations of multiple units.
-
-        private static string TimeRangeToFlux(TimeRange range) {
-            var str = new StringBuilder("start: ");
-            if (range.Type == TimeRangeType.Absolute) {
-                str.Append(range.AbsoluteStartEpoch);
-                if(range.AbsoluteStop != null) {
-                    str.Append(", stop: ");
-                    str.Append(range.AbsoluteStopEpoch);
-                }
-            } else {
-                str.Append("-");
-                str.Append(range.RelativeStart);
-                if (range.RelativeStop != null) {
-                    str.Append(", stop: -");
-                    str.Append(range.RelativeStop);
-                }
+            var data = new List<IDataPoint>();
+            foreach (var table in fluxTables) {
+                data.AddRange(table.Records.Select(x => new InfluxDbDataPoint(x)));
             }
-            return str.ToString();
+            return data;
+        }
+
+        private async Task<IEnumerable<string>> GetStrings(string flux) {
+            var fluxTables = await _client.GetQueryApi().QueryAsync(flux, _configuration.Organization);
+            var table = fluxTables.SingleOrDefault();
+            if (table == null) return new List<string>();
+            return table.Records.Select(x => x.GetValueByKey("_value").ToString());
         }
 
     }

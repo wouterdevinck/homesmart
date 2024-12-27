@@ -69,6 +69,12 @@ namespace Home.Web.Controllers {
         }
 
         [HttpGet]
+        [Route("telemetry/metadata")]
+        public async Task<IEnumerable<DataPointMetadata>> TelemetryMetadata() {
+            return await home.GetTelemetry().GetMetadata();
+        }
+
+        [HttpGet]
         [Route("remote")]
         public IRemote Remote() {
             return home.GetRemote();

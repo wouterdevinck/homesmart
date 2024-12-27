@@ -76,14 +76,6 @@ namespace Home.Core {
             };
         }
 
-        // Adapted from https://stackoverflow.com/a/27073919
-        public static string FirstCharToUpperCase(this string s) {
-            if (string.IsNullOrEmpty(s)) return s;
-            char[] a = s.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
-        }
-
         public static T ConvertType<T>(object value) {
             if (typeof(T).GetTypeInfo().IsEnum) {
                 return (T)Enum.Parse(typeof(T), value.ToString() ?? string.Empty, true);

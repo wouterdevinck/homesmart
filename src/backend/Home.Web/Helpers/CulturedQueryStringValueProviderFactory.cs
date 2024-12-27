@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Home.Web {
+namespace Home.Web.Helpers {
 
     // https://github.com/dotnet/AspNetCore.Docs/pull/15888/files
 
