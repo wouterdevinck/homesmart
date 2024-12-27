@@ -70,9 +70,9 @@ namespace Home.Core {
             _relatedDevices = new List<IRelatedDevice<IDevice>>();
         }
 
-        //protected void NotifyObservers(string property, object value, DateTime timestamp, bool retained) {
-        //    DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp, retained));
-        //}
+        protected void NotifyObservers(string property, object value, DateTime timestamp, bool retained) {
+            DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp, retained));
+        }
 
         protected void NotifyObservers(string property, object value, DateTime timestamp) {
             DeviceUpdate?.Invoke(this, new DeviceUpdateEventArgs(property, value, timestamp, false));

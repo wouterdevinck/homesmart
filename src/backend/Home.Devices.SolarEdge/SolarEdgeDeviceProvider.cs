@@ -21,7 +21,7 @@ namespace Home.Devices.SolarEdge {
         private readonly SolarEdgeApiClient _api;
 
         public SolarEdgeDeviceProvider(HomeConfigurationModel home, ILogger logger, IProviderConfiguration configuration) {
-            _devices = new List<SolarEdgeInverterDevice>();
+            _devices = [];
             _home = home;
             _logger = logger;
             _configuration = (SolarEdgeConfiguration)configuration;
@@ -39,7 +39,9 @@ namespace Home.Devices.SolarEdge {
             _logger.LogInformation($"Connecting to site {_configuration.Site}");
             try {
                 var inverter = await _api.GetInverter();
-                _devices.Add(new SolarEdgeInverterDevice(_home, _logger, _api, inverter));
+                var site = await _api.GetSiteDetails();
+                var tz = TimeZoneInfo.FindSystemTimeZoneById(site.Location.TimeZone);
+                _devices.Add(new SolarEdgeInverterDevice(_home, _logger, _api, inverter, tz));
                 NotifyObservers(_devices);
             } catch (Exception ex) {
                 _logger.LogError($"Failed to connect with reason - {ex.Message}");
