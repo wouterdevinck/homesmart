@@ -38,10 +38,10 @@ namespace Home.Telemetry {
                 device.Value.DeviceUpdate += (s, e) => {
                     if (properties.Any(x => x.Equals(e.Property, StringComparison.OrdinalIgnoreCase)) && !e.Retained) {
                         using var writeApi = _client.GetWriteApi();
-                        var point = PointData.Measurement(e.Property) // BUG: This should be the point name, not the property name. Case is different.
+                        var point = PointData.Measurement(e.Property) // Note: property name is used here instead of point name, the case is different.
                             .Tag("device", device.Key)
                             .Field("value", e.Value)
-                            .Timestamp(e.Timestamp.ToUniversalTime(), WritePrecision.Ms); // BUG: Timezone issues.
+                            .Timestamp(e.Timestamp.ToUniversalTime(), WritePrecision.Ms);
                         writeApi.WritePoint(point, _configuration.Bucket, _configuration.Organization);
                     }
                 };
