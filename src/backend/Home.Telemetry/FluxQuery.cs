@@ -6,11 +6,15 @@ namespace Home.Telemetry {
 
     internal static class FluxQuery {
 
+        // TODO Improve performance converting measurement to right case from metadata upfront, while caching the metadata
+        // TODO Add month and year time ranges
+        // TODO Return too much data: v1/devices/sensor-living/data/temperature?meanWindow=1h&since=12h
+
         private static string FluxCommonOptions() {
             return
                 "import \"strings\"\n" +
                 "import \"timezone\"\n" +
-                "option location = timezone.location(name: \"Europe/Brussels\")\n"; // TODO Pass timezone as parameter?
+                "option location = timezone.location(name: \"Europe/Brussels\")\n"; // TODO Pass timezone as parameter? From config?
         }
 
         private static string FluxCommonBucket(string bucket) {

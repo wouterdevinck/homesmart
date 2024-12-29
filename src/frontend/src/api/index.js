@@ -50,6 +50,25 @@ export default {
       console.log(ex)
       if(error) error()
     })
+  },
+
+  getMetadata(cb) {
+    axios.get(`${url}/api/v1/telemetry/metadata`).then((response) => {
+      cb(response.data)
+    })
+  },
+
+  getData(cb, device, point, diffWindow, meanWindow, since, toAgo, from, to) {
+    var dataurl = new URL(`${url}/api/v1/devices/${device}/data/${point}`)
+    if(diffWindow) dataurl.searchParams.append('diffWindow', diffWindow)
+    if(meanWindow) dataurl.searchParams.append('meanWindow', meanWindow)
+    if(since) dataurl.searchParams.append('since', since)
+    if(toAgo) dataurl.searchParams.append('toAgo', toAgo)
+    if(from) dataurl.searchParams.append('from', from)
+    if(to) dataurl.searchParams.append('to', to)
+    axios.get(dataurl.toString()).then((response) => {
+      cb(response.data)
+    })
   }
 
 }
