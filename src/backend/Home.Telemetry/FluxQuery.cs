@@ -6,15 +6,14 @@ namespace Home.Telemetry {
 
     internal static class FluxQuery {
 
-        // TODO Improve performance converting measurement to right case from metadata upfront, while caching the metadata
         // TODO Add month and year time ranges
+        // TODO Pass timezone as parameter, from configuration
         // TODO Return too much data: v1/devices/sensor-living/data/temperature?meanWindow=1h&since=12h
 
         private static string FluxCommonOptions() {
             return
-                "import \"strings\"\n" +
                 "import \"timezone\"\n" +
-                "option location = timezone.location(name: \"Europe/Brussels\")\n"; // TODO Pass timezone as parameter? From config?
+                "option location = timezone.location(name: \"Europe/Brussels\")\n";
         }
 
         private static string FluxCommonBucket(string bucket) {
@@ -23,9 +22,9 @@ namespace Home.Telemetry {
 
         private static string FluxCommonFilters(string device, string point) {
             return
-                $" |> filter(fn: (r) => strings.toLower(v: r[\"_measurement\"]) == \"{point.ToLower()}\")\n" +
+                $" |> filter(fn: (r) => r[\"_measurement\"] == \"{point}\")\n" +
                 " |> filter(fn: (r) => r[\"_field\"] == \"value\")\n" +
-                $" |> filter(fn: (r) => strings.toLower(v: r[\"device\"]) == \"{device.ToLower()}\")\n";
+                $" |> filter(fn: (r) => r[\"device\"] == \"{device}\")\n";
         }
 
         private static string FluxCommonDrop() {
