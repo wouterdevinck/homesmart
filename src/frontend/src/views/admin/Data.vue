@@ -1,102 +1,135 @@
 <template>
   <div>
-    <div class="container">
-      <div class="row">
-        <div class="btn-group" role="group">
-          <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1d', '1w')">Daily water use</button>
-          <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastmonthenergy', 'diff', '1d', '1w')">Daily solar</button>
-          <!--<button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastyearenergy', 'diff', '1M', '1y')">Monthly solar</button>-->
-          <button type="button" class="btn btn-outline-primary" @click="preset($event, 'sensor-living', 'temperature', 'mean', '1h', '12h')">Living room temperature</button>
-        </div>
+    <div class="row">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1d', '1w')">Daily water use</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1w', '1mo')">Weekly water use</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastmonthenergy', 'diff', '1d', '1w')">Daily solar</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastyearenergy', 'diff', '1mo', '1y')">Monthly solar</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'plug-tv', 'energy', 'diff', '1d', '1w')">Daily energy use of a plug</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'sensor-living', 'temperature', 'mean', '1h', '12h')">Living room temperature</button>
       </div>
     </div>
-    <div class="container mt-3">
-      <div class="row">
-        <div class="col">
-          <p class="fw-bold mb-1">Device</p>
-          <select class="form-select" v-model="selectedDevice">
-            <option v-for="device in metadata" :value="device.deviceId">{{ device.deviceId }}</option>
-          </select>
-        </div>
-        <div class="col">
-          <p class="fw-bold mb-1">Point</p>
-          <select class="form-select" v-model="selectedPoint">
-            <option v-for="point in points" :value="point">{{ point }}</option>
-          </select>
-        </div>
-        <div class="col">
-          <p class="fw-bold mb-1">Windowing mode</p>
-          <select class="form-select" v-model="selectedMode">
-            <option value="none">None</option>
-            <option value="diff">Difference</option>
-            <option value="mean">Mean</option>
-          </select>
-        </div>
-        <div class="col">
-          <p class="fw-bold mb-1">Window</p>
-          <select class="form-select" v-model="selectedWindow" :disabled="selectedMode == 'none'">
-            <option value="1m">1 minute</option>
-            <option value="5m">5 minutes</option>
-            <option value="15m">15 minutes</option>
-            <option value="30m">30 minutes</option>
-            <option value="1h">1 hour</option>
-            <option value="6h">6 hours</option>
-            <option value="12h">12 hours</option>
-            <option value="1d">1 day</option>
-            <option value="1w">1 week</option>
-          </select>
-        </div>
+    <div class="row mt-3">
+      <div class="col">
+        <p class="fw-bold mb-1">Device</p>
+        <select class="form-select" v-model="selectedDevice">
+          <option v-for="device in metadata" :value="device.deviceId">{{ device.deviceId }}</option>
+        </select>
       </div>
-      <div class="row">
-        <div class="col">
+      <div class="col">
+        <p class="fw-bold mb-1">Point</p>
+        <select class="form-select" v-model="selectedPoint">
+          <option v-for="point in points" :value="point">{{ point }}</option>
+        </select>
+      </div>
+      <div class="col">
+        <p class="fw-bold mb-1">Windowing mode</p>
+        <select class="form-select" v-model="selectedMode">
+          <option value="none">None</option>
+          <option value="diff">Difference</option>
+          <option value="mean">Mean</option>
+        </select>
+      </div>
+      <div class="col">
+        <p class="fw-bold mb-1">Window</p>
+        <select class="form-select" v-model="selectedWindow" :disabled="selectedMode == 'none'">
+          <option value="1m">1 minute</option>
+          <option value="5m">5 minutes</option>
+          <option value="15m">15 minutes</option>
+          <option value="30m">30 minutes</option>
+          <option value="1h">1 hour</option>
+          <option value="6h">6 hours</option>
+          <option value="12h">12 hours</option>
+          <option value="1d">1 day</option>
+          <option value="1w">1 week</option>
+          <option value="1mo">1 month</option>
+          <option value="1y">1 year</option>
+        </select>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col">
+        <p class="fw-bold mb-1">Range type</p>
+        <select class="form-select" v-model="selectedRangeType">
+          <option value="relative">Relative</option>
+          <option value="absolute">Absolute</option>
+        </select>
+      </div>
+      <div class="col">
+        <div v-if="selectedRangeType == 'relative'">
           <p class="fw-bold mb-1">Relative since</p>
           <select class="form-select" v-model="selectedSince">
             <option value="12h">12 hours</option>
             <option value="1d">1 day</option>
             <option value="1w">1 week</option>
-            <option value="4w">4 weeks</option>
-          </select>
+            <option value="1mo">1 month</option>
+            <option value="1y">1 year</option>
+          </select>          
         </div>
-        <div class="col">
-          <p class="fw-bold mb-1">Relative to</p>
-          TODO
-        </div>
-        <div class="col">
+        <div v-else>
           <p class="fw-bold mb-1">Absolute from</p>
           TODO
         </div>
-        <div class="col">
+      </div>
+      <div class="col">
+        <div v-if="selectedRangeType == 'relative'">
+          <p class="fw-bold mb-1">Relative to</p>
+          TODO          
+        </div>
+        <div v-else>
           <p class="fw-bold mb-1">Absolute to</p>
           TODO
         </div>
       </div>
+      <div class="col"></div>
     </div>
-    <div class="spinner-border mt-3" role="status" v-if="fetching">
+    <div class="row mt-3">
+      <div class="col">
+        <p class="fw-bold mb-1">Chart type</p>
+        <select class="form-select" v-model="selectedChartType">
+          <option value="bar">Bar</option>
+        </select>
+      </div>
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+    <div class="spinner-border mt-5" role="status" v-if="fetching">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <table class="table mt-3" v-if="!fetching">
-      <thead>
-        <tr>
-          <th scope="col">Timestamp</th>
-          <th scope="col">Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-for="item in data">
-          <tr>
-            <td>{{ item.time }}</td>
-            <td>{{ item.value }}</td>
-          </tr>
-        </template>
-      </tbody>
-    </table>
+    <div class="row mt-3" v-if="!fetching">
+      <div class="col">
+        <BarChart :data="data" class="mt-5" />
+      </div>
+      <div class="col">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="item in data">
+              <tr>
+                <td>{{ item.time }}</td>
+                <td>{{ item.value }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import api from '../../api'
+import BarChart from '../../components/admin/BarChart.vue'
 export default {
+  components: { BarChart },
   data() {
     return {
       selectedDevice: '',
@@ -105,6 +138,8 @@ export default {
       selectedMode: 'none',
       selectedWindow: '1d',
       selectedSince: '1d',
+      selectedRangeType: 'relative',
+      selectedChartType: 'bar',
       data: [],
       fetching: false
     };
@@ -131,7 +166,7 @@ export default {
       if(this.nextSelectedPoint) {
         this.selectedPoint = this.nextSelectedPoint
         this.nextSelectedPoint = null
-      } else {
+      } else if (!this.selectedPoint) {
         this.selectedPoint = this.points[0]
       }
     },

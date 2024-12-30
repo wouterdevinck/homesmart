@@ -59,14 +59,14 @@ export default {
   },
 
   getData(cb, device, point, diffWindow, meanWindow, since, toAgo, from, to) {
-    var dataurl = new URL(`${url}/api/v1/devices/${device}/data/${point}`)
-    if(diffWindow) dataurl.searchParams.append('diffWindow', diffWindow)
-    if(meanWindow) dataurl.searchParams.append('meanWindow', meanWindow)
-    if(since) dataurl.searchParams.append('since', since)
-    if(toAgo) dataurl.searchParams.append('toAgo', toAgo)
-    if(from) dataurl.searchParams.append('from', from)
-    if(to) dataurl.searchParams.append('to', to)
-    axios.get(dataurl.toString()).then((response) => {
+    const searchParams = new URLSearchParams();
+    if(diffWindow) searchParams.append('diffWindow', diffWindow)
+    if(meanWindow) searchParams.append('meanWindow', meanWindow)
+    if(since) searchParams.append('since', since)
+    if(toAgo) searchParams.append('toAgo', toAgo)
+    if(from) searchParams.append('from', from)
+    if(to) searchParams.append('to', to)
+    axios.get(`${url}/api/v1/devices/${device}/data/${point}?${searchParams.toString()}`).then((response) => {
       cb(response.data)
     })
   }
