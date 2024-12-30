@@ -6,8 +6,6 @@ namespace Home.Telemetry {
 
     internal static class FluxQuery {
 
-        // TODO Return too much data: v1/devices/sensor-living/data/temperature?meanWindow=1h&since=12h
-
         private static string FluxCommonOptions(string timezone) {
             return
                 "import \"timezone\"\n" +
@@ -52,7 +50,6 @@ namespace Home.Telemetry {
                 $" |> range({TimeRangeToFlux(range)})\n" +
                 FluxCommonFilters(device, point) +
                 $" |> aggregateWindow(every: duration(v: \"{window}\"){OffsetIfNeeded(window)}, fn: mean, createEmpty: false)\n" +
-                " |> yield(name: \"mean\")\n" +
                 FluxCommonDrop();
         }
 
