@@ -6,14 +6,12 @@ namespace Home.Telemetry {
 
     internal static class FluxQuery {
 
-        // TODO Add month and year time ranges
-        // TODO Pass timezone as parameter, from configuration
         // TODO Return too much data: v1/devices/sensor-living/data/temperature?meanWindow=1h&since=12h
 
-        private static string FluxCommonOptions() {
+        private static string FluxCommonOptions(string timezone) {
             return
                 "import \"timezone\"\n" +
-                "option location = timezone.location(name: \"Europe/Brussels\")\n";
+                $"option location = timezone.location(name: \"{timezone}\")\n";
         }
 
         private static string FluxCommonBucket(string bucket) {
@@ -33,7 +31,6 @@ namespace Home.Telemetry {
 
         public static string AllData(string bucket, string device, string point, TimeRange range) {
             return
-                FluxCommonOptions() +
                 FluxCommonBucket(bucket) +
                 $" |> range({TimeRangeToFlux(range)})\n" +
                 FluxCommonFilters(device, point) +
@@ -48,20 +45,20 @@ namespace Home.Telemetry {
                 FluxCommonDrop();
         }
 
-        public static string MeanWindow(string bucket, string device, string point, TimeRange range, RelativeTime window) {
+        public static string MeanWindow(string timezone, string bucket, string device, string point, TimeRange range, RelativeTime window) {
             return
-                FluxCommonOptions() +
+                FluxCommonOptions(timezone) +
                 FluxCommonBucket(bucket) +
                 $" |> range({TimeRangeToFlux(range)})\n" +
                 FluxCommonFilters(device, point) +
-                $" |> aggregateWindow(every: duration(v: \"{window}\"), fn: mean, createEmpty: false)\n" +
+                $" |> aggregateWindow(every: duration(v: \"{window}\"){OffsetIfNeeded(window)}, fn: mean, createEmpty: false)\n" +
                 " |> yield(name: \"mean\")\n" +
                 FluxCommonDrop();
         }
 
-        public static string DiffWindow(string bucket, string device, string point, TimeRange range, RelativeTime window) {
+        public static string DiffWindow(string timezone, string bucket, string device, string point, TimeRange range, RelativeTime window) {
             return
-                FluxCommonOptions() + "\n" +
+                FluxCommonOptions(timezone) + "\n" +
                 "t1 = " + FluxCommonBucket(bucket) +
                 $" |> range({TimeRangeToFlux(range.BeginningOfTimeToStartOfTimeRange())})\n" +
                 " |> last()\n" +
@@ -70,7 +67,7 @@ namespace Home.Telemetry {
                 $" |> range({TimeRangeToFlux(range)})\n" +
                 FluxCommonFilters(device, point) + "\n" +
                 "union(tables: [t1, t2])\n" +
-                $" |> aggregateWindow(every: duration(v: \"{window}\"), fn: last, createEmpty: false)\n" +
+                $" |> aggregateWindow(every: duration(v: \"{window}\"){OffsetIfNeeded(window)}, fn: last, createEmpty: false)\n" +
                 " |> difference(nonNegative: true)\n" +
                 FluxCommonDrop();
         }
@@ -114,6 +111,16 @@ namespace Home.Telemetry {
                 }
             }
             return str.ToString();
+        }
+
+        // Flux increments weeks from the Unix epoch, which was a Thursday. Because of this, by default, all 1w windows begin on Thursday.
+        // Use the offset parameter to shift the start of weekly windows to the desired day of the week. -3d shifts the start of the week to Monday.
+        // https://docs.influxdata.com/flux/v0/stdlib/universe/aggregatewindow/#downsample-by-calendar-week-starting-on-monday
+        private static string OffsetIfNeeded(RelativeTime window) {
+            if (window.Unit == TimeUnit.Weeks) {
+                return ", offset: -3d";
+            }
+            return string.Empty;
         }
 
     }

@@ -62,12 +62,12 @@ namespace Home.Telemetry {
 
         public async Task<IEnumerable<IDataPoint>> GetWindowDifference(string device, string point, TimeRange range, RelativeTime window) {
             var pointCase = await PointCaseFromMetadata(device, point);
-            return await GetData(FluxQuery.DiffWindow(_configuration.Bucket, device, pointCase, range, window));
+            return await GetData(FluxQuery.DiffWindow(_configuration.Timezone, _configuration.Bucket, device, pointCase, range, window));
         }
 
         public async Task<IEnumerable<IDataPoint>> GetWindowMean(string device, string point, TimeRange range, RelativeTime window) {
             var pointCase = await PointCaseFromMetadata(device, point);
-            return await GetData(FluxQuery.MeanWindow(_configuration.Bucket, device, pointCase, range, window));
+            return await GetData(FluxQuery.MeanWindow(_configuration.Timezone, _configuration.Bucket, device, pointCase, range, window));
         }
 
         public async Task<IEnumerable<DataPointsMetadata>> GetMetadata() {

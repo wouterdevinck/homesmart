@@ -403,6 +403,7 @@ telemetry:
     token: $influxdbToken
     bucket: homesmart
     organization: homesmart
+    timezone: Europe/Brussels
     data:
       - deviceIds: 
           - sensor-living

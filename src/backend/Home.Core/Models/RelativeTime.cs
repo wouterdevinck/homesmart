@@ -16,8 +16,12 @@ namespace Home.Core.Models {
         }
 
         public RelativeTime(string str) {
-            Value = double.Parse(str.Substring(0, str.Length - 1));
-            Unit = StringToTimeUnit(str.Substring(str.Length - 1));
+            var unitLength = 1;
+            if (str.EndsWith("mo")) {
+                unitLength = 2;
+            }
+            Value = double.Parse(str[..^unitLength]);
+            Unit = StringToTimeUnit(str[^unitLength..]);
         }
 
         public override string ToString() {
@@ -31,6 +35,8 @@ namespace Home.Core.Models {
                 TimeUnit.Hours => TimeSpan.FromHours(Value),
                 TimeUnit.Days => TimeSpan.FromDays(Value),
                 TimeUnit.Weeks => TimeSpan.FromDays(Value * 7),
+                TimeUnit.Months => TimeSpan.FromDays(Value * 30),
+                TimeUnit.Years => TimeSpan.FromDays(Value * 365),
                 _ => TimeSpan.MinValue
             };
         }
@@ -42,6 +48,8 @@ namespace Home.Core.Models {
                 TimeUnit.Hours => "h",
                 TimeUnit.Days => "d",
                 TimeUnit.Weeks => "w",
+                TimeUnit.Months => "mo",
+                TimeUnit.Years => "y",
                 _ => string.Empty
             };
         }
@@ -53,6 +61,8 @@ namespace Home.Core.Models {
                 "h" => TimeUnit.Hours,
                 "d" => TimeUnit.Days,
                 "w" => TimeUnit.Weeks,
+                "mo" => TimeUnit.Months,
+                "y" => TimeUnit.Years,
                 _ => TimeUnit.Hours
             };
         }
@@ -64,7 +74,9 @@ namespace Home.Core.Models {
         Minutes,
         Hours,
         Days,
-        Weeks
+        Weeks,
+        Months,
+        Years
     }
 
     public enum TimeRangeType {
