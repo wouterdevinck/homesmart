@@ -2,12 +2,12 @@
   <div>
     <div class="row">
       <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1d', '1w')">Daily water use</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1w', '1mo')">Weekly water use</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastmonthenergy', 'diff', '1d', '1w')">Daily solar</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastyearenergy', 'diff', '1mo', '1y')">Monthly solar</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'plug-tv', 'energy', 'diff', '1d', '1w')">Daily energy use of a plug</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'sensor-living', 'temperature', 'mean', '1h', '12h')">Living room temperature</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1d', '1w', 'bar')">Daily water use</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1w', '1mo', 'bar')">Weekly water use</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastmonthenergy', 'diff', '1d', '1w', 'bar')">Daily solar</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastyearenergy', 'diff', '1mo', '1y', 'bar')">Monthly solar</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'plug-tv', 'energy', 'diff', '1d', '1w', 'bar')">Daily energy use of a plug</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'sensor-living', 'temperature', 'mean', '1h', '12h', 'line')">Living room temperature</button>
       </div>
     </div>
     <div class="row mt-3">
@@ -89,6 +89,7 @@
         <p class="fw-bold mb-1">Chart type</p>
         <select class="form-select" v-model="selectedChartType">
           <option value="bar">Bar</option>
+          <option value="line">Line</option>
         </select>
       </div>
       <div class="col"></div>
@@ -100,7 +101,8 @@
     </div>
     <div class="row mt-3" v-if="!fetching">
       <div class="col">
-        <BarChart :data="data" class="mt-5" />
+        <BarChart :data="data" class="mt-5" v-if="selectedChartType == 'bar'" />
+        <LineChart :data="data" class="mt-5" v-if="selectedChartType == 'line'" />
       </div>
       <div class="col">
         <table class="table">
@@ -128,8 +130,9 @@
 import { mapState } from 'vuex'
 import api from '../../api'
 import BarChart from '../../components/admin/BarChart.vue'
+import LineChart from '../../components/admin/LineChart.vue'
 export default {
-  components: { BarChart },
+  components: { BarChart, LineChart },
   data() {
     return {
       selectedDevice: '',
@@ -192,13 +195,14 @@ export default {
         diffWindow, meanWindow, this.selectedSince)
       }
     },
-    preset: function (event, device, point, mode, window, since) {
+    preset: function (event, device, point, mode, window, since, chartType) {
       this.selectedDevice = device
       this.selectedPoint = point
       this.nextSelectedPoint = this.selectedPoint
       this.selectedMode = mode
       this.selectedWindow = window
       this.selectedSince = since
+      this.selectedChartType = chartType
     },
   }
 }
