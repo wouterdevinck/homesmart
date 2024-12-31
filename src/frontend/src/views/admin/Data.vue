@@ -160,6 +160,10 @@ export default {
   },
   created () {
     this.$store.dispatch('getMetadata')
+    var self = this
+    setInterval(function() {
+      self.getData(true)
+    }, 10000)
   },
   watch: {
     metadata() {
@@ -169,7 +173,7 @@ export default {
       if(this.nextSelectedPoint) {
         this.selectedPoint = this.nextSelectedPoint
         this.nextSelectedPoint = null
-      } else if (!this.selectedPoint) {
+      } else if (!this.selectedPoint || !this.points.includes(this.selectedPoint)) {
         this.selectedPoint = this.points[0]
       }
     },
@@ -178,9 +182,9 @@ export default {
     }
   },
   methods: {
-    getData() {
+    getData(silent = false) {
       if(this.selectedDevice && this.selectedPoint) {
-        this.fetching = true
+        this.fetching = !silent
         let diffWindow = null
         let meanWindow = null
         if(this.selectedMode == 'diff') {
