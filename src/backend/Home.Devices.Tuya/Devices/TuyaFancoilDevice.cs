@@ -43,10 +43,10 @@ namespace Home.Devices.Tuya.Devices {
         [DeviceProperty]
         public bool On { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "\u00b0C")]
         public double Temperature { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "\u00b0C")]
         public double RequestedTemperature { get; private set; }
 
         [DeviceProperty]

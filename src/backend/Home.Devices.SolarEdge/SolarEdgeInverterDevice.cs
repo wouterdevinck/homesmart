@@ -23,28 +23,28 @@ namespace Home.Devices.SolarEdge {
         private readonly Timer _timer;
         private readonly TimeZoneInfo _timezone;
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "Wh")]
         public double LifeTimeEnergy { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "Wh")]
         public double LastYearEnergy { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "Wh")]
         public double LastMonthEnergy { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "Wh")]
         public double LastDayEnergy { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "W")]
         public double CurrentPower { get; private set; }
 
         [DeviceProperty]
         public DateTime LastSeen { get; protected set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "Wh")]
         public double PreviousQuarterEnergy { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "W")]
         public double PreviousQuarterPower { get; private set; }
 
         public SolarEdgeInverterDevice(HomeConfigurationModel home, ILogger logger, SolarEdgeApiClient api, EquipmentModel inverter, TimeZoneInfo timezone) : base(home, $"SOLAREDGE-{inverter.SerialNumber}") {

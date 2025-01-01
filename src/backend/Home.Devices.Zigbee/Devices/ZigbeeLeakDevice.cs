@@ -11,7 +11,7 @@ namespace Home.Devices.Zigbee.Devices {
     [Device]
     public partial class ZigbeeLeakDevice : ZigbeeDevice, IBatteryDevice, IWaterLeakSensor {
 
-        [DeviceProperty]
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Battery { get; private set; }
         
         [DeviceProperty]

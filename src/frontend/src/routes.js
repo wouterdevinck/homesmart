@@ -50,5 +50,9 @@ export const routes = [
     path: '/development',
     meta: { title: 'Development', navigation: true },
     component: () => import('./views/admin/Development.vue')
+  }, {
+    path: '/data',
+    meta: { title: 'Data', navigation: true },
+    component: () => import('./views/admin/Data.vue')
   },
 ]

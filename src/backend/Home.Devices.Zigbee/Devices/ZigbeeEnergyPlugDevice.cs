@@ -13,16 +13,16 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty]
         public bool Locked { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "A")]
         public double Current { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "W")]
         public double Power { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "V")]
         public double Voltage { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "kWh")]
         public double Energy { get; private set; }
 
         //[DeviceProperty]

@@ -12,8 +12,8 @@ namespace Home.Devices.Hue.Devices {
 
     [Device]
     public partial class HueSwitchDevice : HueDevice, IBatteryDevice {
-    
-        [DeviceProperty]
+
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Battery { get; private set; }
 
         //    [DeviceProperty]

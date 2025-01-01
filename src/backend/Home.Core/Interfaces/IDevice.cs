@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Home.Core.Models;
 
 namespace Home.Core.Interfaces {
 
@@ -27,6 +28,8 @@ namespace Home.Core.Interfaces {
         Task InvokeCommand(string command, Dictionary<string, object> args = null);
 
         void Update(IDevice device);
+
+        PropertyInfo GetPropertyInfo(string point);
 
     }
 

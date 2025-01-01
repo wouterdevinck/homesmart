@@ -1,17 +1,17 @@
-using System.Threading.Tasks;
 using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Home.Core.Configuration;
 using Home.Core.Interfaces;
+using Home.Core.Remote;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Devices.Client;
+using Microsoft.Azure.SignalR.Management;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Net.Http;
-using Home.Core.Remote;
-using System.Text;
 using Newtonsoft.Json.Serialization;
-using Microsoft.Azure.SignalR.Management;
-using System.Threading;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Home.Remote {
 

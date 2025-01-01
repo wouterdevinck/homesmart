@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Home.Core.Attributes;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
+using Home.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Home.Core {
@@ -179,6 +181,32 @@ namespace Home.Core {
 
         public IRemote GetRemote() {
             return _remote;
+        }
+
+        public async Task<DataSet> GetData(string deviceId, string point, string since, string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow) {
+            if (string.IsNullOrEmpty(since)) since = "24h";
+            TimeRange range;
+            IEnumerable<IDataPoint> points;
+            if (from != null) {
+                if (to != null) {
+                    range = new TimeRange(from.Value, to.Value);
+                } else {
+                    range = new TimeRange(from.Value);
+                }
+            } else if (string.IsNullOrEmpty(toAgo)) {
+                range = new TimeRange(new RelativeTime(since));
+            } else {
+                range = new TimeRange(new RelativeTime(since), new RelativeTime(toAgo));
+            }
+            if (!string.IsNullOrEmpty(diffWindow)) {
+                points = await _telemetry.GetWindowDifference(deviceId, point, range, new RelativeTime(diffWindow));
+            } else if (!string.IsNullOrEmpty(meanWindow)) {
+                points = await _telemetry.GetWindowMean(deviceId, point, range, new RelativeTime(meanWindow));
+            } else {
+                points = await _telemetry.GetAllData(deviceId, point, range);
+            }
+            var unit = GetDevices().SingleOrDefault(x => x.HasId(deviceId))?.GetPropertyInfo(point)?.Unit ?? string.Empty;
+            return new DataSet(deviceId, point, unit, points);
         }
 
     }

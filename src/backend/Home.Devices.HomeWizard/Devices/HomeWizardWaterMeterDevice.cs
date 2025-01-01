@@ -11,10 +11,10 @@ namespace Home.Devices.HomeWizard.Devices {
     [Device]
     public partial class HomeWizardWaterMeterDevice : HomeWizardDevice, IWatermeter {
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "l")]
         public int TotalLiters { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "lpm")]
         public double LitersPerMinute { get; private set;  }
 
         public HomeWizardWaterMeterDevice(HomeConfigurationModel home, HomeWizardApiClient api, DeviceModel device) : base(home, api, device, $"HW-WATER-{device.Serial}") {
