@@ -12,12 +12,13 @@ export default {
   data() {
     return {
       chartData: {
-        labels: this.data.map(x => x.time), // TODO map to labels depending on window (or do server side?)
+        labels: this.data.points?.map(x => x.time), // TODO map to labels depending on window (or do server side?)
         datasets: [ { 
-          data: this.data.map(x => x.value), // TODO Add zeros for missing data points or do server side?
+          data: this.data.points?.map(x => x.value), // TODO Add zeros for missing data points or do server side?
           backgroundColor: '#9EA1D4',
           borderColor: '#9EA1D4',
-          tension: 0.4
+          tension: 0.4,
+          unit: this.getUnitFormat(this.data.unit)
         } ]
       },
       chartOptions: {
@@ -31,7 +32,7 @@ export default {
             enabled: true,
             callbacks: {
               label: function(context) {
-                return context.parsed.y // + ' unit' // TODO Get correct unit from server? From metadata from configuration?
+                return context.parsed.y + context.dataset.unit
               }
             }
           }

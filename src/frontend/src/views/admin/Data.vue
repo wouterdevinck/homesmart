@@ -113,7 +113,7 @@
             </tr>
           </thead>
           <tbody>
-            <template v-for="item in data">
+            <template v-for="item in data.points">
               <tr>
                 <td>{{ item.time }}</td>
                 <td>{{ item.value }}</td>
