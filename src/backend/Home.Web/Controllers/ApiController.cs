@@ -26,7 +26,7 @@ namespace Home.Web.Controllers {
 
         [HttpGet]
         [Route("devices/{id}/data/{point}")]
-        public async Task<IEnumerable<IDataPoint>> AllData(string id, string point, [FromQuery] string since, [FromQuery] string toAgo, [FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] string meanWindow, [FromQuery] string diffWindow) {
+        public async Task<DataSet> AllData(string id, string point, [FromQuery] string since, [FromQuery] string toAgo, [FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] string meanWindow, [FromQuery] string diffWindow) {
             return await home.GetData(id, point, since, toAgo, from, to, meanWindow, diffWindow);
         }
 

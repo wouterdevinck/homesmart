@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Home.Core.Attributes;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
@@ -182,9 +183,10 @@ namespace Home.Core {
             return _remote;
         }
 
-        public async Task<IEnumerable<IDataPoint>> GetData(string id, string point, string since, string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow) {
+        public async Task<DataSet> GetData(string deviceId, string point, string since, string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow) {
             if (string.IsNullOrEmpty(since)) since = "24h";
             TimeRange range;
+            IEnumerable<IDataPoint> points;
             if (from != null) {
                 if (to != null) {
                     range = new TimeRange(from.Value, to.Value);
@@ -197,12 +199,14 @@ namespace Home.Core {
                 range = new TimeRange(new RelativeTime(since), new RelativeTime(toAgo));
             }
             if (!string.IsNullOrEmpty(diffWindow)) {
-                return await _telemetry.GetWindowDifference(id, point, range, new RelativeTime(diffWindow));
+                points = await _telemetry.GetWindowDifference(deviceId, point, range, new RelativeTime(diffWindow));
+            } else if (!string.IsNullOrEmpty(meanWindow)) {
+                points = await _telemetry.GetWindowMean(deviceId, point, range, new RelativeTime(meanWindow));
+            } else {
+                points = await _telemetry.GetAllData(deviceId, point, range);
             }
-            if (!string.IsNullOrEmpty(meanWindow)) {
-                return await _telemetry.GetWindowMean(id, point, range, new RelativeTime(meanWindow));
-            }
-            return await _telemetry.GetAllData(id, point, range);
+            var unit = GetDevices().SingleOrDefault(x => x.HasId(deviceId))?.GetPropertyInfo(point)?.Unit ?? string.Empty;
+            return new DataSet(deviceId, point, unit, points);
         }
 
     }

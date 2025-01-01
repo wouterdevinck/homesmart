@@ -2,12 +2,12 @@
   <div>
     <div class="row">
       <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1d', '1w', 'bar')">Daily water use</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'watermeter', 'totalliters', 'diff', '1w', '1mo', 'bar')">Weekly water use</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastmonthenergy', 'diff', '1d', '1w', 'bar')">Daily solar</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'solar', 'lastyearenergy', 'diff', '1mo', '1y', 'bar')">Monthly solar</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'plug-tv', 'energy', 'diff', '1d', '1w', 'bar')">Daily energy use of a plug</button>
-        <button type="button" class="btn btn-outline-primary" @click="preset($event, 'sensor-living', 'temperature', 'mean', '1h', '12h', 'line')">Living room temperature</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset('watermeter', 'totalliters', 'diff', '1d', '1w', 'bar')">Daily water use</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset('watermeter', 'totalliters', 'diff', '1w', '1mo', 'bar')">Weekly water use</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset('solar', 'lastmonthenergy', 'diff', '1d', '1w', 'bar')">Daily solar</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset('solar', 'lastyearenergy', 'diff', '1mo', '1y', 'bar')">Monthly solar</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset('plug-tv', 'energy', 'diff', '1d', '1w', 'bar')">Daily energy use of a plug</button>
+        <button type="button" class="btn btn-outline-primary" @click="preset('sensor-living', 'temperature', 'mean', '1h', '12h', 'line')">Living room temperature</button>
       </div>
     </div>
     <div class="row mt-3">
@@ -199,7 +199,7 @@ export default {
         diffWindow, meanWindow, this.selectedSince)
       }
     },
-    preset: function (event, device, point, mode, window, since, chartType) {
+    preset: function (device, point, mode, window, since, chartType) {
       this.selectedDevice = device
       this.selectedPoint = point
       this.nextSelectedPoint = this.selectedPoint
