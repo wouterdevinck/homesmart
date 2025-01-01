@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using Home.Core;
 using Home.Core.Configuration;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Interfaces;
 using Home.Core.Models;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Home.Automations {
 

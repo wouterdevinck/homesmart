@@ -27,27 +27,7 @@ namespace Home.Web.Controllers {
         [HttpGet]
         [Route("devices/{id}/data/{point}")]
         public async Task<IEnumerable<IDataPoint>> AllData(string id, string point, [FromQuery] string since, [FromQuery] string toAgo, [FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] string meanWindow, [FromQuery] string diffWindow) {
-            if (string.IsNullOrEmpty(since)) since = "24h";
-            TimeRange range;
-            if (from != null) {
-                if (to != null) {
-                    range = new TimeRange(from.Value, to.Value);
-                } else {
-                    range = new TimeRange(from.Value);
-                }
-            } else if (string.IsNullOrEmpty(toAgo)) {
-                range = new TimeRange(new RelativeTime(since));
-            } else {
-                range = new TimeRange(new RelativeTime(since), new RelativeTime(toAgo));
-            }
-            var telemetry = home.GetTelemetry();
-            if (!string.IsNullOrEmpty(diffWindow)) {
-                return await telemetry.GetWindowDifference(id, point, range, new RelativeTime(diffWindow));
-            }
-            if (!string.IsNullOrEmpty(meanWindow)) {
-                return await telemetry.GetWindowMean(id, point, range, new RelativeTime(meanWindow));
-            }
-            return await telemetry.GetAllData(id, point, range);
+            return await home.GetData(id, point, since, toAgo, from, to, meanWindow, diffWindow);
         }
 
         [HttpGet]

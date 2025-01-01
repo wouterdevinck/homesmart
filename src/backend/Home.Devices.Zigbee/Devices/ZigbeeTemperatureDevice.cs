@@ -11,16 +11,16 @@ namespace Home.Devices.Zigbee.Devices {
     [Device]
     public partial class ZigbeeTemperatureDevice : ZigbeeDevice, IBatteryDevice, ITemperatureSensor, IHumiditySensor, IPressureSensor {
 
-        [DeviceProperty]
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Battery { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Humidity { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "hPa")]
         public double Pressure { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "\u00b0C")]
         public double Temperature { get; private set; }
 
         public ZigbeeTemperatureDevice(HomeConfigurationModel home, DeviceModel model, IManagedMqttClient mqtt, ZigbeeConfiguration configuration) : base(home, model, mqtt, configuration) {

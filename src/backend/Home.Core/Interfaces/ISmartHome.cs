@@ -1,7 +1,7 @@
-using Home.Core.Configuration.Models;
-using Home.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Home.Core.Configuration.Models;
 
 namespace Home.Core.Interfaces {
 
@@ -12,6 +12,8 @@ namespace Home.Core.Interfaces {
         IEnumerable<IAutomation> GetAutomations();
         ITelemetry GetTelemetry();
         IRemote GetRemote();
+
+        Task<IEnumerable<IDataPoint>> GetData(string id, string point, string since,string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow);
 
     }
 

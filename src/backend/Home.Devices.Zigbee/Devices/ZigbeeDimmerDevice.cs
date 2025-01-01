@@ -18,7 +18,7 @@ namespace Home.Devices.Zigbee.Devices {
 
         // TODO Support pressing and holding buttons with release events and action_duration property
 
-        [DeviceProperty]
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Battery { get; private set; }
 
         [DeviceProperty]

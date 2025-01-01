@@ -19,7 +19,8 @@ namespace Home.Devices.Hue.Devices {
             if (light.ColorTemperature != null) ColorTemperature = light.ColorTemperature.Mirek ?? 0;
         }
 
-        [DeviceProperty] public int ColorTemperature { get; private set; }
+        [DeviceProperty<int>(Unit = "mirek", Min = 153, Max = 500)]
+        public int ColorTemperature { get; private set; }
 
         [DeviceCommand]
         public async Task SetColorTemperatureAsync(int ct) {

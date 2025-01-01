@@ -1,6 +1,6 @@
-using Home.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Home.Core.Models;
 
 namespace Home.Core.Interfaces {
 

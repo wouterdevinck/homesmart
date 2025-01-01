@@ -6,6 +6,7 @@ using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
+using Home.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Home.Core {
@@ -179,6 +180,29 @@ namespace Home.Core {
 
         public IRemote GetRemote() {
             return _remote;
+        }
+
+        public async Task<IEnumerable<IDataPoint>> GetData(string id, string point, string since, string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow) {
+            if (string.IsNullOrEmpty(since)) since = "24h";
+            TimeRange range;
+            if (from != null) {
+                if (to != null) {
+                    range = new TimeRange(from.Value, to.Value);
+                } else {
+                    range = new TimeRange(from.Value);
+                }
+            } else if (string.IsNullOrEmpty(toAgo)) {
+                range = new TimeRange(new RelativeTime(since));
+            } else {
+                range = new TimeRange(new RelativeTime(since), new RelativeTime(toAgo));
+            }
+            if (!string.IsNullOrEmpty(diffWindow)) {
+                return await _telemetry.GetWindowDifference(id, point, range, new RelativeTime(diffWindow));
+            }
+            if (!string.IsNullOrEmpty(meanWindow)) {
+                return await _telemetry.GetWindowMean(id, point, range, new RelativeTime(meanWindow));
+            }
+            return await _telemetry.GetAllData(id, point, range);
         }
 
     }
