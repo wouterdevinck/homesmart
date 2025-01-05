@@ -102,7 +102,7 @@ namespace Home.Core {
                         _telemetry = impl;
                         impl.Install(this);
                     },
-                    (l, c) => [l, c]
+                    (l, c) => [l, c, _configuration.Global]
                 );
             }
 
@@ -199,9 +199,13 @@ namespace Home.Core {
                 range = new TimeRange(new RelativeTime(since), new RelativeTime(toAgo));
             }
             if (!string.IsNullOrEmpty(diffWindow)) {
-                points = await _telemetry.GetWindowDifference(deviceId, point, range, new RelativeTime(diffWindow));
+                var window = new RelativeTime(diffWindow);
+                var tmp = await _telemetry.GetWindowDifference(deviceId, point, range, window);
+                points = tmp.Select(x => new LabeledDataPoint(x, window, _configuration.Global));
             } else if (!string.IsNullOrEmpty(meanWindow)) {
-                points = await _telemetry.GetWindowMean(deviceId, point, range, new RelativeTime(meanWindow));
+                var window = new RelativeTime(meanWindow);
+                var tmp = await _telemetry.GetWindowMean(deviceId, point, range, window);
+                points = tmp.Select(x => new LabeledDataPoint(x, window, _configuration.Global));
             } else {
                 points = await _telemetry.GetAllData(deviceId, point, range);
             }

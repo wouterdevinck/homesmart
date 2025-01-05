@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Configuration;
+using Home.Core.Configuration.Models;
 using Home.Core.Interfaces;
 using Home.Core.Models;
 using InfluxDB.Client;
@@ -28,9 +29,12 @@ namespace Home.Telemetry {
         private Dictionary<string, List<string>> _metadata;
         private DateTime _lastMetadataRefresh;
 
-        public InfluxDbTelemetry(ILogger logger, InfluxDbTelemetryConfiguration configuration) : base(GetDeviceIdList(configuration)) {
+        private readonly string _timezone;
+
+        public InfluxDbTelemetry(ILogger logger, InfluxDbTelemetryConfiguration configuration, GlobalConfigurationModel global) : base(GetDeviceIdList(configuration)) {
             _logger = logger;
             _configuration = configuration;
+            _timezone = global.Timezone;
             _client = new InfluxDBClient(_configuration.Url, _configuration.Token);
         }
 
@@ -62,12 +66,12 @@ namespace Home.Telemetry {
 
         public async Task<IEnumerable<IDataPoint>> GetWindowDifference(string device, string point, TimeRange range, RelativeTime window) {
             var pointCase = await PointCaseFromMetadata(device, point);
-            return await GetData(FluxQuery.DiffWindow(_configuration.Timezone, _configuration.Bucket, device, pointCase, range, window));
+            return await GetData(FluxQuery.DiffWindow(_timezone, _configuration.Bucket, device, pointCase, range, window));
         }
 
         public async Task<IEnumerable<IDataPoint>> GetWindowMean(string device, string point, TimeRange range, RelativeTime window) {
             var pointCase = await PointCaseFromMetadata(device, point);
-            return await GetData(FluxQuery.MeanWindow(_configuration.Timezone, _configuration.Bucket, device, pointCase, range, window));
+            return await GetData(FluxQuery.MeanWindow(_timezone, _configuration.Bucket, device, pointCase, range, window));
         }
 
         public async Task<IEnumerable<DataPointsMetadata>> GetMetadata() {
