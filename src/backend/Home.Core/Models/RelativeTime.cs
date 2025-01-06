@@ -10,6 +10,11 @@ namespace Home.Core.Models {
         public static implicit operator RelativeTime(string time) => new(time);
         public static implicit operator TimeSpan(RelativeTime time) => time.ToTimeSpan();
 
+        // Note: These are for months and years more accurate than the implicit conversion
+        // to timespan above, since months and years are not fixed lengths.
+        public static DateTime operator +(DateTime a, RelativeTime b) => b.AddToDateTime(a);
+        public static DateTime operator -(DateTime a, RelativeTime b) => b.AddToDateTime(a, true);
+
         public RelativeTime(double value, TimeUnit unit) {
             Value = value;
             Unit = unit;
@@ -38,6 +43,20 @@ namespace Home.Core.Models {
                 TimeUnit.Months => TimeSpan.FromDays(Value * 30),
                 TimeUnit.Years => TimeSpan.FromDays(Value * 365),
                 _ => TimeSpan.MinValue
+            };
+        }
+
+        public DateTime AddToDateTime(DateTime time, bool subtract = false) {
+            var m = subtract ? -1 : 1;
+            return Unit switch {
+                TimeUnit.Seconds => time.AddSeconds(m * Value),
+                TimeUnit.Minutes => time.AddMinutes(m * Value),
+                TimeUnit.Hours => time.AddHours(m * Value),
+                TimeUnit.Days => time.AddDays(m * Value),
+                TimeUnit.Weeks => time.AddDays(m * Value * 7),
+                TimeUnit.Months => time.AddMonths(m * (int)Value),
+                TimeUnit.Years => time.AddYears(m * (int)Value),
+                _ => time
             };
         }
 
