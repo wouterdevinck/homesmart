@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Home.Core.Attributes;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
@@ -188,11 +187,7 @@ namespace Home.Core {
             TimeRange range;
             IEnumerable<IDataPoint> points;
             if (from != null) {
-                if (to != null) {
-                    range = new TimeRange(from.Value, to.Value);
-                } else {
-                    range = new TimeRange(from.Value);
-                }
+                range = to != null ? new TimeRange(from.Value, to.Value) : new TimeRange(from.Value);
             } else if (string.IsNullOrEmpty(toAgo)) {
                 range = new TimeRange(new RelativeTime(since));
             } else {
@@ -200,17 +195,47 @@ namespace Home.Core {
             }
             if (!string.IsNullOrEmpty(diffWindow)) {
                 var window = new RelativeTime(diffWindow);
-                var tmp = await _telemetry.GetWindowDifference(deviceId, point, range, window);
-                points = tmp.Select(x => new LabeledDataPoint(x, window, _configuration.Global));
+                points = LabelDataWindows(await _telemetry.GetWindowDifference(deviceId, point, range, window), window, range);
             } else if (!string.IsNullOrEmpty(meanWindow)) {
                 var window = new RelativeTime(meanWindow);
-                var tmp = await _telemetry.GetWindowMean(deviceId, point, range, window);
-                points = tmp.Select(x => new LabeledDataPoint(x, window, _configuration.Global));
+                points = LabelDataWindows(await _telemetry.GetWindowMean(deviceId, point, range, window), window, range);
             } else {
                 points = await _telemetry.GetAllData(deviceId, point, range);
             }
             var unit = GetDevices().SingleOrDefault(x => x.HasId(deviceId))?.GetPropertyInfo(point)?.Unit ?? string.Empty;
             return new DataSet(deviceId, point, unit, points);
+        }
+
+        private IEnumerable<IDataPoint> LabelDataWindows(IEnumerable<IDataPoint> data, RelativeTime window, TimeRange range) {
+            List<IDataPoint> points = [];
+            var dataPoints = data.ToList();
+            var time = dataPoints.First().Time - window;
+            var prevTime = DateTime.UnixEpoch;
+            while (range.IsInRange(time, window)) {
+                points.Insert(0, new LabeledDataPoint(time, 0, window, _configuration.Global, time - window));
+                time -= window;
+            }
+            if (points.Any()) {
+                time = points.Last().Time;
+                prevTime = time;
+            }
+            foreach (var point in dataPoints) {
+                while (point.Time > time + window) {
+                    time += window;
+                    points.Add(new LabeledDataPoint(time, 0, window, _configuration.Global, prevTime));
+                    prevTime = time;
+                }
+                time = point.Time;
+                points.Add(new LabeledDataPoint(point, window, _configuration.Global, prevTime));
+                prevTime = time;
+            }
+            time += window;
+            while (range.IsInRange(prevTime)) {
+                points.Add(new LabeledDataPoint(time, 0, window, _configuration.Global, prevTime));
+                prevTime = time;
+                time += window;
+            }
+            return points;
         }
 
     }

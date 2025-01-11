@@ -6,27 +6,43 @@ using Home.Core.Interfaces;
 
 namespace Home.Core.Models {
 
-    public class LabeledDataPoint(IDataPoint src, RelativeTime window, GlobalConfigurationModel config) : IDataPoint {
+    public class LabeledDataPoint(DateTime time, double value, RelativeTime window, GlobalConfigurationModel config, DateTime previousTime) : IDataPoint {
 
-        public DateTime Time { get; } = src.Time;
-        public double Value { get; } = src.Value;
+        public DateTime Time { get; } = time;
+        public double Value { get; } = value;
 
-        private readonly DateTime _refEndTime = TimeZoneInfo.ConvertTimeFromUtc(src.Time, config.GetTz()).AddMilliseconds(-1);
+        private readonly DateTime _endTime = TimeZoneInfo.ConvertTimeFromUtc(time, config.GetTz());
+
+        public LabeledDataPoint(IDataPoint src, RelativeTime window, GlobalConfigurationModel config, DateTime previousTime) : this(src.Time, src.Value, window, config, previousTime) {}
 
         public string Label {
             get {
+                var refEndTime = _endTime;
                 if (window.Unit is TimeUnit.Seconds or TimeUnit.Minutes or TimeUnit.Hours) {
-                    return $"{FormatDateTime(_refEndTime - window)}-{FormatDateTime(_refEndTime)}";
+                    var next = refEndTime < previousTime + window;
+                    return $"{FormatDateTime(refEndTime - window, next)}-{FormatDateTime(refEndTime, next)}"; // adjust start to previous
+                }
+                if (refEndTime is { Hour: 0, Minute: 0, Second: 0 }) {
+                    refEndTime = _endTime.AddMilliseconds(-1);
                 }
                 if (window.Value > 1) {
-                    var refStartTime = _refEndTime - new RelativeTime(window.Value - 1, window.Unit);
-                    return $"{FormatDateTime(refStartTime)}-{FormatDateTime(_refEndTime)}";
+                    var refStartTime = refEndTime - new RelativeTime(window.Value - 1, window.Unit);
+                    return $"{FormatDateTime(refStartTime)}-{FormatDateTime(refEndTime)}"; // adjust start to previous
                 }
-                return FormatDateTime(_refEndTime);
+                return FormatDateTime(refEndTime);
             }
         }
 
-        private string FormatDateTime(DateTime time) {
+        private string FormatDateTime(DateTime time, bool next = false) {
+            if (next) {
+                var number = window.Unit switch {
+                    TimeUnit.Seconds => time.Second,
+                    TimeUnit.Minutes => time.Minute,
+                    TimeUnit.Hours => time.Hour,
+                    _ => 0
+                };
+                return ((int)((int)(number / window.Value) + window.Value)).ToString();
+            }
             return window.Unit switch {
                 TimeUnit.Seconds => time.Second.ToString(),
                 TimeUnit.Minutes => time.Minute.ToString(),

@@ -96,8 +96,8 @@ namespace Home.Telemetry {
                     str.Append(range.AbsoluteStopEpoch);
                 }
             } else {
-                str.Append("-");
                 if (range.RelativeStart != null) {
+                    str.Append("-");
                     str.Append(range.RelativeStart);
                 } else {
                     str.Append("0");

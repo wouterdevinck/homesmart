@@ -39,6 +39,23 @@ namespace Home.Core.Models {
             RelativeStop = null;
         }
 
+        public bool IsInRange(DateTime time) {
+            return IsInRange(time, time);
+        }
+
+        public bool IsInRange(DateTime time, RelativeTime window) {
+            return IsInRange(time - window, time);
+        }
+
+        public bool IsInRange(DateTime startTime, DateTime endTime) {
+            var now = DateTime.UtcNow;
+            if (Type == TimeRangeType.Absolute) {
+                return (startTime >= AbsoluteStart) && ((AbsoluteStop == null && endTime <= now) || endTime <= AbsoluteStop);
+            } else {
+                return (startTime >= now - RelativeStart) && ((RelativeStop == null && endTime <= now) || endTime <= now - (RelativeStop ?? TimeSpan.Zero));
+            }
+        }
+
     }
 
 }
