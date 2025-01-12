@@ -56,7 +56,7 @@ namespace Home.Core.Data {
                 prevTime = time;
             }
             time += window;
-            while (range.IsInRange(prevTime)) {
+            while (range.IsInRange(prevTime) && DateTime.UtcNow - prevTime > TimeSpan.FromMinutes(1)) {
                 points.Add(new LabeledDataPoint(time, 0, window, global, prevTime));
                 prevTime = time;
                 time += window;
