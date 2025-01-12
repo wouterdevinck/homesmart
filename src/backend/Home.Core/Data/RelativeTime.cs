@@ -1,6 +1,6 @@
 using System;
 
-namespace Home.Core.Models {
+namespace Home.Core.Data {
 
     public class RelativeTime {
 

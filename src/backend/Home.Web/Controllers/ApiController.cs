@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Home.Core.Data;
 using Home.Core.Interfaces;
-using Home.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Home.Web.Controllers {

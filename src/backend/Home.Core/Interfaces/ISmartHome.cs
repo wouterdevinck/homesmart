@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Home.Core.Configuration.Models;
-using Home.Core.Models;
+using Home.Core.Data;
 
 namespace Home.Core.Interfaces {
 

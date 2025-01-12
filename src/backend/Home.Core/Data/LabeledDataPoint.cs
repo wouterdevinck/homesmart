@@ -4,7 +4,7 @@ using Home.Core.Configuration.Models;
 using Home.Core.Extensions;
 using Home.Core.Interfaces;
 
-namespace Home.Core.Models {
+namespace Home.Core.Data {
 
     public class LabeledDataPoint(DateTime time, double value, RelativeTime window, GlobalConfigurationModel config, DateTime previousTime) : IDataPoint {
 
@@ -13,7 +13,7 @@ namespace Home.Core.Models {
 
         private readonly DateTime _endTime = TimeZoneInfo.ConvertTimeFromUtc(time, config.GetTz());
 
-        public LabeledDataPoint(IDataPoint src, RelativeTime window, GlobalConfigurationModel config, DateTime previousTime) : this(src.Time, src.Value, window, config, previousTime) {}
+        public LabeledDataPoint(IDataPoint src, RelativeTime window, GlobalConfigurationModel config, DateTime previousTime) : this(src.Time, src.Value, window, config, previousTime) { }
 
         public string Label {
             get {

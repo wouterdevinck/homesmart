@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Home.Core.Models;
+using Home.Core.Attributes;
 
 namespace Home.Core.Interfaces {
 

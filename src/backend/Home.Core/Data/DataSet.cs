@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Home.Core.Interfaces;
 
-namespace Home.Core.Models {
+namespace Home.Core.Data {
 
     public class DataSet(string device, string point, string unit, IEnumerable<IDataPoint> points) {
 

@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
+using Home.Core.Data;
 using Home.Core.Interfaces;
-using Home.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Home.Core {
@@ -19,6 +19,7 @@ namespace Home.Core {
         private readonly ConfigurationModel _configuration;
         private readonly List<IDeviceProvider> _providers = [];
         private readonly List<IAutomation> _automations = [];
+        private readonly DataProcessor _data;
         private ITelemetry _telemetry;
         private IRemote _remote;
 
@@ -126,6 +127,9 @@ namespace Home.Core {
                 );
             }
 
+            // Helper for querying data
+            _data = new DataProcessor(_telemetry, _configuration.Global);
+
         }
 
         private void Add<T, U>(string logTag, string tag, U config, List<Descriptor> providers, DescriptorType type, ILoggerFactory loggerFactory, Action<T> process, Func<ILogger, U, object[]> args) {
@@ -183,59 +187,8 @@ namespace Home.Core {
         }
 
         public async Task<DataSet> GetData(string deviceId, string point, string since, string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow) {
-            if (string.IsNullOrEmpty(since)) since = "24h";
-            TimeRange range;
-            IEnumerable<IDataPoint> points;
-            if (from != null) {
-                range = to != null ? new TimeRange(from.Value, to.Value) : new TimeRange(from.Value);
-            } else if (string.IsNullOrEmpty(toAgo)) {
-                range = new TimeRange(new RelativeTime(since));
-            } else {
-                range = new TimeRange(new RelativeTime(since), new RelativeTime(toAgo));
-            }
-            if (!string.IsNullOrEmpty(diffWindow)) {
-                var window = new RelativeTime(diffWindow);
-                points = LabelDataWindows(await _telemetry.GetWindowDifference(deviceId, point, range, window), window, range);
-            } else if (!string.IsNullOrEmpty(meanWindow)) {
-                var window = new RelativeTime(meanWindow);
-                points = LabelDataWindows(await _telemetry.GetWindowMean(deviceId, point, range, window), window, range);
-            } else {
-                points = await _telemetry.GetAllData(deviceId, point, range);
-            }
             var unit = GetDevices().SingleOrDefault(x => x.HasId(deviceId))?.GetPropertyInfo(point)?.Unit ?? string.Empty;
-            return new DataSet(deviceId, point, unit, points);
-        }
-
-        private IEnumerable<IDataPoint> LabelDataWindows(IEnumerable<IDataPoint> data, RelativeTime window, TimeRange range) {
-            List<IDataPoint> points = [];
-            var dataPoints = data.ToList();
-            var time = dataPoints.First().Time - window;
-            var prevTime = DateTime.UnixEpoch;
-            while (range.IsInRange(time, window)) {
-                points.Insert(0, new LabeledDataPoint(time, 0, window, _configuration.Global, time - window));
-                time -= window;
-            }
-            if (points.Any()) {
-                time = points.Last().Time;
-                prevTime = time;
-            }
-            foreach (var point in dataPoints) {
-                while (point.Time > time + window) {
-                    time += window;
-                    points.Add(new LabeledDataPoint(time, 0, window, _configuration.Global, prevTime));
-                    prevTime = time;
-                }
-                time = point.Time;
-                points.Add(new LabeledDataPoint(point, window, _configuration.Global, prevTime));
-                prevTime = time;
-            }
-            time += window;
-            while (range.IsInRange(prevTime)) {
-                points.Add(new LabeledDataPoint(time, 0, window, _configuration.Global, prevTime));
-                prevTime = time;
-                time += window;
-            }
-            return points;
+            return await _data.GetData(deviceId, point, since, toAgo, from, to, meanWindow, diffWindow, unit);
         }
 
     }

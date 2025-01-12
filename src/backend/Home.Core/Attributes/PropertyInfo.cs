@@ -1,4 +1,4 @@
-namespace Home.Core.Models {
+namespace Home.Core.Attributes {
 
     public class PropertyInfo(string unit) {
 

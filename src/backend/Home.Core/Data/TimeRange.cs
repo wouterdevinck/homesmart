@@ -1,6 +1,6 @@
 using System;
 
-namespace Home.Core.Models {
+namespace Home.Core.Data {
 
     public class TimeRange {
 
@@ -9,8 +9,8 @@ namespace Home.Core.Models {
         public DateTime? AbsoluteStart { get; }
         public DateTime? AbsoluteStop { get; }
 
-        public long AbsoluteStartEpoch => AbsoluteStart == null ? 0 : (new DateTimeOffset(AbsoluteStart.Value)).ToUnixTimeSeconds();
-        public long? AbsoluteStopEpoch => AbsoluteStop == null ? null : (new DateTimeOffset((DateTime)AbsoluteStop)).ToUnixTimeSeconds();
+        public long AbsoluteStartEpoch => AbsoluteStart == null ? 0 : new DateTimeOffset(AbsoluteStart.Value).ToUnixTimeSeconds();
+        public long? AbsoluteStopEpoch => AbsoluteStop == null ? null : new DateTimeOffset((DateTime)AbsoluteStop).ToUnixTimeSeconds();
 
         public RelativeTime RelativeStart { get; private set; }
         public RelativeTime RelativeStop { get; private set; }
@@ -50,9 +50,9 @@ namespace Home.Core.Models {
         public bool IsInRange(DateTime startTime, DateTime endTime) {
             var now = DateTime.UtcNow;
             if (Type == TimeRangeType.Absolute) {
-                return (startTime >= AbsoluteStart) && ((AbsoluteStop == null && endTime <= now) || endTime <= AbsoluteStop);
+                return startTime >= AbsoluteStart && (AbsoluteStop == null && endTime <= now || endTime <= AbsoluteStop);
             } else {
-                return (startTime >= now - RelativeStart) && ((RelativeStop == null && endTime <= now) || endTime <= now - (RelativeStop ?? TimeSpan.Zero));
+                return startTime >= now - RelativeStart && (RelativeStop == null && endTime <= now || endTime <= now - (RelativeStop ?? TimeSpan.Zero));
             }
         }
 

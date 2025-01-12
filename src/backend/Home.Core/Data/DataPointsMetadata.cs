@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Home.Core.Models {
+namespace Home.Core.Data {
 
     public class DataPointsMetadata(string deviceId, List<string> points) {
 

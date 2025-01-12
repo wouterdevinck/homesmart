@@ -1,6 +1,6 @@
 using System.Text;
+using Home.Core.Data;
 using Home.Core.Extensions;
-using Home.Core.Models;
 
 namespace Home.Telemetry {
 
