@@ -4,17 +4,18 @@
 
 <script>
 import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale } from 'chart.js'
-ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale)
+import { Chart as ChartJS, Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, TimeSeriesScale } from 'chart.js'
+import 'chartjs-adapter-luxon';
+ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, TimeSeriesScale)
 export default {
   components: { Line },
   props: ['data'],
   data() {
     return {
       chartData: {
-        labels: this.data.points?.map(x => x.time), // TODO map to labels depending on window (or do server side?)
+        labels: this.data.points?.map(x => x.time),
         datasets: [ { 
-          data: this.data.points?.map(x => x.value), // TODO Add zeros for missing data points or do server side?
+          data: this.data.points?.map(x => x.value),
           backgroundColor: '#9EA1D4',
           borderColor: '#9EA1D4',
           tension: 0.4,
@@ -24,6 +25,11 @@ export default {
       chartOptions: {
         responsive: true,
         animation: false,
+        scales: {
+          x: {
+            type: 'timeseries'
+          }
+        },
         plugins: {
           legend: {
             display: false

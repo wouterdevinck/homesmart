@@ -109,6 +109,7 @@
           <thead>
             <tr>
               <th scope="col">Timestamp</th>
+              <th scope="col">Label</th>
               <th scope="col">Value</th>
             </tr>
           </thead>
@@ -116,7 +117,8 @@
             <template v-for="item in data.points">
               <tr>
                 <td>{{ item.time }}</td>
-                <td>{{ item.value }}</td>
+                <td>{{ item.label }}</td>
+                <td>{{ item.value }}{{ getUnitFormat(data.unit) }}</td>
               </tr>
             </template>
           </tbody>
@@ -195,8 +197,7 @@ export default {
         api.getData(data => {
           this.data = data
           this.fetching = false
-        }, this.selectedDevice, this.selectedPoint, 
-        diffWindow, meanWindow, this.selectedSince)
+        }, this.selectedDevice, this.selectedPoint, diffWindow, meanWindow, this.selectedSince)
       }
     },
     preset: function (device, point, mode, window, since, chartType) {

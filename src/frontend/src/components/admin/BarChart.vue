@@ -12,9 +12,9 @@ export default {
   data() {
     return {
       chartData: {
-        labels: this.data.points?.map(x => x.time), // TODO map to labels depending on window (or do server side?)
+        labels: this.data.points?.map(x => x.label),
         datasets: [ { 
-          data: this.data.points?.map(x => x.value), // TODO Add zeros for missing data points or do server side?
+          data: this.data.points?.map(x => x.value),
           backgroundColor: '#9EA1D4',
           unit: this.getUnitFormat(this.data.unit)
         } ]
