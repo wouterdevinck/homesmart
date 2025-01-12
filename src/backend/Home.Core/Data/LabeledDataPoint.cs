@@ -18,31 +18,23 @@ namespace Home.Core.Data {
         public string Label {
             get {
                 var refEndTime = _endTime;
+                var incomplete = refEndTime < previousTime + window;
                 if (window.Unit is TimeUnit.Seconds or TimeUnit.Minutes or TimeUnit.Hours) {
-                    var next = refEndTime < previousTime + window;
-                    return $"{FormatDateTime(refEndTime - window, next)}-{FormatDateTime(refEndTime, next)}"; // adjust start to previous
+                    var refStartTime = incomplete ? previousTime + new RelativeTime(1, window.Unit) : refEndTime - window;
+                    return $"{FormatDateTime(refStartTime)}-{FormatDateTime(refEndTime)}";
                 }
                 if (refEndTime is { Hour: 0, Minute: 0, Second: 0 }) {
                     refEndTime = _endTime.AddMilliseconds(-1);
                 }
                 if (window.Value > 1) {
-                    var refStartTime = refEndTime - new RelativeTime(window.Value - 1, window.Unit);
-                    return $"{FormatDateTime(refStartTime)}-{FormatDateTime(refEndTime)}"; // adjust start to previous
+                    var refStartTime = incomplete ? previousTime + new RelativeTime(1, window.Unit) : refEndTime - new RelativeTime(window.Value - 1, window.Unit);
+                    return $"{FormatDateTime(refStartTime)}-{FormatDateTime(refEndTime)}";
                 }
                 return FormatDateTime(refEndTime);
             }
         }
 
-        private string FormatDateTime(DateTime time, bool next = false) {
-            if (next) {
-                var number = window.Unit switch {
-                    TimeUnit.Seconds => time.Second,
-                    TimeUnit.Minutes => time.Minute,
-                    TimeUnit.Hours => time.Hour,
-                    _ => 0
-                };
-                return ((int)((int)(number / window.Value) + window.Value)).ToString();
-            }
+        private string FormatDateTime(DateTime time) {
             return window.Unit switch {
                 TimeUnit.Seconds => time.Second.ToString(),
                 TimeUnit.Minutes => time.Minute.ToString(),

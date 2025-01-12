@@ -12,6 +12,7 @@ namespace Home.Core.Data {
 
         // Note: These are for months and years more accurate than the implicit conversion
         // to timespan above, since months and years are not fixed lengths.
+        // Note 2: 28/feb + 1 month = 28/mar, not 31/mar! See CountWindows() for this.
         public static DateTime operator +(DateTime a, RelativeTime b) => b.AddToDateTime(a);
         public static DateTime operator -(DateTime a, RelativeTime b) => b.AddToDateTime(a, true);
 
@@ -83,6 +84,23 @@ namespace Home.Core.Data {
                 "mo" => TimeUnit.Months,
                 "y" => TimeUnit.Years,
                 _ => TimeUnit.Hours
+            };
+        }
+
+        public double CountWindows(DateTime a, DateTime b) {
+            if (Unit == TimeUnit.Years) {
+                return b.Year - a.Year;
+            }
+            if (Unit == TimeUnit.Years) {
+                return b.Month - a.Month + 12 * (b.Year - a.Year);
+            }
+            var diff = b - a;
+            return Unit switch {
+                TimeUnit.Seconds => diff.TotalSeconds / Value,
+                TimeUnit.Minutes => diff.TotalMinutes / Value,
+                TimeUnit.Hours => diff.TotalHours / Value,
+                TimeUnit.Days => diff.TotalDays / Value,
+                _ => -1
             };
         }
 

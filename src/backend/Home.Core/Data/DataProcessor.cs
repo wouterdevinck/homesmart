@@ -46,7 +46,7 @@ namespace Home.Core.Data {
                 prevTime = time;
             }
             foreach (var point in dataPoints) {
-                while (point.Time > time + window) {
+                while (window.CountWindows(time, point.Time) > 1) {
                     time += window;
                     points.Add(new LabeledDataPoint(time, 0, window, global, prevTime));
                     prevTime = time;
