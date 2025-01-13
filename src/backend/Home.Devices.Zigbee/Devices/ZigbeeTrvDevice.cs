@@ -16,19 +16,19 @@ namespace Home.Devices.Zigbee.Devices {
         [DeviceProperty] 
         public bool On { get; private set; }
 
-        [DeviceProperty] 
+        [DeviceProperty(Unit = "\u00b0C")] 
         public double Temperature { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty(Unit = "\u00b0C")]
         public double RequestedTemperature { get; private set; }
 
-        [DeviceProperty] 
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Battery { get; private set; }
 
         [DeviceProperty]
         public bool Locked { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty<int>(Unit = "%", Min = 0, Max = 100)]
         public int ValvePosition { get; private set; }
 
         [DeviceProperty]

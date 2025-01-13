@@ -1,4 +1,4 @@
-using Home.Core.Models;
+using Home.Core.Data;
 
 namespace Home.Core.Extensions {
 

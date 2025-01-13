@@ -21,7 +21,7 @@ namespace Home.Devices.Hue.Devices {
         [DeviceProperty]
         public bool On { get; protected set; }
         
-        [DeviceProperty]
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Brightness { get; protected set; }
 
         public HueLightDevice(Light light, Device device, ZigbeeConnectivity zigbee, LocalHueApi hue, HomeConfigurationModel home) : base(hue, device.Id, home, device, zigbee, $"HUE-LIGHT-{zigbee.MacAddress}") {

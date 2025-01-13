@@ -59,7 +59,7 @@ namespace Home.Core {
 
         public event EventHandler<DeviceUpdateEventArgs> DeviceUpdate;
 
-        public AbstractDevice(HomeConfigurationModel home, string id) {
+        protected AbstractDevice(HomeConfigurationModel home, string id) {
             DeviceId = id;
             var dm = home.Devices?.SingleOrDefault(x => x.DeviceId == id);
             FriendlyId = dm?.FriendlyId ?? id;
@@ -67,7 +67,7 @@ namespace Home.Core {
             AlternateName = dm?.AlternateName;
             AlternateIcon = dm?.AlternateIcon;
             HideWhenUnreachable = dm?.HideWhenUnreachable ?? false;
-            _relatedDevices = new List<IRelatedDevice<IDevice>>();
+            _relatedDevices = [];
         }
 
         protected void NotifyObservers(string property, object value, DateTime timestamp, bool retained) {
@@ -93,7 +93,18 @@ namespace Home.Core {
         public bool HasId(string id) {
             return (!string.IsNullOrEmpty(FriendlyId) && FriendlyId.Equals(id)) || DeviceId.Equals(id);
         }
-        
+
+        public PropertyInfo GetPropertyInfo(string point) {
+            var prop = this.GetType().GetProperties().SingleOrDefault(x => x.Name.Equals(point, StringComparison.InvariantCultureIgnoreCase));
+            if (prop != null) {
+                var attr = prop.GetCustomAttributes(false).SingleOrDefault(x => x.GetType().Name.Contains("DevicePropertyAttribute"));
+                if (attr != null) {
+                    return new PropertyInfo((attr as DevicePropertyAttribute)?.Unit);
+                }
+            }
+            return null;
+        }
+
     }
 
 }

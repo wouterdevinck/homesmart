@@ -13,7 +13,7 @@ namespace Home.Devices.Zigbee.Devices {
 
         public event EventHandler SinglePress;
 
-        [DeviceProperty]
+        [DeviceProperty<double>(Unit = "%", Min = 0, Max = 100)]
         public double Battery { get; private set; }
 
         [DeviceProperty]

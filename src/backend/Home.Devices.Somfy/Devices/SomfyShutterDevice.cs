@@ -14,7 +14,7 @@ namespace Home.Devices.Somfy.Devices {
         [JsonIgnore]
         public int ShadeId { get; private set; }
 
-        [DeviceProperty]
+        [DeviceProperty<int>(Unit = "%", Min = 0, Max = 100)]
         public int Position { get; private set; }
 
         private readonly SomfyApiClient _api;

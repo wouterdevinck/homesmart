@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Home.Core.Configuration;
 using Home.Core.Configuration.Interfaces;
 using Home.Core.Configuration.Models;
+using Home.Core.Data;
 using Home.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -18,6 +19,7 @@ namespace Home.Core {
         private readonly ConfigurationModel _configuration;
         private readonly List<IDeviceProvider> _providers = [];
         private readonly List<IAutomation> _automations = [];
+        private readonly DataProcessor _data;
         private ITelemetry _telemetry;
         private IRemote _remote;
 
@@ -100,7 +102,7 @@ namespace Home.Core {
                         _telemetry = impl;
                         impl.Install(this);
                     },
-                    (l, c) => [l, c]
+                    (l, c) => [l, c, _configuration.Global]
                 );
             }
 
@@ -124,6 +126,9 @@ namespace Home.Core {
                     (l, c) => [l, c]
                 );
             }
+
+            // Helper for querying data
+            _data = new DataProcessor(_telemetry, _configuration.Global);
 
         }
 
@@ -179,6 +184,11 @@ namespace Home.Core {
 
         public IRemote GetRemote() {
             return _remote;
+        }
+
+        public async Task<DataSet> GetData(string deviceId, string point, string since, string toAgo, DateTime? from, DateTime? to, string meanWindow, string diffWindow) {
+            var unit = GetDevices().SingleOrDefault(x => x.HasId(deviceId))?.GetPropertyInfo(point)?.Unit ?? string.Empty;
+            return await _data.GetData(deviceId, point, since, toAgo, from, to, meanWindow, diffWindow, unit);
         }
 
     }

@@ -5,8 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Home.Core;
 using Home.Core.Configuration;
+using Home.Core.Configuration.Models;
+using Home.Core.Data;
 using Home.Core.Interfaces;
-using Home.Core.Models;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
@@ -25,9 +26,15 @@ namespace Home.Telemetry {
 
         private readonly InfluxDBClient _client;
 
-        public InfluxDbTelemetry(ILogger logger, InfluxDbTelemetryConfiguration configuration) : base(GetDeviceIdList(configuration)) {
+        private Dictionary<string, List<string>> _metadata;
+        private DateTime _lastMetadataRefresh;
+
+        private readonly string _timezone;
+
+        public InfluxDbTelemetry(ILogger logger, InfluxDbTelemetryConfiguration configuration, GlobalConfigurationModel global) : base(GetDeviceIdList(configuration)) {
             _logger = logger;
             _configuration = configuration;
+            _timezone = global.Timezone;
             _client = new InfluxDBClient(_configuration.Url, _configuration.Token);
         }
 
@@ -53,30 +60,55 @@ namespace Home.Telemetry {
         }
 
         public async Task<IEnumerable<IDataPoint>> GetAllData(string device, string point, TimeRange range) {
-            return await GetData(FluxQuery.AllData(_configuration.Bucket, device, point, range));
+            var pointCase = await PointCaseFromMetadata(device, point);
+            return await GetData(FluxQuery.AllData(_configuration.Bucket, device, pointCase, range));
         }
 
         public async Task<IEnumerable<IDataPoint>> GetWindowDifference(string device, string point, TimeRange range, RelativeTime window) {
-            return await GetData(FluxQuery.DiffWindow(_configuration.Bucket, device, point, range, window));
+            var pointCase = await PointCaseFromMetadata(device, point);
+            return await GetData(FluxQuery.DiffWindow(_timezone, _configuration.Bucket, device, pointCase, range, window));
         }
 
         public async Task<IEnumerable<IDataPoint>> GetWindowMean(string device, string point, TimeRange range, RelativeTime window) {
-            return await GetData(FluxQuery.MeanWindow(_configuration.Bucket, device, point, range, window));
+            var pointCase = await PointCaseFromMetadata(device, point);
+            return await GetData(FluxQuery.MeanWindow(_timezone, _configuration.Bucket, device, pointCase, range, window));
         }
 
         public async Task<IEnumerable<DataPointsMetadata>> GetMetadata() {
+            if (MetadataNeedsRefresh()) {
+                await RefreshMetaData();
+            }
+            return _metadata.Select(x => new DataPointsMetadata(x.Key, x.Value.Select(y => y.ToLower()).Distinct().ToList())).ToList();
+        }
+
+        private async Task RefreshMetaData() {
             var temp = new Dictionary<string, List<string>>();
             var measurements = await GetStrings(FluxQuery.Measurements(_configuration.Bucket));
-            foreach (var measurement in measurements) {
-                var devices = await GetStrings(FluxQuery.Devices(_configuration.Bucket, measurement));
-                var point = measurement.ToLower();
+            foreach (var point in measurements) {
+                var devices = await GetStrings(FluxQuery.Devices(_configuration.Bucket, point));
                 foreach (var device in devices) {
-                    if(!temp.TryAdd(device, [point])) {
+                    if (!temp.TryAdd(device, [point])) {
                         temp[device].Add(point);
                     }
                 }
             }
-            return temp.Select(x => new DataPointsMetadata(x.Key, x.Value.Distinct().ToList())).ToList();
+            _lastMetadataRefresh = DateTime.Now;
+            _metadata = temp;
+        }
+
+        private bool MetadataNeedsRefresh(string device, string point) {
+            return MetadataNeedsRefresh() || _metadata.ContainsKey(device) || _metadata[device].All(x => x != point.ToLower());
+        }
+
+        private bool MetadataNeedsRefresh() {
+            return _metadata == null || DateTime.Now - _lastMetadataRefresh > TimeSpan.FromDays(1);
+        }
+
+        private async Task<string> PointCaseFromMetadata(string device, string point) {
+            if (MetadataNeedsRefresh(device, point)) {
+                await RefreshMetaData();
+            }
+            return _metadata[device].First(x => string.Equals(x, point, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public async Task ExportCsv(string path) {

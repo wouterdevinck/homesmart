@@ -5,6 +5,7 @@ namespace Home.Core.Configuration.Models {
 
     public class ConfigurationModel {
 
+        public GlobalConfigurationModel Global { get; set; }
         public HomeConfigurationModel Home { get; set; }
 
         public Dictionary<string, IProviderConfiguration> DeviceProviders { get; set; }
